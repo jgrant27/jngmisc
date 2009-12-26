@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- JNLP File for Pong! -->
+
+<jnlp spec="1.0+"
+      codebase="http://jng.imagine27.com/files/pong" 
+      href="pong.jnlp">
+  <information>
+    <title>Pong!</title>
+    <vendor>imagine27</vendor>
+    <description>Pong! (in Clojure)</description>
+    <homepage href="http://jng.imagine27.com/articles/2009-09-12-122605_pong_in_clojure.html"/>
+    <description kind="short">A pong game implemented in < 200 lines of Clojure code.</description>
+    <offline-allowed/>
+  </information>
+  <resources>     
+    <jar href="pong.jar"/>
+    <j2se version="1.5+"
+          href="http://java.sun.com/products/autodl/j2se"/>
+  </resources>
+  <application-desc main-class="Pong!"/>
+</jnlp>

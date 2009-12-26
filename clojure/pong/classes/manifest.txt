@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: i27.games.pong
+Class-Path: .
+

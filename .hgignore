@@ -1,0 +1,20 @@
+# use glob syntax.
+syntax: glob
+
+*\#*
+*.6
+*.out
+*.[oa]
+*.gcno
+*.fasl
+.DS_Store
+patches/
+bin/*
+*.dSYM*
+clojure/bloom
+
+# switch to regexp syntax.
+syntax: regexp
+.*~
+.*classes/clojure.*
+.*classes/i27.*
