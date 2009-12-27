@@ -48,9 +48,9 @@
            
            (ext-centers (text n centers tcenters cdist)
              (cond
-               ((eq 0 cdist)
+               ((= 0 cdist)
                 (ext-tail text (+ 1 n) 1 centers))
-               ((eq (- cdist 1) (first tcenters))
+               ((= (- cdist 1) (first tcenters))
                 (ext-tail text n (first tcenters) centers))
                (t
                 (ext-centers text n 
@@ -64,11 +64,11 @@
                ((> n (- (length text) 1))
                 (final-centers curr-tail centers 
                                (cons curr-tail centers)))
-                ((eql (- n curr-tail) 0)
+                ((= (- n curr-tail) 0)
                  (ext-centers text n 
                               (cons curr-tail centers)
                               centers curr-tail))
-                ((eq (elt text n) (elt text (- n curr-tail 1)))
+                ((eql (elt text n) (elt text (- n curr-tail 1)))
                  (ext-tail text (+ 1 n) (+ 2 curr-tail) centers))
                 (t
                  (ext-centers text n
@@ -147,13 +147,13 @@
 
 (defun run-tests ()  
   (let ((success (and
-                  (not (eql (longest-pal-str-test "bob says yabbadabbadooo !") "bob"))
+                  (not (equal (longest-pal-str-test "bob says yabbadabbadooo !") "bob"))
                   (equal (longest-pal-str-test "eat a banana bob !") "anana")
-                  (not (eql (longest-pal-str-test "eat a banana bob !") "bob"))
+                  (not (equal (longest-pal-str-test "eat a banana bob !") "bob"))
                   (equal (longest-pal-str-test "lol") "lol")
-                  (not (eql (longest-pal-str-test "lol") "bob"))
+                  (not (equal (longest-pal-str-test "lol") "bob"))
                   (equal (longest-pal-str-test "") "")
-                  (not (eql (longest-pal-str-test "") "bob"))
+                  (not (equal (longest-pal-str-test "") "bob"))
                   (equal (longest-pal-str-test "A876BC110115438776E0FC16BFF7B24537") "11011")
                   ;; the first 49 chars of the first chromosome of the human genome
                   (equal (longest-pal-str-test "AATTCTTTGATTGATAATTTTTTCTTCTCAGTCTTTTATCTTGTCTCTTC") "TTTTTT")
