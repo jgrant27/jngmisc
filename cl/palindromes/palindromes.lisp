@@ -167,7 +167,7 @@
   (let* ((cnt (truncate 1e3))
          (line " amanaplanacanalpanama ")
          (text (with-output-to-string (stream)
-                 (dotimes (n cnt) (format stream "~A" line)))))
+                 (dotimes (n cnt) (format stream line)))))
     (format t "~%~A X '~A' ~%" cnt line)
     (format t "naive : ~%")
     (time (longest-pal-str text (longest-pals-naive text)))

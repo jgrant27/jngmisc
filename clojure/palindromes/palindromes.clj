@@ -76,9 +76,8 @@
             (let [n (dec n)]
               (recur n
                      (rest tcenters)
-                     (concat (vector 
-                              (min (first tcenters) n))
-                             centers)))))
+                     (cons (min (first tcenters) n)
+                           centers)))))
           
           (ext-centers
            [strn n centers tcenters cdist]
@@ -89,9 +88,8 @@
             #(ext-tail strn n (first tcenters) centers)
             true
             #(ext-centers strn n 
-                          (concat 
-                           (vector (min (first tcenters) (dec cdist))) 
-                           centers)
+                          (cons (min (first tcenters) (dec cdist))
+                                centers)
                           (rest tcenters) (dec cdist))))
 
           (ext-tail
@@ -99,21 +97,21 @@
            (cond 
             (> n (dec (count strn)))
             #(final-centers curr-tail centers
-                            (concat (vector curr-tail) centers))
+                            (cons curr-tail centers))
             (= (- n curr-tail) 0)
             #(ext-centers strn n 
-                          (concat (vector curr-tail) centers)
+                          (cons curr-tail centers)
                           centers curr-tail)
             (= (nth strn n) (nth strn (- n curr-tail 1)))
             #(ext-tail strn (inc n) (+ 2 curr-tail) centers)
             true
             #(ext-centers strn n
-                          (concat (vector curr-tail) centers)
+                          (cons curr-tail centers)
                           centers curr-tail)))
           
           (pal-around-centers
            [strn]
-           (reverse (trampoline #(ext-tail strn 0 0 []))))]
+           (reverse (trampoline #(ext-tail strn 0 0 ()))))]
 
     (pal-around-centers text)))
 
