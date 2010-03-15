@@ -36,7 +36,6 @@
   (left nil)
   (right nil))
 
-
 ;; naive traversal functions
 (defun traverse-pre-order (node fun)
   (if node
@@ -85,44 +84,46 @@
 
 (defun print-node (n) (format t "~A " (btnode-val n)))
 
+(defun test()
+    (let ((root
+           (make-btnode
+            :val 5
+            :left (make-btnode 
+                   :val 3
+                   :left (make-btnode :val 2 :left (make-btnode :val 1))
+                   :right (make-btnode :val 4))
+            :right (make-btnode 
+                    :val 7
+                    :left (make-btnode :val 6)
+                    :right (make-btnode :val 8 :right (make-btnode :val 9))))))
+      
+      (format t "~A~%" root)
 
-(let ((root
-       (make-btnode
-        :val 5
-        :left (make-btnode 
-               :val 3
-               :left (make-btnode :val 2 :left (make-btnode :val 1))
-               :right (make-btnode :val 4))
-        :right (make-btnode 
-                :val 7
-                :left (make-btnode :val 6)
-                :right (make-btnode :val 8 :right (make-btnode :val 9))))))
-                      
-  (format t "~A~%" root)
 
+      (format t "~%simple functions :~%")
+      (map 'list #'(lambda (fun)
+                     (let* ((fname (string fun))
+                            (pos (1+ (position #\- fname)))
+                            (order (subseq fname pos)))
+                       (format t "~20A : " order))
+                     (apply fun (list root #'print-node))
+                     (format t "~%"))
+           '(traverse-pre-order traverse-in-order traverse-post-order))
+      (format t "~%")
 
-  (format t "~%simple functions :~%")
-  (map 'list #'(lambda (fun)
-                 (let* ((fname (string fun))
-                        (pos (1+ (position #\- fname)))
-                        (order (subseq fname pos)))
-                   (format t "~20A : " order))
-                 (apply fun (list root #'print-node))
-                 (format t "~%"))
-       '(traverse-pre-order traverse-in-order traverse-post-order))
-  (format t "~%")
+      (format t "~%traverse-tree function : ~%")
+      (map 'list #'(lambda (order)
+                     (format t "~20A : " (car order))
+                     (traverse-tree root #'print-node (cdr order))
+                     (format t "~%"))
+           '((pre-order          nil btnode-left btnode-right)
+             (in-order           btnode-left nil btnode-right)    
+             (post-order         btnode-left btnode-right nil)    
+             (reverse-pre-order  nil btnode-right btnode-left)    
+             (reverse-in-order   btnode-right nil btnode-left)    
+             (reverse-post-order btnode-right btnode-left nil)))
+      
+      )
+    )
 
-  (format t "~%traverse-tree function : ~%")
-  (map 'list #'(lambda (order)
-                 (format t "~20A : " (car order))
-                 (traverse-tree root #'print-node (cdr order))
-                 (format t "~%"))
-       '((pre-order          nil btnode-left btnode-right)
-         (in-order           btnode-left nil btnode-right)    
-         (post-order         btnode-left btnode-right nil)    
-         (reverse-pre-order  nil btnode-right btnode-left)    
-         (reverse-in-order   btnode-right nil btnode-left)    
-         (reverse-post-order btnode-right btnode-left nil)))
-  
-)
-
+(test)
