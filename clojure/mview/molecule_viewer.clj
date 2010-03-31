@@ -75,6 +75,15 @@
         [H  1.370   0.240   0.981]
         [H  1.642  -0.147  -0.735]
         [H  1.180  -1.434   0.405]]
+      :benzene
+      '[[C -0.750  0.000 0.000]
+        [C  0.750  0.000 0.000]
+        [C  0.750  0.000 0.000]
+        [C -0.375  0.750 0.000]
+        [C  0.375  0.750 0.000]
+        [C -0.375 -0.750 0.000]
+        [C  0.375 -0.750 0.000]
+        ]
       :methane
       '[[C  0.000  0.000  0.000]
         [H -0.500  0.500 -0.500]
@@ -126,7 +135,9 @@
 (defn mouse-drag [[dx dy] _ button state]
   (assoc state 
     :rotx (+ (:rotx state) dy )
-    :roty (+ (:roty state) dx )))
+    :roty (+ (:roty state) dx )
+    :light-phi (+ (* dy (:one-degree state)) (:light-phi state))
+    :light-theta (+ (* dx (:one-degree state)) (:light-theta state))))
 
 (defn lim-between [val bot top]
   (max bot (min top val)))
@@ -139,6 +150,7 @@
    state
    
    {:counter (+ 1 (:counter state))}
+
    (let [interval 5.0]
      (when (> (- time (:last-update state)) interval)
        (println (format "%f FPS" (/ (:counter state) interval)))
@@ -153,7 +165,9 @@
            (lim-between (+ (:rotz-vel state) (rand-interval -0.1 0.1)) -2.0 2.0)]
        {:rotx (+ (:rotx state) rotx-vel) :rotx-vel rotx-vel
         :roty (+ (:roty state) roty-vel) :roty-vel roty-vel
-        :rotz (+ (:rotz state) rotz-vel) :rotz-vel rotz-vel}))))
+        :rotz (+ (:rotz state) rotz-vel) :rotz-vel rotz-vel
+        :light-phi (+ (* rotx-vel (:one-degree state)) (:light-phi state))
+        :light-theta (+ (* rotx-vel (:one-degree state)) (:light-theta state))}))))
 
 (defn display [[delta time] state]
   (clear)
@@ -198,6 +212,7 @@
     :roty-vel 0.0
     :rotz-vel 0.0
     :show-light-source nil
+    :one-degree 0.0174
     :light-dist 5
     :light-theta 0.0
     :light-phi 0.0
@@ -207,4 +222,4 @@
     :last-update 0.0
     :counter 0}))
 
-(start)
+
