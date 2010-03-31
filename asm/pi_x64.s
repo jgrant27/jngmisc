@@ -60,8 +60,8 @@ msg:    .string  "%1.50f\n"
         .type main, @function
         .align 64
 main:
-	      pushq	%rbp
-	      movq	%rsp, %rbp
+        pushq	%rbp
+        movq	%rsp, %rbp
 
         movdqa  (numer), %xmm2
         movdqa  (denom), %xmm6
