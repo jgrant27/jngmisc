@@ -32,6 +32,7 @@
 ;;
 ;; keys
 ;;   m   - toggle molecule random motion
+;;   f   - toggle fullscreen
 ;;   esc - exit
 ;;
 ;; controls
@@ -42,7 +43,6 @@
 (ns i27.molecule-viewer
   (:use 
    [penumbra opengl geometry])
-  (:import org.lwjgl.util.glu.Sphere)
   (:require 
    [penumbra.app :as app]
    [penumbra.text :as text]
