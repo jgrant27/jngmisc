@@ -40,6 +40,7 @@
 
 (set! *warn-on-reflection* true)
 
+
 (ns i27.molecule-viewer
   (:use 
    [penumbra opengl geometry])
@@ -47,6 +48,8 @@
    [penumbra.app :as app]
    [penumbra.text :as text]
    [clojure.contrib.generic.math-functions :as math]))
+
+(penumbra.opengl.core/gl-import glFrustum gl-frustum)
 
 ;; Element defs
 (def elements
