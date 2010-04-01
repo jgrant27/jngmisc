@@ -1,4 +1,5 @@
-;;
+
+;;;;
 ;; Copyright (c) 2009, Justin Grant <justin at imagine27 dot com>
 ;; All rights reserved.
 
@@ -107,28 +108,21 @@
        (apply normal a) (apply vertex a)
        (apply normal b) (apply vertex b)))))
 
-(defn draw-atom [state element x y z]
+(defn draw-atom [element x y z]
   (push-matrix
-   (material :front :ambient-and-diffuse (get (:colors elements) element))
+   (material :front
+             :ambient-and-diffuse (get (:colors elements) element))
    (translate x y z)
    (sphere-geometry (get (:sizes elements) element) 40.0)))
 
-(defn draw-molecule [state mol]
-  (rotate (:rotx state) 1 0 0)
-  (rotate (:roty state) 0 1 0)
-  (rotate (:rotz state) 0 0 1)
+(defn draw-molecule [mol]
   (doseq [a mol]
-          (draw-atom state (nth a 0) (nth a 1) (nth a 2) (nth a 3))))
+    (draw-atom (nth a 0) (nth a 1) (nth a 2) (nth a 3))))
                      
 (defn reshape [[x y w h] state]
-  (viewport 0 0 w h)
-  (gl-matrix-mode :projection)
+  (frustum-view 45.0 (/ (double w) h) 5 100)
   (load-identity)
-  (let [h (/ h w)]
-    (gl-frustum -1 1 (- h) h 9 50))
-  (gl-matrix-mode :modelview)
-  (load-identity)
-  (gl-translate 0 0 -40)
+  (translate 0 0 -10)
   state)
 
 (defn key-press [key state]
@@ -139,9 +133,7 @@
    (= key "m") (assoc state :motion (not (:motion state)))))
 
 (defn mouse-drag [[dx dy] _ button state]
-  (assoc state 
-    :rotx (+ (:rotx state) dy )
-    :roty (+ (:roty state) dx )))
+  (update-in state [:rotation] #(map + % [dy dx 0])))
 
 (defn lim-between [val bot top]
   (max bot (min top val)))
@@ -152,43 +144,37 @@
 (defn update [[delta time] state]
   (merge
    state
-   
-   {:counter (+ 1 (:counter state))}
-
-   (let [interval 5.0]
-     (when (> (- time (:last-update state)) interval)
-       (println (format "%f FPS" (/ (:counter state) interval)))
-       {:counter 0 :last-update time}))
-   
-   (if (:motion state)
-     (let [rotx-vel
-           (lim-between (+ (:rotx-vel state) (rand-interval -0.1 0.1)) -2.0 2.0)
-           roty-vel
-           (lim-between (+ (:roty-vel state) (rand-interval -0.1 0.1)) -2.0 2.0)
-           rotz-vel
-           (lim-between (+ (:rotz-vel state) (rand-interval -0.1 0.1)) -2.0 2.0)]
-       {:rotx (+ (:rotx state) rotx-vel) :rotx-vel rotx-vel
-        :roty (+ (:roty state) roty-vel) :roty-vel roty-vel
-        :rotz (+ (:rotz state) rotz-vel) :rotz-vel rotz-vel}))))
+   (when (:motion state)
+     (let [v (map #(lim-between (+ % (rand-interval -0.1 0.1)) -2.0 2.0) (:rotation-velocity state))]
+       {:rotation (map + (:rotation state) v)
+        :rotation-velocity v}))))
 
 (defn display [[delta time] state]
-  (clear)
-  (light 0 :position[1 1 1 0])
-  (light 0 :diffuse [(:light-r state) (:light-g state) (:light-b state) 1])
-  (draw-molecule state (:ethanol molecules))
-  (app/repaint!)
-  state)
+  (text/write-to-screen (format "%d fps" (int (/ 1 delta))) 0 0)  
+  (light 0
+         :position [1 1 1 0]
+         :diffuse (concat (:light-color state) [1])) 
+  (let [[rx ry rz] (:rotation state)]
+    (rotate rx 1 0 0)
+    (rotate ry 0 1 0)
+    (rotate rz 0 0 1))
+  (call-display-list (:ethanol state))
+  (app/repaint!))
 
 (defn init [state]
-  (app/resizable! true)
   (app/vsync! true)
   (app/title! "Molecule Viewer")
   (enable :lighting)
   (enable :light0)
-  (enable :depth-test))
+  (enable :depth-test)
+  (merge
+   state
+   (zipmap
+    (keys molecules)
+    (map #(create-display-list (draw-molecule %)) (vals molecules)))))
 
 (defn start []
-  (app/start*
+  (app/start
    {:display display :reshape reshape :update update
     :key-press key-press :mouse-drag mouse-drag :init init} 
    {:fullscreen false
@@ -197,16 +183,6 @@
     :slices 40
     :model-type 'solid
     :curr-mol nil
-    :rotx 0.0
-    :roty 0.0
-    :rotz 0.0
-    :rotx-vel 0.0
-    :roty-vel 0.0
-    :rotz-vel 0.0
-    :light-r 0.8
-    :light-g 0.8
-    :light-b 0.8
-    :last-update 0.0
-    :counter 0}))
-
-
+    :rotation [0 0 0]
+    :rotation-velocity [0 0 0]
+    :light-color [0.8 0.8 0.8]}))
