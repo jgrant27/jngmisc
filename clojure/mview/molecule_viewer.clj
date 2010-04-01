@@ -130,7 +130,9 @@
    (= key :escape) (System/exit 0)
    (= key "f") (do (app/fullscreen! (not (:fullscreen state)))
                    (assoc state :fullscreen (not (:fullscreen state))))
-   (= key "m") (assoc state :motion (not (:motion state)))))
+   (= key "m") (assoc state 
+                 :rotation [0 0 0]
+                 :motion (not (:motion state)))))
 
 (defn mouse-drag [[dx dy] _ button state]
   (update-in state [:rotation] #(map + % [dy dx 0])))
