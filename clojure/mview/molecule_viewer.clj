@@ -104,15 +104,18 @@
        (apply normal a) (apply vertex a)
        (apply normal b) (apply vertex b)))))
 
-(defn draw-atom [element x y z]
+(defn draw-atom [state element x y z]
   (push-matrix
    (material :front :ambient-and-diffuse (get (:colors elements) element))
    (translate x y z)
    (sphere-geometry (get (:sizes elements) element) 40.0)))
 
-(defn draw-molecule [mol]
+(defn draw-molecule [state mol]
+  (rotate (:rotx state) 1 0 0)
+  (rotate (:roty state) 0 1 0)
+  (rotate (:rotz state) 0 0 1)
   (doseq [a mol]
-          (draw-atom (nth a 0) (nth a 1) (nth a 2) (nth a 3))))
+          (draw-atom state (nth a 0) (nth a 1) (nth a 2) (nth a 3))))
                      
 (defn reshape [[x y w h] state]
   (viewport 0 0 w h)
@@ -135,9 +138,7 @@
 (defn mouse-drag [[dx dy] _ button state]
   (assoc state 
     :rotx (+ (:rotx state) dy )
-    :roty (+ (:roty state) dx )
-    :light-phi (+ (* dy (:one-degree state)) (:light-phi state))
-    :light-theta (+ (* dx (:one-degree state)) (:light-theta state))))
+    :roty (+ (:roty state) dx )))
 
 (defn lim-between [val bot top]
   (max bot (min top val)))
@@ -165,24 +166,15 @@
            (lim-between (+ (:rotz-vel state) (rand-interval -0.1 0.1)) -2.0 2.0)]
        {:rotx (+ (:rotx state) rotx-vel) :rotx-vel rotx-vel
         :roty (+ (:roty state) roty-vel) :roty-vel roty-vel
-        :rotz (+ (:rotz state) rotz-vel) :rotz-vel rotz-vel
-        :light-phi (+ (* rotx-vel (:one-degree state)) (:light-phi state))
-        :light-theta (+ (* rotx-vel (:one-degree state)) (:light-theta state))}))))
+        :rotz (+ (:rotz state) rotz-vel) :rotz-vel rotz-vel}))))
 
 (defn display [[delta time] state]
   (clear)
-  (rotate (:rotx state) 1 0 0)
-  (rotate (:roty state) 0 1 0)
-  (rotate (:rotz state) 0 0 1)
-  (light 0 :position [(* (:light-dist state) (Math/cos (:light-theta state))
-                         (Math/sin (:light-phi state)))
-                      (* (:light-dist state) (Math/sin (:light-theta state))
-                         (Math/sin (:light-phi state)))
-                      (* (:light-dist state) (Math/cos (:light-phi state)))
-                      0])
+  (light 0 :position[1 1 1 0])
   (light 0 :diffuse [(:light-r state) (:light-g state) (:light-b state) 1])
-  (call-display-list (:molecule state))
-  (app/repaint!))
+  (draw-molecule state (:ethanol molecules))
+  (app/repaint!)
+  state)
 
 (defn init [state]
   (app/resizable! true)
@@ -190,10 +182,7 @@
   (app/title! "Molecule Viewer")
   (enable :lighting)
   (enable :light0)
-  (enable :depth-test)  
-  (assoc state 
-    :molecule (create-display-list 
-               (draw-molecule (:ethanol molecules)))))
+  (enable :depth-test))
 
 (defn start []
   (app/start*
@@ -211,11 +200,6 @@
     :rotx-vel 0.0
     :roty-vel 0.0
     :rotz-vel 0.0
-    :show-light-source nil
-    :one-degree 0.0174
-    :light-dist 5
-    :light-theta 0.0
-    :light-phi 0.0
     :light-r 0.8
     :light-g 0.8
     :light-b 0.8
