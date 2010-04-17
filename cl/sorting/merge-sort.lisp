@@ -100,13 +100,13 @@
                   (merge-segments left right))))))))
 
 ;; fastest
-(defun merge-sort (result-type sequence predicate)
+(defun merge-sort (result-type sequence cfun)
    (let ((split (floor (length sequence) 2)))
      (if (zerop split)
        (copy-seq sequence)
-       (merge result-type (merge-sort result-type (subseq sequence 0 split) predicate)
-                          (merge-sort result-type (subseq sequence split)   predicate)
-                          predicate))))
+       (merge result-type (merge-sort result-type (subseq sequence 0 split) cfun)
+                          (merge-sort result-type (subseq sequence split)   cfun)
+                          cfun))))
 
 
 (defun range (start end)
