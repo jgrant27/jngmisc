@@ -1,5 +1,4 @@
-
-;;;;
+;;
 ;; Copyright (c) 2009, Justin Grant <justin at imagine27 dot com>
 ;; All rights reserved.
 
@@ -147,12 +146,13 @@
   (merge
    state
    (when (:motion state)
-     (let [v (map #(lim-between (+ % (rand-interval -0.1 0.1)) -2.0 2.0) (:rotation-velocity state))]
+     (let [v (map #(lim-between (+ % (rand-interval -0.1 0.1)) -2.0 2.0) 
+                  (:rotation-velocity state))]
        {:rotation (map + (:rotation state) v)
         :rotation-velocity v}))))
 
 (defn display [[delta time] state]
-  (text/write-to-screen (format "%d fps" (int (/ 1 delta))) 0 0)  
+  (text/write-to-screen (format "%03d fps" (int (/ 1 delta))) 0 0)  
   (light 0
          :position [1 1 1 0]
          :diffuse (concat (:light-color state) [1])) 

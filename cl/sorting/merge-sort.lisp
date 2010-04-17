@@ -62,9 +62,9 @@
             (let* ((mid (floor len 2))
                    (left (merge-sort-arr (subseq arr 0 mid) cfun))
                    (right (merge-sort-arr (subseq arr mid len) cfun)))
-              (if (apply cfun (list (svref left (- (length left) 1)) (svref right 0)))
-                  (concatenate 'vector left right)
-                  (merge-segments left right))))))))
+             (if (apply cfun (list (svref left (- (length left) 1)) (svref right 0)))
+                 (concatenate 'vector left right)
+                 (merge-segments left right))))))))
 
 
 (defun merge-sort-lst(lst cfun)
@@ -99,6 +99,14 @@
                   (nconc left right)
                   (merge-segments left right))))))))
 
+;; fastest
+(defun merge-sort (result-type sequence predicate)
+   (let ((split (floor (length sequence) 2)))
+     (if (zerop split)
+       (copy-seq sequence)
+       (merge result-type (merge-sort result-type (subseq sequence 0 split) predicate)
+                          (merge-sort result-type (subseq sequence split)   predicate)
+                          predicate))))
 
 
 (defun range (start end)
@@ -118,6 +126,13 @@
     (finish-output)
     (let ((snums (time (merge-sort-arr rnums #'>))))
       (format t "merge-sorted ~A items (first ~A shown) : ~%~A ~%~%~%" 
+              (length snums) sub (subseq snums 0 sub)))
+
+    ;; Sort numbers in descending order (array). (single thread)    
+    (format t "~%started array seq merge-sort (generic) ...~%")
+    (finish-output)
+    (let ((snums (time (merge-sort 'vector rnums #'>))))
+      (format t "merge-sorted (generic) ~A items (first ~A shown) : ~%~A ~%~%~%" 
               (length snums) sub (subseq snums 0 sub)))
     )
 
