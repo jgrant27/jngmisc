@@ -126,7 +126,7 @@
 
 (defn key-press [key state]
   (cond
-   (= key :escape) (System/exit 0)
+   (= key :escape) (app/cleanup!)
    (= key "f") (do (app/fullscreen! (not (:fullscreen state)))
                    (assoc state :fullscreen (not (:fullscreen state))))
    (= key "m") (assoc state 

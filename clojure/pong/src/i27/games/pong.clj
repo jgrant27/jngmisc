@@ -41,7 +41,7 @@
            (java.awt.image BufferStrategy)
            (java.awt.event ActionListener MouseMotionListener KeyListener
                            MouseEvent KeyEvent)
-           (javax.swing JFrame Timer)))
+           (javax.swing JFrame Timer WindowConstants)))
 
 (defstruct ball :h :w :x :y :sx :sy)
 (defn new-ball [& [h w x y sx sy]] (atom (struct ball h w x y sx sy)))
@@ -118,7 +118,8 @@
     (keyPressed [#^KeyEvent e]
                 (when (and (not (@g :started)) (= (. e getKeyChar) \s))
                   (reset-game g b p c) (start-game g))
-                (when (= (. e getKeyChar) \q) (System/exit 0)))
+                (when (= (. e getKeyChar) \q) (.dispose this))
+                )
 
     (keyReleased [e])
 
@@ -166,7 +167,9 @@
                        (set-paddle-position p (@p :x) 
                                             (- (/ (@g :h) 2) (/ (@p :h) 2)))
                        (stop-game g))
-                     (let [#^JFrame me this] (.repaint me)))))
+                     (let [#^JFrame me this] 
+                       (.repaint me)
+                       (.setDefaultCloseOperation me WindowConstants/DISPOSE_ON_CLOSE)))))
 
 (defn -main []
   (let [tk (. Toolkit getDefaultToolkit)

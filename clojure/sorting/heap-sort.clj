@@ -55,3 +55,9 @@
      (heapify pred a len)))
   ([a]
      (heap-sort a <)))
+
+
+(comment
+(println (heap-sort '(3 2 5 9 1 2 6)))
+;; (1 2 2 3 5 6 9)
+)
