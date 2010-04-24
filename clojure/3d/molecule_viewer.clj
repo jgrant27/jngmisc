@@ -36,15 +36,15 @@
 ;;   esc - exit
 ;;
 ;; controls
-;;   left button down and move rotates 
+;;   left button down and move rotates
 
 (set! *warn-on-reflection* true)
 
 
 (ns i27.molecule-viewer
-  (:use 
+  (:use
    [penumbra opengl geometry])
-  (:require 
+  (:require
    [penumbra.app :as app]
    [penumbra.text :as text]
    [clojure.contrib.generic.math-functions :as math]))
@@ -117,7 +117,7 @@
 (defn draw-molecule [mol]
   (doseq [a mol]
     (draw-atom (nth a 0) (nth a 1) (nth a 2) (nth a 3))))
-                     
+
 (defn reshape [[x y w h] state]
   (frustum-view 45.0 (/ (double w) h) 5 100)
   (load-identity)
@@ -129,7 +129,7 @@
    (= key :escape) (app/cleanup!)
    (= key "f") (do (app/fullscreen! (not (:fullscreen state)))
                    (assoc state :fullscreen (not (:fullscreen state))))
-   (= key "m") (assoc state 
+   (= key "m") (assoc state
                  :rotation [0 0 0]
                  :motion (not (:motion state)))))
 
@@ -146,16 +146,16 @@
   (merge
    state
    (when (:motion state)
-     (let [v (map #(lim-between (+ % (rand-interval -0.1 0.1)) -2.0 2.0) 
+     (let [v (map #(lim-between (+ % (rand-interval -0.1 0.1)) -2.0 2.0)
                   (:rotation-velocity state))]
        {:rotation (map + (:rotation state) v)
         :rotation-velocity v}))))
 
 (defn display [[delta time] state]
-  (text/write-to-screen (format "%03d fps" (int (/ 1 delta))) 0 0)  
+  (text/write-to-screen (format "%03d fps" (int (/ 1 delta))) 0 0)
   (light 0
          :position [1 1 1 0]
-         :diffuse (concat (:light-color state) [1])) 
+         :diffuse (concat (:light-color state) [1]))
   (let [[rx ry rz] (:rotation state)]
     (rotate rx 1 0 0)
     (rotate ry 0 1 0)
@@ -178,7 +178,7 @@
 (defn start []
   (app/start
    {:display display :reshape reshape :update update
-    :key-press key-press :mouse-drag mouse-drag :init init} 
+    :key-press key-press :mouse-drag mouse-drag :init init}
    {:fullscreen false
     :motion false
     :spin-speed 5.0
