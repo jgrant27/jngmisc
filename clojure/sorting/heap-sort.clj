@@ -57,5 +57,5 @@
      (heap-sort a <)))
 
 
-;;  (println (heap-sort '(3 2 5 9 1 2 6)))
-;; (1 2 2 3 5 6 9)
+(println (heap-sort '(3 2 5 9 1 2 6)))
+;;(1 2 2 3 5 6 9)
