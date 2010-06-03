@@ -117,16 +117,14 @@
 (defn large-test
   "Test on large random data sets"
   [pts heurp]
-  (time
-   (do
-     (when heurp (println "heuristic elimination of points ..."))
-     (let [epts (if heurp (time (elim-points pts)) pts)]
-       (println "sorting" (count epts) "points ...")
-       (let [spts (time (presort-points epts))]
-         (println "calculating convex hull for" (count epts) "points ...")
-         (let [cvxhull (time (convex-hull spts))]
-           (print (apply vector (take 5 cvxhull)) "- ")
-           (println (count cvxhull) "points")))))))
+  (when heurp (println "heuristic elimination of points ..."))
+  (let [epts (if heurp (time (elim-points pts)) pts)]
+    (println "sorting" (count epts) "points ...")
+    (let [spts (time (presort-points epts))]
+      (println "calculating convex hull for" (count epts) "points ...")
+      (let [cvxhull (time (convex-hull spts))]
+        (print (apply vector (take 5 cvxhull)) "- ")
+        (println (count cvxhull) "points")))))
 
 
 ;; run tests
@@ -135,5 +133,5 @@
   (let [rpts (time (apply vector (map (fn [n] [(rand-int (inc cnt))
                                                (rand-int (inc cnt))])
                                       (range 0 cnt))))]
-    (large-test rpts false)
-    (large-test rpts true)))
+    (time (large-test rpts false))
+    (time (large-test rpts true))))
