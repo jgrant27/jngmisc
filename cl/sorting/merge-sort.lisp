@@ -139,29 +139,17 @@
   
   ;; Sort numbers in descending order (generic). (single thread)    
   (do-sort 'merge-sort-gen (list rnumsa #'>) "generic")
-  
-  ;; ;; another example using lists
-  ;; (let ((rnums (list (random cnt))))
-  ;;   (format t "~%building random list ~A ...~%" cnt)
-  ;;   (dotimes (n (- cnt 1)) (nconc rnums (list (random cnt))))
-  ;;   (format t "~%sorting ~A ...~%" (subseq rnums 0 sub))
-  ;;   (finish-output)
-    
-  ;;   ;; Filter numbers with factors of 3 then sort multiples of 9 first in desc.
-  ;;   (format t "merge-sorted ~A items (first ~A shown) : ~%~A ~%~%~%" 
-  ;;           cnt sub
-  ;;           (time
-  ;;            (subseq
-  ;;             (map 'list #'(lambda (x) (when (= 0 (mod x 3)) x))
-  ;;                  (merge-sort-lst
-  ;;                   (delete #'(lambda (x) (not (and (> x 0) (= 0 (mod x 3)))))
-  ;;                           rnums :test #'(lambda (f n) (apply f (list n))))
-  ;;                   #'(lambda (x y) 
-  ;;                       (and (= 0 (mod x 9)) (>= x 9)
-  ;;                            (or (not (= 0 (mod y 9)))
-  ;;                                (and (= 0 (mod y 9)) (>= y 9)
-  ;;                                     (> x y)))))))
-  ;;             0 sub)))
+
+  ;; Filter numbers with factors of 3 then sort multiples of 9 first in desc.
+  (do-sort 'merge-sort-lst (list 
+			    (map 'list #'(lambda (x) (when (= 0 (mod x 3)) x))
+				 (delete #'(lambda (x) (not (and (> x 0) (= 0 (mod x 3)))))
+					 rnumsl :test #'(lambda (f n) (apply f (list n)))))
+			    #'(lambda (x y) 
+				(and (= 0 (mod x 9)) (>= x 9)
+				     (or (not (= 0 (mod y 9)))
+					 (and (= 0 (mod y 9)) (>= y 9)
+					      (> x y)))))) "generic custom")
   )
 
   
