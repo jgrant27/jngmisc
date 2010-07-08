@@ -100,64 +100,68 @@
                   (merge-segments left right))))))))
 
 ;; fastest
-(defun merge-sort (result-type sequence cfun)
-   (let ((split (floor (length sequence) 2)))
+(defun merge-sort-gen (sequence cfun &optional result-type)
+   (let ((split (floor (length sequence) 2))
+	 (result-type (if (eq nil result-type) 'vector result-type)))
      (if (zerop split)
        (copy-seq sequence)
-       (merge result-type (merge-sort result-type (subseq sequence 0 split) cfun)
-                          (merge-sort result-type (subseq sequence split)   cfun)
+       (merge result-type (merge-sort-gen (subseq sequence 0 split) cfun result-type)
+                          (merge-sort-gen (subseq sequence split)   cfun result-type)
                           cfun))))
 
+
+(defmacro do-sort (fun args type)
+  `(progn
+     (format t "~%started merge-sort (~A) ...~%" ,type)
+     (finish-output)
+     (let ((sub 100)
+	   (snums (time (apply ,fun ,args))))
+       (format t "merge-sorted ~A items (first ~A shown) : ~%~A ~%~%~%" 
+	       (length snums) sub (subseq snums 0 sub)))))
+  
 
 (defun range (start end)
   (loop for i from start below end collect (random i)))
 
+;; tests
 (setf *random-state* (make-random-state t))
 (let* ((cnt (floor 1E4))
-       (sub 100))
-
-  ;; examples using arrays
-
-  (let ((rnums (make-array cnt)))
-    (dotimes (n cnt) (setf (svref rnums n) (random cnt)))
+       (rnumsa (make-array cnt))
+       (rnumsl (list (random cnt))))
+  (dotimes (n cnt) (setf (svref rnumsa n) (random cnt)))
+  (dotimes (n (- cnt 1)) (nconc rnumsl (list (random cnt))))
   
-    ;; Sort numbers in descending order (array). (single thread)    
-    (format t "~%started array seq merge-sort ...~%")
-    (finish-output)
-    (let ((snums (time (merge-sort-arr rnums #'>))))
-      (format t "merge-sorted ~A items (first ~A shown) : ~%~A ~%~%~%" 
-              (length snums) sub (subseq snums 0 sub)))
-
-    ;; Sort numbers in descending order (array). (single thread)    
-    (format t "~%started array seq merge-sort (generic) ...~%")
-    (finish-output)
-    (let ((snums (time (merge-sort 'vector rnums #'>))))
-      (format t "merge-sorted (generic) ~A items (first ~A shown) : ~%~A ~%~%~%" 
-              (length snums) sub (subseq snums 0 sub)))
-    )
-
-  ;; examples using lists
-  (let ((rnums (list (random cnt))))
-    (format t "~%building random list ~A ...~%" cnt)
-    (dotimes (n (- cnt 1)) (nconc rnums (list (random cnt))))
-    (format t "~%sorting ~A ...~%" (subseq rnums 0 sub))
-    (finish-output)
+  ;; Sort numbers in descending order (array). (single thread)    
+  (do-sort 'merge-sort-arr (list rnumsa #'>) "array")
+  
+  ;; Sort numbers in descending order (list). (single thread)    
+  (do-sort 'merge-sort-lst (list rnumsl #'>) "list")
+  
+  ;; Sort numbers in descending order (generic). (single thread)    
+  (do-sort 'merge-sort-gen (list rnumsa #'>) "generic")
+  
+  ;; ;; another example using lists
+  ;; (let ((rnums (list (random cnt))))
+  ;;   (format t "~%building random list ~A ...~%" cnt)
+  ;;   (dotimes (n (- cnt 1)) (nconc rnums (list (random cnt))))
+  ;;   (format t "~%sorting ~A ...~%" (subseq rnums 0 sub))
+  ;;   (finish-output)
     
-    ;; Filter numbers with factors of 3 then sort multiples of 9 first in desc.
-    (format t "merge-sorted ~A items (first ~A shown) : ~%~A ~%~%~%" 
-            cnt sub
-            (time
-             (subseq
-              (map 'list #'(lambda (x) (when (= 0 (mod x 3)) x))
-                   (merge-sort-lst
-                    (delete #'(lambda (x) (not (and (> x 0) (= 0 (mod x 3)))))
-                            rnums :test #'(lambda (f n) (apply f (list n))))
-                    #'(lambda (x y) 
-                        (and (= 0 (mod x 9)) (>= x 9)
-                             (or (not (= 0 (mod y 9)))
-                                 (and (= 0 (mod y 9)) (>= y 9)
-                                      (> x y)))))))
-              0 sub)))
-    )
-  
+  ;;   ;; Filter numbers with factors of 3 then sort multiples of 9 first in desc.
+  ;;   (format t "merge-sorted ~A items (first ~A shown) : ~%~A ~%~%~%" 
+  ;;           cnt sub
+  ;;           (time
+  ;;            (subseq
+  ;;             (map 'list #'(lambda (x) (when (= 0 (mod x 3)) x))
+  ;;                  (merge-sort-lst
+  ;;                   (delete #'(lambda (x) (not (and (> x 0) (= 0 (mod x 3)))))
+  ;;                           rnums :test #'(lambda (f n) (apply f (list n))))
+  ;;                   #'(lambda (x y) 
+  ;;                       (and (= 0 (mod x 9)) (>= x 9)
+  ;;                            (or (not (= 0 (mod y 9)))
+  ;;                                (and (= 0 (mod y 9)) (>= y 9)
+  ;;                                     (> x y)))))))
+  ;;             0 sub)))
   )
+
+  
