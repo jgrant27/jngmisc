@@ -28,7 +28,8 @@
 
 
 ;;;; This demonstrates tree-traversal(represented as lists) in Common Lisp.
-
+;;;; The list has the first element as the value the second as the left child
+;;;; and the third the right child.
 
 ;; naive traversal functions
 (defun traverse-pre-order (node fun)
