@@ -27,7 +27,7 @@
 ;;
 
 
-;;;; This demonstrates tree-traversal in Common Lisp.
+;;;; This demonstrates binary tree-traversal in Common Lisp.
 
 
 ;; A struct representing a node in a binary tree
@@ -123,6 +123,19 @@
        (let ((res (bfs res queue)))
          (mapcar fun (if btot (reverse res) res))))))
 
+  (defun traverse-tree-by-level-only-odd
+      (node fun &optional horder vorder)
+    (init
+     (labels ((bfs (res queue)
+                (if (not queue)
+                    res
+                    (loop-init
+                       (bfs nres nqueue)))))
+       (let ((res (delete-if #'(lambda (node)
+                                 (evenp (btnode-val node)))
+                             (bfs res queue))))
+         (mapcar fun (if btot (reverse res) res))))))
+
   )
 
 
@@ -174,27 +187,22 @@
                               (mapcar #'(lambda (y) (cons x y))
                                       '(left-to-right right-to-left)))
                           '(top-to-bottom bottom-to-top))))
-      (format t "level order function :~%")
-      (map 'list #'(lambda (fnames)
-                     (format t "~13A ~A : " (car fnames) (cdr fnames))
-                     (traverse-tree-by-level root #'print-node
-                                             (cdr fnames) (car fnames))
-                     (format t "~%"))
-           (apply #'append orders))
-      (format t "~%")
-      (format t "level order function recursive :~%")
-      (map 'list #'(lambda (fnames)
-                     (format t "~13A ~A : " (car fnames) (cdr fnames))
-                     (traverse-tree-by-level-recursive root #'print-node
-                                                       (cdr fnames) (car fnames))
-                     (format t "~%"))
-           (apply #'append orders))
-      (format t "~%"))
+      (mapcar #'(lambda (test)
+                  (format t (car test))
+                  (map 'list #'(lambda (fnames)
+                                 (format t "~13A ~A : " (car fnames) (cdr fnames))
+                                 (apply (cadr test) (list root #'print-node
+                                                          (cdr fnames) (car fnames)))
+                                 (format t "~%"))
+                       (apply #'append orders))
+                  (format t "~%"))
+              '(("level order function :~%" traverse-tree-by-level)
+                ("level order function recursive :~%" traverse-tree-by-level-recursive)
+                ("level order function (odd only) :~%" traverse-tree-by-level-only-odd))))
 
-    )
-  )
+    ))
 
-(test)
+
 
 
 
