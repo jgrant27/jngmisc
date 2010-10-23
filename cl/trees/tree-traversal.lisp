@@ -83,25 +83,48 @@
 
 
 ;; level order traversal
-(defun traverse-tree-by-level (node fun &optional horder vorder)
+(defun traverse-tree-by-level
+    (node fun &optional horder vorder)
   (let* ((res   (list node))
          (queue (list node))
          (btot  (eql vorder 'bottom-to-top))
          (rtol  (eql horder 'right-to-left))
          (rtol  (if btot (not rtol) rtol)))
     (loop while queue do
-         (let ((n        (car queue))
-               (children ()))
-           (setf queue (rest queue))
-           (when (btnode-right n)
-             (setf children (cons (btnode-right n) children)))
-           (when (btnode-left n)
-             (setf children (cons (btnode-left n) children)))
-           (when rtol
-             (setf children (reverse children)))
-           (setf queue (append queue children))
+         (let* ((node     (car queue))
+                (lcnode   (btnode-left  node))
+                (rcnode   (btnode-right node))
+                (nqueue   (rest queue))
+                (children (when rcnode (cons rcnode nil)))
+                (children (if lcnode
+                              (cons lcnode children) children))
+                (children (if rtol (reverse children) children)))
+           (setf queue (append nqueue children))
            (setf res (append res children))))
     (mapcar fun (if btot (reverse res) res))))
+
+(defun traverse-tree-by-level-recursive
+    (node fun &optional horder vorder)
+  "Is this tail-recursive version _better_ than the loop macro version ?"
+  (let* ((res   (list node))
+         (queue (list node))
+         (btot  (eql vorder 'bottom-to-top))
+         (rtol  (eql horder 'right-to-left))
+         (rtol  (if btot (not rtol) rtol)))
+    (labels ((bfs (res queue)
+               (if (not queue)
+                   res
+                   (let* ((node     (car queue))
+                          (lcnode   (btnode-left  node))
+                          (rcnode   (btnode-right node))
+                          (queue    (rest queue))
+                          (children (when rcnode (cons rcnode nil)))
+                          (children (if lcnode
+                                        (cons lcnode children) children))
+                          (children (if rtol (reverse children) children)))
+                     (bfs (append res children) (append queue children))))))
+      (let ((res (bfs res queue)))
+        (mapcar fun (if btot (reverse res) res))))))
 
 
 ;;utils
@@ -124,7 +147,7 @@
     (format t "~A~%" root)
 
 
-    (format t "~%simple functions :~%")
+    (format t "~%naive functions :~%")
     (map 'list #'(lambda (fun)
                    (let* ((fname (string fun))
                           (pos (1+ (position #\- fname)))
@@ -148,18 +171,26 @@
            (reverse-post-order btnode-right btnode-left nil)))
     (format t "~%")
 
-    (format t "level order function :~%")
-    (map 'list #'(lambda (fnames)
-                   (format t "~13A ~A : " (car fnames) (cdr fnames))
-                   (traverse-tree-by-level root #'print-node
-                                           (cdr fnames) (car fnames))
-                   (format t "~%"))
-         (apply #'append
-                (mapcar #'(lambda (x)
-                            (mapcar #'(lambda (y) (cons x y))
-                                    '(left-to-right right-to-left)))
-                        '(top-to-bottom bottom-to-top))))
-    (format t "~%")
+    (let ((orders (mapcar #'(lambda (x)
+                              (mapcar #'(lambda (y) (cons x y))
+                                      '(left-to-right right-to-left)))
+                          '(top-to-bottom bottom-to-top))))
+      (format t "level order function :~%")
+      (map 'list #'(lambda (fnames)
+                     (format t "~13A ~A : " (car fnames) (cdr fnames))
+                     (traverse-tree-by-level root #'print-node
+                                             (cdr fnames) (car fnames))
+                     (format t "~%"))
+           (apply #'append orders))
+      (format t "~%")
+      (format t "level order function recursive :~%")
+      (map 'list #'(lambda (fnames)
+                     (format t "~13A ~A : " (car fnames) (cdr fnames))
+                     (traverse-tree-by-level-recursive root #'print-node
+                                                       (cdr fnames) (car fnames))
+                     (format t "~%"))
+           (apply #'append orders))
+      (format t "~%"))
 
     )
   )
@@ -185,7 +216,7 @@
 ;;                        :LEFT NIL
 ;;                        :RIGHT #S(BTNODE :VAL 9 :LEFT NIL :RIGHT NIL))))
 
-;; simple functions :
+;; naive functions :
 ;; PRE-ORDER                   : 5 3 2 1 4 7 6 8 9
 ;; IN-ORDER                    : 1 2 3 4 5 6 7 8 9
 ;; POST-ORDER                  : 1 2 4 3 6 9 8 7 5
@@ -199,6 +230,12 @@
 ;; REVERSE-POST-ORDER          : 9 8 6 7 4 1 2 3 5
 
 ;; level order function :
+;; TOP-TO-BOTTOM LEFT-TO-RIGHT : 5 3 7 2 4 6 8 1 9
+;; TOP-TO-BOTTOM RIGHT-TO-LEFT : 5 7 3 8 6 4 2 9 1
+;; BOTTOM-TO-TOP LEFT-TO-RIGHT : 1 9 2 4 6 8 3 7 5
+;; BOTTOM-TO-TOP RIGHT-TO-LEFT : 9 1 8 6 4 2 7 3 5
+
+;; level order function recursive :
 ;; TOP-TO-BOTTOM LEFT-TO-RIGHT : 5 3 7 2 4 6 8 1 9
 ;; TOP-TO-BOTTOM RIGHT-TO-LEFT : 5 7 3 8 6 4 2 9 1
 ;; BOTTOM-TO-TOP LEFT-TO-RIGHT : 1 9 2 4 6 8 3 7 5
