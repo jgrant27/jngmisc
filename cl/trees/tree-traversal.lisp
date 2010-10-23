@@ -83,48 +83,47 @@
 
 
 ;; level order traversal
-(defun traverse-tree-by-level
-    (node fun &optional horder vorder)
-  (let* ((res   (list node))
-         (queue (list node))
-         (btot  (eql vorder 'bottom-to-top))
-         (rtol  (eql horder 'right-to-left))
-         (rtol  (if btot (not rtol) rtol)))
-    (loop while queue do
-         (let* ((node     (car queue))
-                (lcnode   (btnode-left  node))
-                (rcnode   (btnode-right node))
-                (nqueue   (rest queue))
-                (children (when rcnode (cons rcnode nil)))
-                (children (if lcnode
-                              (cons lcnode children) children))
-                (children (if rtol (reverse children) children)))
-           (setf queue (append nqueue children))
-           (setf res (append res children))))
-    (mapcar fun (if btot (reverse res) res))))
+(macrolet ((init (&body body)
+             `(let* ((res   (list node))
+                     (queue (list node))
+                     (btot  (eql vorder 'bottom-to-top))
+                     (rtol  (eql horder 'right-to-left))
+                     (rtol  (if btot (not rtol) rtol)))
+                ,@body))
+           (loop-init (&body body)
+              `(let* ((node     (car queue))
+                      (lcnode   (btnode-left  node))
+                      (rcnode   (btnode-right node))
+                      (children (when rcnode (cons rcnode nil)))
+                      (children (if lcnode
+                                    (cons lcnode children) children))
+                      (children (if rtol (reverse children) children))
+                      (nqueue   (append (rest queue) children))
+                      (nres     (append res children)))
+                 ,@body)))
 
-(defun traverse-tree-by-level-recursive
-    (node fun &optional horder vorder)
-  "Is this tail-recursive version _better_ than the loop macro version ?"
-  (let* ((res   (list node))
-         (queue (list node))
-         (btot  (eql vorder 'bottom-to-top))
-         (rtol  (eql horder 'right-to-left))
-         (rtol  (if btot (not rtol) rtol)))
-    (labels ((bfs (res queue)
-               (if (not queue)
-                   res
-                   (let* ((node     (car queue))
-                          (lcnode   (btnode-left  node))
-                          (rcnode   (btnode-right node))
-                          (queue    (rest queue))
-                          (children (when rcnode (cons rcnode nil)))
-                          (children (if lcnode
-                                        (cons lcnode children) children))
-                          (children (if rtol (reverse children) children)))
-                     (bfs (append res children) (append queue children))))))
-      (let ((res (bfs res queue)))
-        (mapcar fun (if btot (reverse res) res))))))
+  (defun traverse-tree-by-level
+      (node fun &optional horder vorder)
+    (init
+     (loop while queue do
+          (loop-init
+             (setf queue nqueue)
+             (setf res   nres)))
+     (mapcar fun (if btot (reverse res) res))))
+
+
+  (defun traverse-tree-by-level-recursive
+      (node fun &optional horder vorder)
+    "Is this tail-recursive version _better_ than the loop macro version ?"
+    (init
+     (labels ((bfs (res queue)
+                (if (not queue)
+                    res
+                    (loop-init (bfs nres nqueue)))))
+       (let ((res (bfs res queue)))
+         (mapcar fun (if btot (reverse res) res))))))
+
+  )
 
 
 ;;utils
