@@ -27,184 +27,7 @@
 ;;
 
 
-;;;; This demonstrates binary tree-traversal in Common Lisp.
-
-
-;; A struct representing a node in a binary tree
-(defstruct (btnode)
-  (val nil)
-  (left nil)
-  (right nil))
-
-;; naive traversal functions
-(defun traverse-pre-order (node fun)
-  (if node
-      (progn
-        (apply fun (list node))
-        (if (btnode-left node)
-            (traverse-pre-order (btnode-left node) fun))
-        (if (btnode-right node)
-            (traverse-pre-order (btnode-right node) fun)))))
-
-(defun traverse-in-order (node fun)
-  (if node
-      (progn
-        (if (btnode-left node)
-            (traverse-in-order (btnode-left node) fun))
-        (apply fun (list node))
-        (if (btnode-right node)
-            (traverse-in-order (btnode-right node) fun)))))
-
-(defun traverse-post-order (node fun)
-  (if node
-      (progn
-        (if (btnode-left node)
-            (traverse-post-order (btnode-left node) fun))
-        (if (btnode-right node)
-            (traverse-post-order (btnode-right node) fun))
-        (apply fun (list node)))))
-
-
-
-;; a better traversal function that shows how easily
-;; the traversal order can be parameterized instead
-;; of having to write a new function for each order.
-
-(defun traverse-tree (node fun order)
-  (map 'list #'(lambda (f)
-                 (let ((n (if f
-                              (apply f (list node))
-                              node)))
-                   (if (eq node n)
-                       (apply fun (list node))
-                       (when n
-                         (traverse-tree n fun order)))))
-       order))
-
-
-;; level order traversal
-(macrolet ((init (&body body)
-             `(let* ((res   (list node))
-                     (queue (list node))
-                     (btot  (eql vorder 'bottom-to-top))
-                     (rtol  (eql horder 'right-to-left))
-                     (rtol  (if btot (not rtol) rtol)))
-                ,@body))
-           (loop-init (&body body)
-              `(let* ((node     (car queue))
-                      (lcnode   (btnode-left  node))
-                      (rcnode   (btnode-right node))
-                      (children (when rcnode (cons rcnode nil)))
-                      (children (if lcnode
-                                    (cons lcnode children) children))
-                      (children (if rtol (reverse children) children))
-                      (nqueue   (append (rest queue) children))
-                      (nres     (append res children)))
-                 ,@body)))
-
-  (defun traverse-tree-by-level
-      (node fun &optional horder vorder)
-    (init
-     (loop while queue do
-          (loop-init
-             (setf queue nqueue)
-             (setf res   nres)))
-     (mapcar fun (if btot (reverse res) res))))
-
-
-  (defun traverse-tree-by-level-recursive
-      (node fun &optional horder vorder)
-    "Is this tail-recursive version _better_ than the loop macro version ?"
-    (init
-     (labels ((bfs (res queue)
-                (if (not queue)
-                    res
-                    (loop-init (bfs nres nqueue)))))
-       (let ((res (bfs res queue)))
-         (mapcar fun (if btot (reverse res) res))))))
-
-  (defun traverse-tree-by-level-only-odd
-      (node fun &optional horder vorder)
-    (init
-     (labels ((bfs (res queue)
-                (if (not queue)
-                    res
-                    (loop-init
-                       (bfs nres nqueue)))))
-       (let ((res (delete-if #'(lambda (node)
-                                 (evenp (btnode-val node)))
-                             (bfs res queue))))
-         (mapcar fun (if btot (reverse res) res))))))
-
-  )
-
-
-;;utils
-
-(defun print-node (n) (format t "~A " (btnode-val n)))
-
-(defun test()
-  (let ((root
-         (make-btnode
-          :val 5
-          :left (make-btnode
-                 :val 3
-                 :left (make-btnode :val 2 :left (make-btnode :val 1))
-                 :right (make-btnode :val 4))
-          :right (make-btnode
-                  :val 7
-                  :left (make-btnode :val 6)
-                  :right (make-btnode :val 8 :right (make-btnode :val 9))))))
-
-    (format t "~A~%" root)
-
-
-    (format t "~%naive functions :~%")
-    (map 'list #'(lambda (fun)
-                   (let* ((fname (string fun))
-                          (pos (1+ (position #\- fname)))
-                          (order (subseq fname pos)))
-                     (format t "~27A : " order))
-                   (apply fun (list root #'print-node))
-                   (format t "~%"))
-         '(traverse-pre-order traverse-in-order traverse-post-order))
-    (format t "~%")
-
-    (format t "traverse-tree function : ~%")
-    (map 'list #'(lambda (order)
-                   (format t "~27A : " (car order))
-                   (traverse-tree root #'print-node (cdr order))
-                   (format t "~%"))
-         '((pre-order          nil btnode-left btnode-right)
-           (in-order           btnode-left nil btnode-right)
-           (post-order         btnode-left btnode-right nil)
-           (reverse-pre-order  nil btnode-right btnode-left)
-           (reverse-in-order   btnode-right nil btnode-left)
-           (reverse-post-order btnode-right btnode-left nil)))
-    (format t "~%")
-
-    (let ((orders (mapcar #'(lambda (x)
-                              (mapcar #'(lambda (y) (cons x y))
-                                      '(left-to-right right-to-left)))
-                          '(top-to-bottom bottom-to-top))))
-      (mapcar #'(lambda (test)
-                  (format t (car test))
-                  (map 'list #'(lambda (fnames)
-                                 (format t "~13A ~A : " (car fnames) (cdr fnames))
-                                 (apply (cadr test) (list root #'print-node
-                                                          (cdr fnames) (car fnames)))
-                                 (format t "~%"))
-                       (apply #'append orders))
-                  (format t "~%"))
-              '(("level order function :~%" traverse-tree-by-level)
-                ("level order function recursive :~%" traverse-tree-by-level-recursive)
-                ("level order function (odd only) :~%" traverse-tree-by-level-only-odd))))
-
-    ))
-
-
-
-
+;;;; Demonstrates binary tree-traversal in Common Lisp.
 
 ;; #S(BTNODE
 ;;    :VAL 5
@@ -247,3 +70,192 @@
 ;; TOP-TO-BOTTOM RIGHT-TO-LEFT : 5 7 3 8 6 4 2 9 1
 ;; BOTTOM-TO-TOP LEFT-TO-RIGHT : 1 9 2 4 6 8 3 7 5
 ;; BOTTOM-TO-TOP RIGHT-TO-LEFT : 9 1 8 6 4 2 7 3 5
+
+;; level order function (odd only) :
+;; TOP-TO-BOTTOM LEFT-TO-RIGHT : 5 3 7 1 9
+;; TOP-TO-BOTTOM RIGHT-TO-LEFT : 5 7 3 9 1
+;; BOTTOM-TO-TOP LEFT-TO-RIGHT : 1 9 3 7 5
+;; BOTTOM-TO-TOP RIGHT-TO-LEFT : 9 1 7 3 5
+
+;; level order function (leaves only) :
+;; TOP-TO-BOTTOM LEFT-TO-RIGHT : 4 6 1 9
+;; TOP-TO-BOTTOM RIGHT-TO-LEFT : 6 4 9 1
+;; BOTTOM-TO-TOP LEFT-TO-RIGHT : 1 9 4 6
+;; BOTTOM-TO-TOP RIGHT-TO-LEFT : 9 1 6 4
+
+
+;; A struct representing a node in a binary tree
+(defstruct (btnode)
+  (val nil)
+  (left nil)
+  (right nil))
+
+;; naive traversal functions
+(defun traverse-pre-order (node fun)
+  (if node
+      (progn
+        (apply fun (list node))
+        (if (btnode-left node)
+            (traverse-pre-order (btnode-left node) fun))
+        (if (btnode-right node)
+            (traverse-pre-order (btnode-right node) fun)))))
+
+(defun traverse-in-order (node fun)
+  (if node
+      (progn
+        (if (btnode-left node)
+            (traverse-in-order (btnode-left node) fun))
+        (apply fun (list node))
+        (if (btnode-right node)
+            (traverse-in-order (btnode-right node) fun)))))
+
+(defun traverse-post-order (node fun)
+  (if node
+      (progn
+        (if (btnode-left node)
+            (traverse-post-order (btnode-left node) fun))
+        (if (btnode-right node)
+            (traverse-post-order (btnode-right node) fun))
+        (apply fun (list node)))))
+
+
+;; a better traversal function that shows how easily
+;; the traversal order can be parameterized instead
+;; of having to write a new function for each order.
+
+(defun traverse-tree (node fun order)
+  (map 'list #'(lambda (f)
+                 (let ((n (if f
+                              (apply f (list node))
+                              node)))
+                   (if (eq node n)
+                       (apply fun (list node))
+                       (when n
+                         (traverse-tree n fun order)))))
+       order))
+
+
+;; level order traversal
+(macrolet ((init ((&optional &key test) &body body)
+             `(let* ((res   (list node))
+                     (queue (list node))
+                     (btot  (eql vorder 'bottom-to-top))
+                     (rtol  (eql horder 'right-to-left))
+                     (rtol  (if btot (not rtol) rtol)))
+                ,@body))
+           (loop-init (&body body)
+              `(let* ((node     (car queue))
+                      (lcnode   (btnode-left  node))
+                      (rcnode   (btnode-right node))
+                      (children (when rcnode
+                                  (cons rcnode nil)))
+                      (children (if lcnode
+                                    (cons lcnode children) children))
+                      (children (if rtol (reverse children) children))
+                      (nqueue   (append (rest queue) children))
+                      (nres     (append res children)))
+                 ,@body)))
+
+  (defun traverse-tree-by-level
+      (node fun &optional horder vorder)
+    (init ()
+          (loop while queue do
+               (loop-init
+                  (setf queue nqueue)
+                  (setf res   nres)))
+          (mapcar fun (if btot (reverse res) res))))
+
+  (defmacro traverse-tree-by-level-recursive-m
+      (node fun &optional horder vorder &key test)
+    (declare (ignore node fun horder vorder))
+    `(init (:test ,test)
+           (labels ((bfs (res queue)
+                      (if (not queue)
+                          (if ,test (delete-if-not ,test res) res)
+                          (loop-init (bfs nres nqueue)))))
+             (let ((res (bfs res queue)))
+               (mapcar fun (if btot (reverse res) res))))))
+
+  (defun traverse-tree-by-level-recursive
+      (node fun &optional horder vorder)
+    (traverse-tree-by-level-recursive-m node fun horder vorder))
+
+  (defun traverse-tree-by-level-only-odd
+      (node fun &optional horder vorder)
+    (traverse-tree-by-level-recursive-m
+     node fun horder vorder
+     :test #'(lambda (node) (and node (oddp (btnode-val node))))))
+
+  (defun traverse-tree-by-level-only-leaves
+      (node fun &optional horder vorder)
+    (traverse-tree-by-level-recursive-m
+     node fun horder vorder
+     :test #'(lambda (node)
+               (and node (not (or (btnode-left node)
+                                  (btnode-right node)))))))
+
+  )
+
+
+;;utils
+
+(defun print-node (n) (format t "~A " (btnode-val n)))
+
+(defun test()
+  (let ((root
+         (make-btnode
+          :val 5
+          :left (make-btnode
+                 :val 3
+                 :left (make-btnode :val 2 :left (make-btnode :val 1))
+                 :right (make-btnode :val 4))
+          :right (make-btnode
+                  :val 7
+                  :left (make-btnode :val 6)
+                  :right (make-btnode :val 8 :right (make-btnode :val 9))))))
+
+    (format t "~A~%" root)
+
+    (format t "~%naive functions :~%")
+    (map 'list #'(lambda (fun)
+                   (let* ((fname (string fun))
+                          (pos (1+ (position #\- fname)))
+                          (order (subseq fname pos)))
+                     (format t "~27A : " order))
+                   (apply fun (list root #'print-node))
+                   (format t "~%"))
+         '(traverse-pre-order traverse-in-order traverse-post-order))
+    (format t "~%")
+
+    (format t "traverse-tree function : ~%")
+    (map 'list #'(lambda (order)
+                   (format t "~27A : " (car order))
+                   (traverse-tree root #'print-node (cdr order))
+                   (format t "~%"))
+         '((pre-order          nil btnode-left btnode-right)
+           (in-order           btnode-left nil btnode-right)
+           (post-order         btnode-left btnode-right nil)
+           (reverse-pre-order  nil btnode-right btnode-left)
+           (reverse-in-order   btnode-right nil btnode-left)
+           (reverse-post-order btnode-right btnode-left nil)))
+    (format t "~%")
+
+    (let ((orders (mapcar #'(lambda (x)
+                              (mapcar #'(lambda (y) (cons x y))
+                                      '(left-to-right right-to-left)))
+                          '(top-to-bottom bottom-to-top))))
+      (mapcar #'(lambda (test)
+                  (format t (car test))
+                  (map 'list #'(lambda (fnames)
+                                 (format t "~13A ~A : " (car fnames) (cdr fnames))
+                                 (apply (cadr test) (list root #'print-node
+                                                          (cdr fnames) (car fnames)))
+                                 (format t "~%"))
+                       (apply #'append orders))
+                  (format t "~%"))
+              '(("level order function : ~%"               traverse-tree-by-level)
+                ("level order function recursive : ~%"     traverse-tree-by-level-recursive)
+                ("level order function (odd only) : ~%"    traverse-tree-by-level-only-odd)
+                ("level order function (leaves only) : ~%" traverse-tree-by-level-only-leaves))))
+
+    ))
