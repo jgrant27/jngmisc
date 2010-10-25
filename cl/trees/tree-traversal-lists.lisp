@@ -77,7 +77,7 @@
 (defun print-node (n) (format t "~A " n))
 
 (defun test()
-    (let ((root '(5 (3 (2 (1)) (4)) (7 (6) (8 nil (9))))))      
+    (let ((root '(5 (3 (2 (1)) (4)) (7 (6) (8 () (10 (9) (11 () (12))))))))
 
       (format t "~A~%" root)
 

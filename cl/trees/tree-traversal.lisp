@@ -134,16 +134,18 @@
                          (traverse-tree n fun order)))))
        order))
 
-
-;; level order traversal
-(macrolet ((init ((&optional &key test) &body body)
+;;
+;; level-order/breadth-first traversal
+;;
+(defmacro with-breadth-first-traversal (&body body)
+  `(macrolet ((bft-init ((&optional &key test) &body body)
              `(let* ((res   (list node))
                      (queue (list node))
                      (btot  (eql vorder 'bottom-to-top))
                      (rtol  (eql horder 'right-to-left))
                      (rtol  (if btot (not rtol) rtol)))
                 ,@body))
-           (loop-init (&body body)
+           (bft-loop-init (&body body)
               `(let* ((node     (car queue))
                       (lcnode   (btnode-left  node))
                       (rcnode   (btnode-right node))
@@ -155,12 +157,16 @@
                       (nqueue   (append (rest queue) children))
                       (nres     (append res children)))
                  ,@body)))
+     ,@body))
+
+;; Define callable variations of breadth first traversal functions
+(with-breadth-first-traversal
 
   (defun traverse-tree-by-level
       (node fun &optional horder vorder)
-    (init ()
+    (bft-init ()
           (loop while queue do
-               (loop-init
+               (bft-loop-init
                   (setf queue nqueue)
                   (setf res   nres)))
           (mapcar fun (if btot (reverse res) res))))
@@ -168,12 +174,12 @@
   (defmacro traverse-tree-by-level-recursive-m
       (node fun &optional horder vorder &key test)
     (declare (ignore node fun horder vorder))
-    `(init (:test ,test)
-           (labels ((bfs (res queue)
+    `(bft-init (:test ,test)
+           (labels ((traverse (res queue)
                       (if (not queue)
                           (if ,test (delete-if-not ,test res) res)
-                          (loop-init (bfs nres nqueue)))))
-             (let ((res (bfs res queue)))
+                          (bft-loop-init (traverse nres nqueue)))))
+             (let ((res (traverse res queue)))
                (mapcar fun (if btot (reverse res) res))))))
 
   (defun traverse-tree-by-level-recursive
@@ -193,7 +199,7 @@
      :test #'(lambda (node)
                (and node (not (or (btnode-left node)
                                   (btnode-right node)))))))
-
+  
   )
 
 
@@ -240,22 +246,26 @@
            (reverse-post-order btnode-right btnode-left nil)))
     (format t "~%")
 
-    (let ((orders (mapcar #'(lambda (x)
-                              (mapcar #'(lambda (y) (cons x y))
-                                      '(left-to-right right-to-left)))
-                          '(top-to-bottom bottom-to-top))))
-      (mapcar #'(lambda (test)
-                  (format t (car test))
-                  (map 'list #'(lambda (fnames)
-                                 (format t "~13A ~A : " (car fnames) (cdr fnames))
-                                 (apply (cadr test) (list root #'print-node
-                                                          (cdr fnames) (car fnames)))
-                                 (format t "~%"))
-                       (apply #'append orders))
-                  (format t "~%"))
-              '(("level order function : ~%"               traverse-tree-by-level)
-                ("level order function recursive : ~%"     traverse-tree-by-level-recursive)
-                ("level order function (odd only) : ~%"    traverse-tree-by-level-only-odd)
-                ("level order function (leaves only) : ~%" traverse-tree-by-level-only-leaves))))
-
+    (defun run-bfs-test-variations (variations)
+      (let ((orders (mapcar #'(lambda (x)
+                                (mapcar #'(lambda (y) (cons x y))
+                                        '(left-to-right right-to-left)))
+                            '(top-to-bottom bottom-to-top))))
+        (mapcar #'(lambda (test)
+                    (format t (car test))
+                    (map 'list #'(lambda (fnames)
+                                   (format t "~13A ~A : " (car fnames) (cdr fnames))
+                                   (apply (cadr test) (list root #'print-node
+                                                            (cdr fnames) (car fnames)))
+                                   (format t "~%"))
+                         (apply #'append orders))
+                    (format t "~%"))
+                variations)))
+    
+    (run-bfs-test-variations
+     '(("level order function : ~%"               traverse-tree-by-level)
+       ("level order function recursive : ~%"     traverse-tree-by-level-recursive)
+       ("level order function (odd only) : ~%"    traverse-tree-by-level-only-odd)
+       ("level order function (leaves only) : ~%" traverse-tree-by-level-only-leaves)))
+    
     ))
