@@ -1,0 +1,162 @@
+;;
+;; Copyright (c) 2011, Justin Grant <justin at imagine27 dot com>
+;; All rights reserved.
+
+;; Redistribution and use in source and binary forms, with or without modification, 
+;; are permitted provided that the following conditions are met:
+
+;; Redistributions of source code must retain the above copyright notice, this list 
+;; of conditions and the following disclaimer.
+;; Redistributions in binary form must reproduce the above copyright notice, this 
+;; list of conditions and the following disclaimer in the documentation and/or 
+;; other materials provided with the distribution.
+;; Neither the name of the <ORGANIZATION> nor the names of its contributors may be 
+;; used to endorse or promote products derived from this software without specific 
+;; prior written permission.
+;;
+;; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+;; ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+;; WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+;; DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR 
+;; ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+;; (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+;; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY 
+;; THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+;; EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+;;
+
+
+(tc +)
+
+(datatype tree-node
+	  Key : number; Val : B;
+	  ======================
+	  [Key Val] : tree-node;)
+
+(datatype color
+	  if (element? Color [red black])
+	  _______________________________
+	  Color : color;)
+
+(datatype tree
+	  if (empty? Tree)
+	  ________________
+	  Tree : tree;
+
+	  Color : color; LTree : tree; TreeNode : tree-node; RTree : tree;
+	  ================================================================
+	  [Color LTree TreeNode RTree] : tree;)
+
+(define node-key
+    {tree-node --> number}
+    [Key Val] -> Key)
+
+(define make-tree-black
+    {tree --> tree}
+    [Color A X B] -> [black A X B])
+
+(define member 
+    {tree-node --> tree --> boolean}
+    X NIL -> false
+    X [Color A Y B] -> (if (< (node-key X) (node-key Y))
+			   (member X A)
+			   (if (< (node-key Y) (node-key X))
+			       (member X B)
+			       true)))
+(define balance
+    {tree --> tree}
+    [black [red [red A X B] Y C] Z D] -> [red [black A X B] Y [black C Z D]]
+    [black [red A X [red B Y C]] Z D] -> [red [black A X B] Y [black C Z D]]
+    [black A X [red [red B Y C] Z D]] -> [red [black A X B] Y [black C Z D]]
+    [black A X [red B Y [red C Z D]]] -> [red [black A X B] Y [black C Z D]]
+    S -> S)
+
+(define insert-
+    {tree-node --> tree --> tree}
+    X [] -> [red [] X []]
+    X [Color A Y B] -> (if (< (node-key X) (node-key Y))
+			   (balance [Color (insert- X A) Y B])
+			   (if (< (node-key Y) (node-key X))
+			       (balance [Color A Y (insert- X B)])
+			       [Color A Y B])))
+
+(define insert
+	{tree-node --> tree --> tree}
+	X S -> (make-tree-black (insert- X S)))
+
+
+(tc -)
+
+(define test
+    ->
+  (do
+   (let Tree (insert [8 8] 
+		     (insert [5 5] 
+			     (insert [1 1] 
+				     (insert [7 7] 
+					     (insert [2 2] 
+						     (insert [15 15] 
+							     (insert [14 14] 
+								     (insert [11 11] []))))))))
+	(do
+	 (output "tree: ~A ~%12 is a member ? ~A~%8 is a member ? ~A~%"
+		 Tree
+	      (member [12 12] Tree) 
+	      (member [8 8] Tree))))
+   (let CNT (TRUNCATE 1E5)
+	NUMS [] 
+	(do 
+	 (output "~%Creating tree with ~A elements ..." CNT)
+	 (DOTIMES (N CNT) (SETF NUMS (cons (+ N 1) NUMS)))
+	  (let Tree (time 
+		     (REDUCE (LAMBDA (RES NUM) (insert [NUM NUM] RES)) NUMS :INITIAL-VALUE []))
+	       (do
+		(output "~%Performing lookups in tree with ~A elements ...~%" CNT)
+		(time (output "666 in tree ? ~A" (member [666 666] Tree)))
+		 (time (output "-1 in tree ? " (member [-1 -1] Tree)))
+		NIL))))))
+  
+(test)
+
+(tc +)
+
+
+
+;; (174-) tree: [black
+;;        [red [black [red [] [1 1] []] [2 2] [red [] [5 5] []]] [7 7]
+;;         [black [red [] [8 8] []] [11 11] []]]
+;;        [14 14] [black [] [15 15] []]] 
+;; 12 is a member ? false
+;; 8 is a member ? true
+
+;; Creating tree with 100000 elements ...
+;; Evaluation took:
+;;   0.623 seconds of real time
+;;   0.607993 seconds of total run time (0.533755 user, 0.074238 system)
+;;   [ Run times consist of 0.258 seconds GC time, and 0.350 seconds non-GC time. ]
+;;   97.59% CPU
+;;   994,122,776 processor cycles
+;;   92,299,840 bytes consed
+  
+
+;; Performing lookups in tree with 100000 elements ...
+;; 666 in tree ? true
+;; Evaluation took:
+;;   0.000 seconds of real time
+;;   0.000050 seconds of total run time (0.000045 user, 0.000005 system)
+;;   100.00% CPU
+;;   74,160 processor cycles
+;;   32,768 bytes consed
+  
+;; -1 in tree ? 
+;; Evaluation took:
+;;   0.000 seconds of real time
+;;   0.000030 seconds of total run time (0.000025 user, 0.000005 system)
+;;   100.00% CPU
+;;   41,664 processor cycles
+;;   0 bytes consed
+  
+;; []
+
+;; (175-) true
