@@ -64,6 +64,7 @@
 			   (if (< (node-key Y) (node-key X))
 			       (member X B)
 			       true)))
+
 (define balance
     {tree --> tree}
     [black [red [red A X B] Y C] Z D] -> [red [black A X B] Y [black C Z D]]
@@ -85,41 +86,82 @@
 	{tree-node --> tree --> tree}
 	X S -> (make-tree-black (insert- X S)))
 
+(define range 
+    { number --> number --> (list number) --> (list number) }
+    X Y Z -> (if (> X Y)
+                 Z
+                 (range X (- Y 1) (cons Y Z))))
 
-(tc -)
+(define insert-number-list-into-tree-
+    { ((list number) * tree) --> ((list number) * tree) }
+    (@p Nums Tree) -> (if (empty? Nums)
+                          (@p Nums Tree)
+                          (insert-number-list-into-tree-
+                           (@p (tail Nums) 
+                               (insert [(head Nums) (head Nums)] Tree)))))
 
-(define test
-    ->
-  (do
-   (let Tree (insert [8 8] 
-		     (insert [5 5] 
-			     (insert [1 1] 
-				     (insert [7 7] 
-					     (insert [2 2] 
-						     (insert [15 15] 
-							     (insert [14 14] 
-								     (insert [11 11] []))))))))
-	(do
-	 (output "tree: ~A ~%12 is a member ? ~A~%8 is a member ? ~A~%"
-		 Tree
-	      (member [12 12] Tree) 
-	      (member [8 8] Tree))))
-   (let CNT (TRUNCATE 1E5)
-	NUMS [] 
-	(do 
-	 (output "~%Creating tree with ~A elements ..." CNT)
-	 (DOTIMES (N CNT) (SETF NUMS (cons (+ N 1) NUMS)))
-	  (let Tree (time 
-		     (REDUCE (LAMBDA (RES NUM) (insert [NUM NUM] RES)) NUMS :INITIAL-VALUE []))
-	       (do
-		(output "~%Performing lookups in tree with ~A elements ...~%" CNT)
-		(time (output "666 in tree ? ~A" (member [666 666] Tree)))
-		 (time (output "-1 in tree ? " (member [-1 -1] Tree)))
-		NIL))))))
-  
-(test)
+(define insert-number-list-into-tree
+    { (list number) --> tree --> tree }
+    Nums Tree -> (snd (insert-number-list-into-tree-
+                       (@p Nums Tree))))
 
-(tc +)
+
+\ test functions \
+
+(define run-tests
+    { A --> A }
+    _ -> (do
+          (let Tree (insert-number-list-into-tree [11 14 15 2 7 1 5 8] [])
+               (do
+                (output "tree: ~A ~%12 is a member ? ~A~%8 is a member ? ~A~%"
+                        Tree
+                        (member [12 12] Tree) 
+                        (member [8 8] Tree))))
+          (let Count (round 1E5)
+               Nums (range 1 Count [])
+               (do 
+                (output "~%Creating tree with ~A elements ..." Count)
+                (let Tree (time (insert-number-list-into-tree Nums []))
+                     (do
+                      (output "~%Performing lookups in tree with ~A elements ...~%" Count)
+                      (time (output "666 in tree ? ~A" (member [666 666] Tree)))
+                       (time (output "-1 in tree ? " (member [-1 -1] Tree))))))) 
+          NIL))
+
+(run-tests NIL)
+
+
+\ tree: [black \
+\        [red [black [red [] [1 1] []] [2 2] [red [] [5 5] []]] [7 7] \
+\         [black [red [] [8 8] []] [11 11] []]] \
+\        [14 14] [black [] [15 15] []]]  \
+\ 12 is a member ? false \
+\ 8 is a member ? true \
+
+
+\ output \
+
+\ Creating tree with 100000 elements ... \
+\ Evaluation took: \
+\   0.600 seconds of real time \
+\   0.577388 seconds of total run time (0.506373 user, 0.071015 system) \
+\   [ Run times consist of 0.177 seconds GC time, and 0.401 seconds non-GC time. ] \
+\   96.17% CPU \
+\   1,254,956,000 processor cycles \
+\   168,580,336 bytes consed \
+\    \
+\  \
+\ Performing lookups in tree with 100000 elements ... \
+\ 666 in tree ? true \
+\ Evaluation took: \
+\   0.000 seconds of real time \
+\   0.000033 seconds of total run time (0.000029 user, 0.000004 system) \
+\   100.00% CPU \
+\   64,176 processor cycles \
+\   0 bytes consed \
+\    \
+\ -1 in tree ?  \
+\ Evaluation took: \
 
 
 \ (174-) tree: [black \
@@ -159,3 +201,24 @@
 \ [] \
 
 \ (175-) true \
+\   0.000 seconds of real time \
+\   0.000027 seconds of total run time (0.000023 user, 0.000004 system) \
+\   100.00% CPU \
+\   50,610 processor cycles \
+\   0 bytes consed \
+\    \
+\ [] \
+\ Evaluation took: \
+\   1.153 seconds of real time \
+\   1.006559 seconds of total run time (0.870915 user, 0.135644 system) \
+\   [ Run times consist of 0.252 seconds GC time, and 0.755 seconds non-GC time. ] \
+\   87.34% CPU \
+\   187 forms interpreted \
+\   372 lambdas converted \
+\   2,414,154,330 processor cycles \
+\   210,133,312 bytes consed \
+\  \
+\  \
+\  \
+\ typechecked in 0 inferences \
+\ loaded \
