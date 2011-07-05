@@ -28,61 +28,75 @@
 //
 
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "complex.h"
+#include <math.h>
 #include <time.h>
 
+#define MAX_SIZE 1024 * 1024
 
-#define LIST_SIZE 10000000
-#define SHOW_SIZE 5
-
-
-typedef struct node {
-  struct node* next;
-  int   val;
-} node; 
+complex X[MAX_SIZE], Y[MAX_SIZE];
 
 
-int main(int argc, char* argv[]) 
+main()
+
 {
-  int i;
-  long start, end;
-  node* head = malloc(sizeof(node));
-  node* cur = head; node* cur2 = head;
-  node* prev = NULL; node* next = NULL;
 
-  // init linked list
-  printf("         linked list : ");
-  for (i=1; i <= LIST_SIZE; i++)
-  {
-    cur->val = i;
-    if (i <= SHOW_SIZE) printf("%d -> ", cur->val);
-    if (i != LIST_SIZE) cur->next = malloc(sizeof(node));
-    cur = cur->next;
-  }
-  cur = NULL;
-  printf(" ... (%d more)\n", LIST_SIZE - SHOW_SIZE);
+  double start, end;
+  double time_ms;
 
-  // reverse linked list
+  int i,t,n,iterations;
+  complex w;
+  double pi,theta;
+
+
+  pi = atan(1.0) * 4.0;
+
+  printf("Enter size:  ");
+  scanf("%d", &t);
+  n = 1 << t;
+
+  printf("Enter number of iterations:  ");
+  scanf("%d", &iterations);
+  theta = 2 * pi/n;
+  w.r = cos(theta);
+  w.i = -sin(theta);
+
+  printf("w_%d = ", n);
+  compwrite(w);  printf("\n");
+
+  printf("generating input ...   ");
+  for (i = 0; i < n; i++)
+    {
+      // square wave
+      X[i].r = (double)(i % 2);
+      //X[i].r = (sin (2 * pi) * i)); // fix amplitude
+      printf("%.2f\n", X[i].r);
+      //X[i].r = 1.0;
+      X[i].i = 0.0;
+    }
+  printf("done.\n");
+  fflush(stdout);
+
+  printf("running fft ...        ");
+  fflush(stdout);
   start = clock();
-  while (cur2 != NULL)
-  {
-    next = cur2->next;
-    cur2->next = prev;
-    prev = cur2;
-    cur2 = next;
-  }
-  node* head2 = prev;
+  for (i = 0; i < iterations; i++)
+    {
+      cfft(n,w,X,Y);
+    }
   end = clock();
+  time_ms = (((double)(end - start)) / CLOCKS_PER_SEC * 1000) / iterations;
+  printf("done.\n");
 
-  printf("reversed linked list : ");
-  for (i=1; i <= LIST_SIZE; i++)
-  {
-    if (i <= SHOW_SIZE) printf("%d -> ", head2->val);
-    head2 = head2->next;
-  }
-  printf(" ... (%d more)\n", LIST_SIZE - SHOW_SIZE);
+  printf("time for F_%d :  %.3f(ms) \n", n, time_ms);
+  //printf("Y[0] = ");
+  //compwrite(Y[0]);
+  //printf("\n");
 
-  printf("Elapsed time: %.3lf msecs\n", 
-	 (((double)(end - start)) / CLOCKS_PER_SEC) * 1000);
+  for (i = 0;i < n; i++)
+   {
+     printf("Y[%d] = ", i);
+     compwrite(Y[i]);  printf("\n");
+   }
+
 }

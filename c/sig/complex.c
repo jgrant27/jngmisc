@@ -1,4 +1,3 @@
-
 //
 // Copyright (c) 2010, Justin Grant <justin at imagine27 dot com>
 // All rights reserved.
@@ -28,61 +27,54 @@
 //
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include "complex.h"
 
-
-#define LIST_SIZE 10000000
-#define SHOW_SIZE 5
-
-
-typedef struct node {
-  struct node* next;
-  int   val;
-} node; 
-
-
-int main(int argc, char* argv[]) 
+complex compmult(a, b)
+complex a, b;
 {
-  int i;
-  long start, end;
-  node* head = malloc(sizeof(node));
-  node* cur = head; node* cur2 = head;
-  node* prev = NULL; node* next = NULL;
+  complex c;
+  c.r = a.r * b.r - a.i * b.i;
+  c.i = a.r * b.i + a.i * b.r;
+  return c;
+}
 
-  // init linked list
-  printf("         linked list : ");
-  for (i=1; i <= LIST_SIZE; i++)
-  {
-    cur->val = i;
-    if (i <= SHOW_SIZE) printf("%d -> ", cur->val);
-    if (i != LIST_SIZE) cur->next = malloc(sizeof(node));
-    cur = cur->next;
-  }
-  cur = NULL;
-  printf(" ... (%d more)\n", LIST_SIZE - SHOW_SIZE);
+complex compmulti(complex a)
+{
+  complex c;
+  c.r = -a.i;
+  c.i = a.r;
+  return c;
+}
 
-  // reverse linked list
-  start = clock();
-  while (cur2 != NULL)
-  {
-    next = cur2->next;
-    cur2->next = prev;
-    prev = cur2;
-    cur2 = next;
-  }
-  node* head2 = prev;
-  end = clock();
 
-  printf("reversed linked list : ");
-  for (i=1; i <= LIST_SIZE; i++)
-  {
-    if (i <= SHOW_SIZE) printf("%d -> ", head2->val);
-    head2 = head2->next;
-  }
-  printf(" ... (%d more)\n", LIST_SIZE - SHOW_SIZE);
+complex compadd(a,b)
+complex a, b;
+{
+  complex c;
+  c.r = a.r + b.r;
+  c.i = a.i + b.i;
+  return c;
+}
 
-  printf("Elapsed time: %.3lf msecs\n", 
-	 (((double)(end - start)) / CLOCKS_PER_SEC) * 1000);
+complex compdif(a,b)
+complex a, b;
+{
+  complex c;
+  c.r = a.r - b.r;
+  c.i = a.i - b.i;
+  return c;
+}
+
+complex compread()
+{
+  complex c;
+  scanf("%lf",&c.r);
+  scanf("%lf",&c.i);
+  return c;
+}
+
+void compwrite(c)
+complex c;
+{
+  printf("%f + i%f", c.r, c.i);
 }

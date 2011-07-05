@@ -28,61 +28,71 @@
 //
 
 
-#include <stdio.h>
+#include "complex.h"
 #include <stdlib.h>
-#include <time.h>
 
+cfft(n,wn,X,Y)
+/************************************************************************
+  Fast fourier transform.
+  n = 2^k
+  Y = F_n X
+  wn is a primitive nth root of unity.
+************************************************************************/
 
-#define LIST_SIZE 10000000
-#define SHOW_SIZE 5
+int n;
+complex wn;
+complex X[],Y[];
 
-
-typedef struct node {
-  struct node* next;
-  int   val;
-} node; 
-
-
-int main(int argc, char* argv[]) 
 {
-  int i;
-  long start, end;
-  node* head = malloc(sizeof(node));
-  node* cur = head; node* cur2 = head;
-  node* prev = NULL; node* next = NULL;
+  int m,j;
+  complex w2,w,t;
+  complex *X1, *X2, *Y1, *Y2;
+  
+  
+  /* Base case.  */
+  
+  if (n == 1)
+    {
+      Y[0] = X[0];
+      return;
+    }
+  
+  if (n == 2)
+    {
+      Y[0] = compadd(X[0],X[1]);
+      Y[1] = compdif(X[0],X[1]);
+      return;
+    }
+  
+  /* X1,X2 = L^{n}_2 X; */
+  
+  m = n/2;
+  
+  X1 = (complex *) malloc(m*sizeof(complex));
+  X2 = (complex *) malloc(m*sizeof(complex));
+  Y1 = (complex *) malloc(m*sizeof(complex));
+  Y2 = (complex *) malloc(m*sizeof(complex));
+  
+  for (j = 0; j < m; j++)
+    {
+      X1[j] = X[2*j];
+      X2[j] = X[2*j+1];
+    }
 
-  // init linked list
-  printf("         linked list : ");
-  for (i=1; i <= LIST_SIZE; i++)
-  {
-    cur->val = i;
-    if (i <= SHOW_SIZE) printf("%d -> ", cur->val);
-    if (i != LIST_SIZE) cur->next = malloc(sizeof(node));
-    cur = cur->next;
+  cfft(m,compmult(wn,wn),X1,Y1);
+  cfft(m,compmult(wn,wn),X2,Y2);
+  
+  w.r = 1.0;
+  w.i = 0.0;
+  
+  for (j=0;j<m;j++)
+    {
+      Y[j] = compadd(Y1[j],compmult(w,Y2[j]));    /*  Y[j] = Y1[j] + w^i Y2[j] */
+      Y[j+m] = compdif(Y1[j],compmult(w,Y2[j]));  /*  Y[j+m] = Y1[j] - w^i Y2[j] */
+      w = compmult(w,wn);
   }
-  cur = NULL;
-  printf(" ... (%d more)\n", LIST_SIZE - SHOW_SIZE);
-
-  // reverse linked list
-  start = clock();
-  while (cur2 != NULL)
-  {
-    next = cur2->next;
-    cur2->next = prev;
-    prev = cur2;
-    cur2 = next;
-  }
-  node* head2 = prev;
-  end = clock();
-
-  printf("reversed linked list : ");
-  for (i=1; i <= LIST_SIZE; i++)
-  {
-    if (i <= SHOW_SIZE) printf("%d -> ", head2->val);
-    head2 = head2->next;
-  }
-  printf(" ... (%d more)\n", LIST_SIZE - SHOW_SIZE);
-
-  printf("Elapsed time: %.3lf msecs\n", 
-	 (((double)(end - start)) / CLOCKS_PER_SEC) * 1000);
+  free(X1);
+  free(X2);
+  free(Y1);
+  free(Y2);
 }
