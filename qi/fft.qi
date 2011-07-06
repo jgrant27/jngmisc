@@ -55,12 +55,12 @@
 (define butterfly-list
     {(((list complex)) * ((list complex) * (list complex))) --> 
      (((list complex)) * ((list complex) * (list complex)))}
-    (@p X (@p X1 X2)) -> 
-    (if (empty? X)
-	(@p X (@p (reverse X1) (reverse X2)))
-	(butterfly-list (@p (tail (tail X))
-			    (@p (cons (head X) X1)
-				(cons (head (tail X)) X2))))))
+    (@p X (@p X1 X2)) -> (if (empty? X)
+                             (@p X (@p (reverse X1) (reverse X2)))
+                             (butterfly-list 
+                              (@p (tail (tail X))
+                                  (@p (cons (head X) X1)
+                                      (cons (head (tail X)) X2))))))
 
 \
 (butterfly-list (@p [[0 0] [1 0] [0 0] [1 0] [0 0] [1 0] [0 0] [1 0]
