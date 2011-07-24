@@ -30,73 +30,61 @@
 ;; Misc. geometric math functions
 
 (ns i27.geom.misc
-  (:require [clojure.contrib.generic.math-functions :as math]))
+  (:import [java.lang Math]))
 
 
-(def pi (* 4 (math/atan 1)))
-
+(def pi (* 4 (Math/atan 1)))
 
 (defn dtor [deg] (* deg (/ pi 180)))
 
-
 (defn rtod [rad] (* rad (/ 180 pi)))
 
-
 (defn pass [val] val)
-
 
 (defn cross-product
   "Calculate the cross product given 3 points in the cartesian plane."
   [[x1 y1 :as pt1] [x2 y2 :as pt2] [x3 y3 :as pt3]]
-  (- (* (- x3 x1) (- y2 y1))
-     (* (- x2 x1) (- y3 y1))))
+  (- (* (- x3 x1) (- y2 y1)) (* (- x2 x1) (- y3 y1))))
 
-
-(defmacro cartesian-to-polar
+(defn cartesian-to-polar
   "Converts a point in cartesian co-ordinates to it's polar equivalent.
    Optionally return the angle in degrees instead of radians"
   [[x1 y1 :as pt] & degs]
-  (let [x (gensym) y (gensym) at (gensym) cfun (gensym)]
-    `(let [~x (double ~x1) ~y (double ~y1)
-           ~cfun (if (first (quote ~degs)) rtod pass)]
-       (vector
-        (math/sqrt (+ (* ~x ~x) (* ~y ~y)))
-        (if (not (= ~x 0))
-          (let [~at (math/atan (/ ~y ~x))]
-            (cond
-             (and (> ~x 0) (>= ~y 0)) (~cfun ~at)
-             (and (> ~x 0) (< ~y 0))  (~cfun (+ (* 2 pi) ~at))
-             (< ~x 0)                 (~cfun (+ pi ~at))))
-          (cond
-           (> ~y 0) (~cfun (/ pi 2))
-           (< ~y 0) (~cfun (* pi 3/2))
-           (= ~y 0) 0))))))
+  (let [^Double x (Double. x1) ^Double y (Double. y1)
+        cfun (if (first degs) rtod pass)]
+	(vector
+	 (Math/sqrt (+ (* x x) (* y y)))
+	 (if (= x 0)
+	     (cond
+	       (> y 0) (cfun (/ pi 2))
+	       (< y 0) (cfun (* pi (/ 3 2)))
+	       (= y 0) 0)
+	     (let [at (Math/atan (/ y x))]
+		  (cond
+		    (and (> x 0) (>= y 0)) (cfun at)
+		    (and (> x 0) (< ~y 0))  (cfun (+ (* 2 pi) at))
+		    (< x 0)                 (cfun (+ pi at))))))))
 
-(defmacro cartesian-to-polar-seq
+
+(defn cartesian-to-polar-seq
   "Converts a seq of cartesian co-ordinates to their polar equivalents.
    Optionally return the angle in degrees instead of radians"
   [cpts & degs]
-  (let [pt (gensym)]
-    `(map (fn [~pt] (cartesian-to-polar ~pt ~(first degs))) ~cpts)))
+    (map (fn [pt] (cartesian-to-polar pt (first degs))) cpts))
 
-
-(defmacro polar-to-cartesian
+(defn polar-to-cartesian
   "Converts a point in polar to it's cartesian equivalent.
    Optionally take the angle in degrees instead of radians"
   [pt & degs]
-  (let [mag (gensym) angle (gensym) cfun (gensym)]
-    `(let [~mag (first ~pt) ~angle (last ~pt)
-           ~cfun (if (first (quote ~degs)) dtor pass)]
-       (vector (math/round (* ~mag (math/cos (~cfun ~angle))))
-               (math/round (* ~mag (math/sin (~cfun ~angle))))))))
+  (let [mag (first pt) angle (last pt)
+        cfun (if (first degs) dtor pass)]
+       (vector (Math/round (* mag (Math/cos (cfun angle))))
+               (Math/round (* mag (Math/sin (cfun angle)))))))
 
-
-(defmacro polar-to-cartesian-seq
+(defn polar-to-cartesian-seq
   "Converts a seq of polar co-ords to their cartesian equivalents."
   [ppts & degs]
-  (let [pt (gensym)]
-    `(map (fn [~pt] (polar-to-cartesian ~pt ~(first degs))) ~ppts)))
-
+  (map (fn [pt] (polar-to-cartesian pt (first degs))) ppts))
 
 (defn angle [[x1 y1 :as pt1] [x2 y2 :as pt2]]
   "Returns the polar angle between point 1 and point 2"
