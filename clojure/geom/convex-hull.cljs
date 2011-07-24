@@ -51,37 +51,37 @@
 (defn pass [val] val)
 
 (defn cross-product
-  "Calculate the cross product given 3 points in the cartesian plane."
+    "Calculate the cross product given 3 points in the cartesian plane."
   [[x1 y1 :as pt1] [x2 y2 :as pt2] [x3 y3 :as pt3]]
   (- (* (- x3 x1) (- y2 y1))
      (* (- x2 x1) (- y3 y1))))
 
 (defn cartesian-to-polar
-  "Converts a point in cartesian co-ordinates to it's polar equivalent.
+    "Converts a point in cartesian co-ordinates to it's polar equivalent.
    Optionally return the angle in degrees instead of radians"
   [[x y :as pt] & degs]
   (let [cfun (if (first degs) rtod pass)]
        (vector
         (Math/sqrt (+ (* x x) (* y y)))
-        (if (not (= x 0))
+        (if (= x 0)
+          (cond
+           (> y 0) (cfun (/ pi 2))
+           (< y 0) (cfun (* pi (/ 3 2)))
+           (= y 0) 0)
           (let [at (Math/atan (/ y x))]
             (cond
              (and (> x 0) (>= y 0)) (cfun at)
              (and (> x 0) (< y 0))  (cfun (+ (* 2 pi) at))
-             (< x 0)                (cfun (+ pi at))))
-          (cond
-           (> y 0) (cfun (/ pi 2))
-           (< y 0) (cfun (* pi (/ 3 2)))
-           (= y 0) 0)))))
+             (< x 0)                (cfun (+ pi at))))))))
 
 (defn cartesian-to-polar-seq
-  "Converts a seq of cartesian co-ordinates to their polar equivalents.
+    "Converts a seq of cartesian co-ordinates to their polar equivalents.
    Optionally return the angle in degrees instead of radians"
   [cpts & degs]
   (map (fn [pt] (cartesian-to-polar pt (first degs))) cpts))
 
 (defn polar-to-cartesian
-  "Converts a point in polar to it's cartesian equivalent.
+    "Converts a point in polar to it's cartesian equivalent.
    Optionally take the angle in degrees instead of radians"
   [pt & degs]
   (let [mag (first pt) angle (last pt)
@@ -90,12 +90,13 @@
                (Math/round (* mag (Math/sin (cfun angle)))))))
 
 (defn polar-to-cartesian-seq
-  "Converts a seq of polar co-ords to their cartesian equivalents."
+    "Converts a seq of polar co-ords to their cartesian equivalents."
   [ppts & degs]
   (map (fn [pt] (polar-to-cartesian pt (first degs))) ppts))
 
-(defn angle [[x1 y1 :as pt1] [x2 y2 :as pt2]]
-  "Returns the polar angle between point 1 and point 2"
+(defn angle 
+    "Returns the polar angle between point 1 and point 2"
+  [[x1 y1 :as pt1] [x2 y2 :as pt2]]
   (last (cartesian-to-polar [(- x2 x1) (- y2 y1)])))
 
 
@@ -108,28 +109,31 @@
 	  (= y1 y2) (if (< x1 x2) pt1 pt2)
 	  true pt2))
 
-(defn presort-points [pts]
-  "Presorts the cartesian points in descending order by angle.
+(defn presort-points 
+    "Presorts the cartesian points in descending order by angle.
    The point with lowest y value is last in the vector."
-    (let [pts (distinct pts) ;; must be distinct or else errors ...
-          pt (reduce find-start pts)
-	  npts (remove 
-		(fn [[x y :as cpt]]
-		    (and (= (first pt) x) (= (last pt) y))) pts)]
-		    (conj 
-		     (apply 
-		      vector
-		      (sort (fn [pt1 pt2]
-				(> (angle pt pt1) (angle pt pt2))) npts))
-		     pt)))
+  [pts]
+  (let [pts (distinct pts) ;; must be distinct or else errors ...
+       pt (reduce find-start pts)
+       npts (remove 
+	     (fn [[x y :as cpt]]
+		 (and (= (first pt) x) (= (last pt) y))) pts)]
+		 (conj 
+		  (apply 
+		   vector
+		   (sort (fn [pt1 pt2]
+			     (> (angle pt pt1) (angle pt pt2))) npts))
+		  pt)))
 
-(defn popstack [stk pt]
-      (if (not (> (cross-product
-		   (last (pop stk)) (last stk) pt) 0))
-	  stk (recur (pop stk) pt)))
+(defn popstack 
+    [stk pt]
+    (if (not (> (cross-product
+		 (last (pop stk)) (last stk) pt) 0))
+	stk (recur (pop stk) pt)))
 
-(defn scan [res pt]
-      (conj (popstack res pt) pt))
+(defn scan 
+    [res pt]
+    (conj (popstack res pt) pt))
 
 (defn subvec 
     [v start end]
@@ -153,7 +157,7 @@
     (if (< x2 xc) cpt pt2) (if (< y4 yc) cpt pt4)])
 
 (defn elim-points
-  "Prepare data with Aki-Toussaint heuristics before passing to convex hull function.
+    "Prepare data with Aki-Toussaint heuristics before passing to convex hull function.
    Performance is O(n) time regardless of the convex hull algorithm used."
   [pts]
   (when (>= (count pts) 4)
@@ -169,8 +173,8 @@
 			       (map (fn [pt]
 					(cross-product tpt (first pt) (last pt)))
 				    lines))))
-                 pts)]
-        pts)))
+	      pts)]
+	      pts)))
 
 (defn range
     [start end v]
@@ -185,17 +189,17 @@
   []
   ;; descending order of angle from point with lowest y then x val - [1 2]
   (let [pts
-        [[3 9] [7 6] [9 9] [2 1] [4 2] [0 8] [1 3] [5 7] [6 0] [4 9] [6 0]]] ;; 7 points
-	(let [cvxhull (convex-hull (presort-points pts))]
-	     cvxhull)))
+    [[3 9] [7 6] [9 9] [2 1] [4 2] [0 8] [1 3] [5 7] [6 0] [4 9] [6 0]]] ;; 7 points
+    (let [cvxhull (convex-hull (presort-points pts))]
+	 cvxhull)))
 
 (defn ^:export randomset
   "Test on large random data sets"
   [pts heurp]
   (let [epts (if heurp (elim-points pts) pts)
-        spts (presort-points epts)
-        cvxhull (convex-hull spts)]
-	cvxhull))
+       spts (presort-points epts)
+       cvxhull (convex-hull spts)]
+       cvxhull))
 
 ;;;; UI stuff
 
@@ -224,10 +228,10 @@
 
 (defn draw-graph 
     []
-    (let [canvas-size (. g (getPixelSize))]
-	 (.drawRect g 0 0 
-		    (.width canvas-size) (.height canvas-size) 
-		    edge-stroke white-fill)))
+  (let [canvas-size (. g (getPixelSize))]
+       (.drawRect g 0 0 
+		  (.width canvas-size) (.height canvas-size) 
+		  edge-stroke white-fill)))
 
 (defn scale-coord
     [coord]
@@ -237,18 +241,18 @@
     [points stroke fill]
     (doseq  [[x y :as pt] points]
 	    (.drawEllipse g (scale-coord x) (- 440 (scale-coord y))
-		       3 3 stroke fill)))
+			  3 3 stroke fill)))
 
 (defn draw-convex-hull
     [points stroke fill]
     (let [path (graphics/Path.)
-	  [xs ys :as start] (first points)]
+	 [xs ys :as start] (first points)]
 	 (.moveTo path (scale-coord xs) (- 440 (scale-coord ys)))
 	 (doall (map (fn [[x y :as pt]]
 			 (.lineTo path (scale-coord x) (- 440 (scale-coord y))))
 		     (rest points)))
 	 (.lineTo path (scale-coord xs) (- 440 (scale-coord ys)))
-    (.drawPath g path stroke fill)))
+	 (.drawPath g path stroke fill)))
 
 (defn print-points
     [points el]
@@ -261,11 +265,11 @@
 (defn ^:export rundemo
   []
   (let [cnt 1E2
-        rpts (apply 
+       rpts (apply 
        	     vector 
        	     (map (fn [n] 
        		      [(rand-int (inc cnt))
-       		       (rand-int (inc cnt))])
+		      (rand-int (inc cnt))])
        		  (range 1 cnt [])))
        text-input-title (dom/getElement "text-input-title")
        text-input (dom/getElement "text-input")
@@ -283,26 +287,28 @@
 	text-results-status 
 	(str "Calculating convex hull ...")) 
        (let [;;r1 (randomset rpts false)
-	     r2 (randomset rpts true)]
-	     (dom/append text-results-status (str " done.\n")) 
+	 r2 (randomset rpts true)]
+	 (dom/append text-results-status (str " done.\n")) 
 	     ;; update the results
-	     (print-points r2 text-results)
-	     (dom/append
-	      text-results-status
-	      (str "Convex hull has " (count r2) " points.\n"))
-	     ;; draw hull points
-	     (draw-points r2 green-edge-stroke green-fill)
-	     ;;(draw-points r1 red-edge-stroke red-fill)
-	     ;; draw hull
-	     (draw-convex-hull r2 green-edge-stroke trans-fill)
-	     ;;(draw-convex-hull r1 red-edge-stroke trans-fill)
-	     ;; return the results
-	     [rpts r2])))
+	 (print-points r2 text-results)
+	 (dom/append
+	  text-results-status
+	  (str "Convex hull has " (count r2) " points.\n"))
+	 ;; draw hull points
+	 (draw-points r2 green-edge-stroke green-fill)
+	 ;;(draw-points r1 red-edge-stroke red-fill)
+	 ;; draw hull
+	 (draw-convex-hull r2 green-edge-stroke trans-fill)
+	 ;;(draw-convex-hull r1 red-edge-stroke trans-fill)
+	 ;; return the results
+	 [rpts r2])))
 
 ;; Auto-update
 (defn ^:export poll
   []
   (let [timer (goog.Timer. 15000)]
-    (do (rundemo)
-        (. timer (start))
-        (events/listen timer goog.Timer/TICK rundemo))))
+       (do (rundemo)
+	   (. timer (start))
+	 (events/listen timer goog.Timer/TICK rundemo))))
+
+(poll)
