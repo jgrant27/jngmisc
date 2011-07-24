@@ -37,7 +37,10 @@
 complex X[MAX_SIZE], Y[MAX_SIZE];
 
 
-main()
+void cfft(int n, complex wn, complex X[], complex Y[]);
+
+
+int main()
 
 {
 
@@ -66,14 +69,14 @@ main()
 
   printf("generating input ...   ");
   for (i = 0; i < n; i++)
-    {
-      // square wave
-      X[i].r = (double)(i % 2);
-      //X[i].r = (sin (2 * pi) * i)); // fix amplitude
-      printf("%.2f\n", X[i].r);
-      //X[i].r = 1.0;
-      X[i].i = 0.0;
-    }
+  {
+    // square wave
+    X[i].r = (double)(i % 2);
+    //X[i].r = (sin (2 * pi) * i)); // fix amplitude
+    printf("%.2f\n", X[i].r);
+    //X[i].r = 1.0;
+    X[i].i = 0.0;
+  }
   printf("done.\n");
   fflush(stdout);
 
@@ -81,9 +84,9 @@ main()
   fflush(stdout);
   start = clock();
   for (i = 0; i < iterations; i++)
-    {
-      cfft(n,w,X,Y);
-    }
+  {
+    cfft( n, w, X, Y);
+  }
   end = clock();
   time_ms = (((double)(end - start)) / CLOCKS_PER_SEC * 1000) / iterations;
   printf("done.\n");
@@ -94,9 +97,10 @@ main()
   //printf("\n");
 
   for (i = 0;i < n; i++)
-   {
-     printf("Y[%d] = ", i);
-     compwrite(Y[i]);  printf("\n");
-   }
+  {
+    printf("Y[%d] = ", i);
+    compwrite(Y[i]);  printf("\n");
+  }
 
+  return 0;
 }

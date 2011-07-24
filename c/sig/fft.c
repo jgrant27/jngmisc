@@ -31,7 +31,7 @@
 #include "complex.h"
 #include <stdlib.h>
 
-cfft(n,wn,X,Y)
+void cfft(n,wn,X,Y)
 /************************************************************************
   Fast fourier transform.
   n = 2^k
@@ -45,7 +45,7 @@ complex X[],Y[];
 
 {
   int m,j;
-  complex w2,w,t;
+  complex w;
   complex *X1, *X2, *Y1, *Y2;
   
   
