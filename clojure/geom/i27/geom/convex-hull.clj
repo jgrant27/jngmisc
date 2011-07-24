@@ -39,17 +39,18 @@
 (defn presort-points [pts]
   "Presorts the cartesian points in descending order by angle.
    The point with lowest y value is last in the vector."
-  (letfn [(find-start [[x1 y1 :as pt1] [x2 y2 :as pt2]]
-                      (cond (< y1 y2) pt1
-                            (= y1 y2) (if (< x1 x2) pt1 pt2)
-                            true pt2))]
-    (let* [pt (reduce find-start pts)
-           npts (remove (fn [[x y :as cpt]]
-                          (and (= (first pt) x) (= (last pt) y))) pts)]
-          (conj (apply vector
-                       (sort (fn [pt1 pt2]
-                               (> (angle pt pt1) (angle pt pt2))) npts))
-                pt))))
+   (let [pts (distinct pts)] ;; must be distinct or else errors ...
+	(letfn [(find-start [[x1 y1 :as pt1] [x2 y2 :as pt2]]
+			    (cond (< y1 y2) pt1
+				  (= y1 y2) (if (< x1 x2) pt1 pt2)
+				  true pt2))]
+	       (let [pt (reduce find-start pts)
+ 	 	     npts (remove (fn [[x y :as cpt]]
+				      (and (= (first pt) x) (= (last pt) y))) pts)]
+		  (conj (apply vector
+			       (sort (fn [pt1 pt2]
+					 (> (angle pt pt1) (angle pt pt2))) npts))
+			pt)))))
 
 
 (defn convex-hull
@@ -123,7 +124,7 @@
     (let [spts (time (presort-points epts))]
       (println "calculating convex hull for" (count epts) "points ...")
       (let [cvxhull (time (convex-hull spts))]
-        (print (apply vector (take 5 cvxhull)) "- ")
+        (print (apply vector (take 100 cvxhull)) "- ")
         (println (count cvxhull) "points")))))
 
 

@@ -111,13 +111,17 @@
 (defn presort-points [pts]
   "Presorts the cartesian points in descending order by angle.
    The point with lowest y value is last in the vector."
-    (let* [pt (reduce find-start pts)
-	  npts (remove (fn [[x y :as cpt]]
-			   (and (= (first pt) x) (= (last pt) y))) pts)]
-			   (conj (apply vector
-					(sort (fn [pt1 pt2]
-						  (> (angle pt pt1) (angle pt pt2))) npts))
-				 pt)))
+    (let [pts (distinct pts) ;; must be distinct or else errors ...
+          pt (reduce find-start pts)
+	  npts (remove 
+		(fn [[x y :as cpt]]
+		    (and (= (first pt) x) (= (last pt) y))) pts)]
+		    (conj 
+		     (apply 
+		      vector
+		      (sort (fn [pt1 pt2]
+				(> (angle pt pt1) (angle pt pt2))) npts))
+		     pt)))
 
 (defn popstack [stk pt]
       (if (not (> (cross-product
@@ -201,17 +205,22 @@
 
 (def green-edge-stroke (graphics/Stroke. 1 "#0f0"))
 
+(def red-edge-stroke (graphics/Stroke. 1 "#f00"))
+
 (def white-fill (graphics/SolidFill. "#fff"))
 
 (def blue-fill (graphics/SolidFill. "#66b"))
 
 (def green-fill (graphics/SolidFill. "#0f0"))
 
+(def red-fill (graphics/SolidFill. "#f00"))
+
 (def trans-fill (graphics/SolidFill. "#0f0" 0.001))
 
 (def g
   (doto (graphics/createGraphics "440" "440")
-    (.render (dom/getElement "graph"))))
+	;;(.setCoordOrigin 0 440)
+	(.render (dom/getElement "graph"))))
 
 (defn draw-graph 
     []
@@ -227,25 +236,27 @@
 (defn draw-points
     [points stroke fill]
     (doseq  [[x y :as pt] points]
-	    (.drawEllipse g (scale-coord x) (scale-coord y) 
+	    (.drawEllipse g (scale-coord x) (- 440 (scale-coord y))
 		       3 3 stroke fill)))
 
 (defn draw-convex-hull
     [points stroke fill]
     (let [path (graphics/Path.)
 	  [xs ys :as start] (first points)]
-	 (.moveTo path (scale-coord xs) (scale-coord ys))
+	 (.moveTo path (scale-coord xs) (- 440 (scale-coord ys)))
 	 (doall (map (fn [[x y :as pt]]
-			 (.lineTo path (scale-coord x) (scale-coord y)))
+			 (.lineTo path (scale-coord x) (- 440 (scale-coord y))))
 		     (rest points)))
-	 (.lineTo path (scale-coord xs) (scale-coord ys))
+	 (.lineTo path (scale-coord xs) (- 440 (scale-coord ys)))
     (.drawPath g path stroke fill)))
 
 (defn print-points
     [points el]
+    (dom/setTextContent el "")
     (doseq [pair points]
-	   (dom/append el
-		       (str " [" (first pair) " " (second pair) "]"))))
+	   (dom/append
+	    el
+	    (str " [" (first pair) " " (second pair) "]"))))
 
 (defn ^:export rundemo
   []
@@ -271,7 +282,7 @@
        (dom/setTextContent 
 	text-results-status 
 	(str "Calculating convex hull ...")) 
-       (let [;;r1 (largetest rpts false)
+       (let [;;r1 (randomset rpts false)
 	     r2 (randomset rpts true)]
 	     (dom/append text-results-status (str " done.\n")) 
 	     ;; update the results
@@ -281,8 +292,10 @@
 	      (str "Convex hull has " (count r2) " points.\n"))
 	     ;; draw hull points
 	     (draw-points r2 green-edge-stroke green-fill)
+	     ;;(draw-points r1 red-edge-stroke red-fill)
 	     ;; draw hull
 	     (draw-convex-hull r2 green-edge-stroke trans-fill)
+	     ;;(draw-convex-hull r1 red-edge-stroke trans-fill)
 	     ;; return the results
 	     [rpts r2])))
 
