@@ -29,7 +29,7 @@
 
 
 GCC = gcc
-STD_FLAGS = -O3 -fomit-frame-pointer -fstrict-aliasing -momit-leaf-frame-pointer -falign-loops -funroll-loops
+STD_FLAGS = -O3 -lm -Wall -falign-loops -funroll-loops
 SRC_FILES = complex.c complex.h fft.c runfft.c
 BIN_DIR = .
 
