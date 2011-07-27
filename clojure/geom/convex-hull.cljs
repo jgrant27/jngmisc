@@ -203,6 +203,12 @@
 
 ;;;; UI stuff
 
+(def DEFAULT-POLL-INTERVAL 15000)
+
+(def DEFAULT-WIDTH 440)
+
+(def DEFAULT-HEIGHT 440)
+
 (def edge-stroke (graphics/Stroke. 1 "#444"))
 
 (def blue-edge-stroke (graphics/Stroke. 1 "#66b"))
@@ -219,19 +225,18 @@
 
 (def red-fill (graphics/SolidFill. "#f00"))
 
-(def trans-fill (graphics/SolidFill. "#0f0" 0.001))
+(def trans-fill (graphics/SolidFill. "#fff" 0.000001))
 
-(def g
-  (doto (graphics/createGraphics "440" "440")
-	;;(.setCoordOrigin 0 440)
-	(.render (dom/getElement "graph"))))
+(def g (doto (graphics/createGraphics 
+              (str DEFAULT-WIDTH) (str DEFAULT-HEIGHT))
+             (.render (dom/getElement "graph"))))
 
 (defn draw-graph 
     []
-  (let [canvas-size (. g (getPixelSize))]
-       (.drawRect g 0 0 
-		  (.width canvas-size) (.height canvas-size) 
-		  edge-stroke white-fill)))
+    (.clear g true)
+    (.setSize g DEFAULT-WIDTH DEFAULT-HEIGHT)
+    (.drawRect g  0 0 DEFAULT-WIDTH DEFAULT-HEIGHT
+               edge-stroke trans-fill))
 
 (defn scale-coord
     [coord]
@@ -240,18 +245,18 @@
 (defn draw-points
     [points stroke fill]
     (doseq  [[x y :as pt] points]
-	    (.drawEllipse g (scale-coord x) (- 440 (scale-coord y))
+	    (.drawEllipse g (scale-coord x) (- DEFAULT-HEIGHT (scale-coord y))
 			  3 3 stroke fill)))
 
 (defn draw-convex-hull
     [points stroke fill]
     (let [path (graphics/Path.)
 	 [xs ys :as start] (first points)]
-	 (.moveTo path (scale-coord xs) (- 440 (scale-coord ys)))
+	 (.moveTo path (scale-coord xs) (- DEFAULT-HEIGHT (scale-coord ys)))
 	 (doall (map (fn [[x y :as pt]]
-			 (.lineTo path (scale-coord x) (- 440 (scale-coord y))))
+			 (.lineTo path (scale-coord x) (- DEFAULT-HEIGHT (scale-coord y))))
 		     (rest points)))
-	 (.lineTo path (scale-coord xs) (- 440 (scale-coord ys)))
+	 (.lineTo path (scale-coord xs) (- DEFAULT-HEIGHT (scale-coord ys)))
 	 (.drawPath g path stroke fill)))
 
 (defn print-points
@@ -275,29 +280,29 @@
        text-input (dom/getElement "text-input")
        text-results-status (dom/getElement "text-results-status")
        text-results (dom/getElement "text-results")]
-       (draw-graph) 
+       (draw-graph)
        ;; draw all points
        (dom/setTextContent 
-	text-input-title 
-	(str "Random generation of " cnt " points...")) 
+        text-input-title 
+        (str "Random generation of " cnt " points...")) 
        (draw-points rpts blue-edge-stroke blue-fill)
        (print-points rpts text-input)
        ;; calc hull
        (dom/setTextContent 
-	text-results-status 
-	(str "Calculating convex hull ...")) 
+        text-results-status 
+        (str "Calculating convex hull ...")) 
        (let [;;r1 (randomset rpts false)
-	 r2 (randomset rpts true)]
-	 (dom/append text-results-status (str " done.\n")) 
-	     ;; update the results
-	 (print-points r2 text-results)
-	 (dom/append
-	  text-results-status
-	  (str "Convex hull has " (count r2) " points.\n"))
-	 ;; draw hull points
-	 (draw-points r2 green-edge-stroke green-fill)
-	 ;;(draw-points r1 red-edge-stroke red-fill)
-	 ;; draw hull
+         r2 (randomset rpts true)]
+         (dom/append text-results-status (str " done.\n")) 
+         ;; update the results
+         (print-points r2 text-results)
+         (dom/append
+          text-results-status
+          (str "Convex hull has " (count r2) " points.\n"))
+         ;; draw hull points
+         (draw-points r2 green-edge-stroke green-fill)
+         ;;(draw-points r1 red-edge-stroke red-fill)
+         ;; draw hull
 	 (draw-convex-hull r2 green-edge-stroke trans-fill)
 	 ;;(draw-convex-hull r1 red-edge-stroke trans-fill)
 	 ;; return the results
@@ -306,7 +311,7 @@
 ;; Auto-update
 (defn ^:export poll
   []
-  (let [timer (goog.Timer. 15000)]
+  (let [timer (goog.Timer. DEFAULT-POLL-INTERVAL)]
        (do (rundemo)
 	   (. timer (start))
 	 (events/listen timer goog.Timer/TICK rundemo))))

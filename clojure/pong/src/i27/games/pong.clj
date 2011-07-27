@@ -37,8 +37,8 @@
 
 (ns i27.games.pong
   (:gen-class)
-  (:import (java.awt Color Toolkit Font GraphicsEnvironment Graphics2D)
-           (java.awt.image BufferStrategy)
+  (:import (java.awt Color Toolkit Font GraphicsEnvironment Graphics2D Point)
+           (java.awt.image BufferStrategy BufferedImage)
            (java.awt.event ActionListener MouseMotionListener KeyListener
                            MouseEvent KeyEvent)
            (javax.swing JFrame Timer WindowConstants)))
@@ -173,6 +173,9 @@
 
 (defn -main []
   (let [tk (. Toolkit getDefaultToolkit)
+        cur (. tk createCustomCursor
+               (BufferedImage. 3 3 BufferedImage/TYPE_INT_ARGB)
+               (Point. 0 0) "null")
         ge (GraphicsEnvironment/getLocalGraphicsEnvironment)
         gd (. ge getDefaultScreenDevice)
         thegame (new-game (.. tk getScreenSize height)
@@ -194,6 +197,7 @@
       (.setBackground Color/BLACK) (.setIgnoreRepaint true)
       (.addMouseMotionListener screen) (.addKeyListener screen))
     (. gd setFullScreenWindow screen)
+    (. screen setCursor cur)
     (. screen createBufferStrategy 2)
     (reset-game thegame theball theplayer thecomputer)))
 
