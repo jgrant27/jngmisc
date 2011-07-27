@@ -75,5 +75,5 @@
 
 (def lazy-primes (memoize lazy-primes))
 
-(println (time (nth (lazy-primes) 1E6)))
-(println (time (nth (lazy-primes) 1E6)))
+(println (time (nth (lazy-primes) 1E3)))
+(println (time (nth (lazy-primes) 1E3)))
