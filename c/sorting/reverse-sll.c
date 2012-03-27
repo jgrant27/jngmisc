@@ -33,7 +33,7 @@
 #include <time.h>
 
 
-#define LIST_SIZE 10000000
+#define LIST_SIZE 3
 #define SHOW_SIZE 5
 
 
@@ -65,21 +65,60 @@ int main(int argc, char* argv[])
 
   // reverse linked list
   start = clock();
-  while (cur2 != NULL)
+  /* while (cur2 != NULL) */
+  /* { */
+  /*   next = cur2->next; */
+  /*   cur2->next = prev; */
+  /*   prev = cur2; */
+  /*   cur2 = next; */
+  /* } */
+  /* node* head2 = prev; */
+
+  /* node* previous = head; */
+  /* node* current = head->next; */
+  /* previous->next = NULL; */
+  /* next = current->next; */
+    
+  /* while(current != NULL){ */
+  /*   current->next = previous; */
+  /*   previous = current; */
+  /*   current = next; */
+  /*   if(current != NULL) */
+  /*     next = current>next; */
+  /* } */
+  /* head = previous; */
+
+  /* prev = head; */
+  /* node* curr = head->next; */
+  /* head->next = NULL; */
+  /* next = NULL; */
+  /* while(curr != NULL) { */
+  /*   next = curr->next; */
+  /*   curr->next = prev; */
+  /*   prev = curr; */
+  /*   curr = next; */
+  /* } */
+  /* head = prev; */
+
+  prev = NULL;
+  while(head!= NULL)
   {
-    next = cur2->next;
-    cur2->next = prev;
-    prev = cur2;
-    cur2 = next;
+    next = head->next;
+    //switch
+    head->next = prev;
+    // move pointer
+    prev = head;
+    head = next;
   }
-  node* head2 = prev;
+  head = prev;
+
   end = clock();
 
   printf("reversed linked list : ");
   for (i=1; i <= LIST_SIZE; i++)
   {
-    if (i <= SHOW_SIZE) printf("%d -> ", head2->val);
-    head2 = head2->next;
+    if (i <= SHOW_SIZE) printf("%d -> ", head->val);
+    head = head->next;
   }
   printf(" ... (%d more)\n", LIST_SIZE - SHOW_SIZE);
 
