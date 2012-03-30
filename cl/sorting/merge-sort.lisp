@@ -110,12 +110,15 @@
                           cfun))))
 
 
-(defmacro do-sort (fun args type)
+(defmacro do-sort (fun args type cnt)
   `(progn
      (format t "~%started merge-sort (~A) ...~%" ,type)
      (finish-output)
-     (let ((sub 100)
-	   (snums (time (apply ,fun ,args))))
+     (let ((sub (if (>= cnt 10) 10 cnt))
+	   #-:ECL-READ-WRITE-LOCK
+	   (snums (time (apply ,fun ,args)))
+           #+:ECL-READ-WRITE-LOCK
+	   (snums (apply ,fun ,args)))
        (format t "merge-sorted ~A items (first ~A shown) : ~%~A ~%~%~%" 
 	       (length snums) sub (subseq snums 0 sub)))))
   
@@ -124,32 +127,33 @@
   (loop for i from start below end collect (random i)))
 
 ;; tests
-(setf *random-state* (make-random-state t))
-(let* ((cnt (floor 1E4))
-       (rnumsa (make-array cnt))
-       (rnumsl (list (random cnt))))
-  (dotimes (n cnt) (setf (svref rnumsa n) (random cnt)))
-  (dotimes (n (- cnt 1)) (nconc rnumsl (list (random cnt))))
-  
-  ;; Sort numbers in descending order (array). (single thread)    
-  (do-sort 'merge-sort-arr (list rnumsa #'>) "array")
-  
-  ;; Sort numbers in descending order (list). (single thread)    
-  (do-sort 'merge-sort-lst (list rnumsl #'>) "list")
-  
-  ;; Sort numbers in descending order (generic). (single thread)    
-  (do-sort 'merge-sort-gen (list rnumsa #'>) "generic")
-
-  ;; Filter numbers with factors of 3 then sort multiples of 9 first in desc.
-  (do-sort 'merge-sort-lst (list 
-			    (map 'list #'(lambda (x) (when (= 0 (mod x 3)) x))
-				 (delete #'(lambda (x) (not (and (> x 0) (= 0 (mod x 3)))))
-					 rnumsl :test #'(lambda (f n) (apply f (list n)))))
-			    #'(lambda (x y) 
-				(and (= 0 (mod x 9)) (>= x 9)
-				     (or (not (= 0 (mod y 9)))
-					 (and (= 0 (mod y 9)) (>= y 9)
-					      (> x y)))))) "generic custom")
-  )
+(defun test-sort()
+  (setf *random-state* (make-random-state t))
+  (let* ((cnt (floor 1E4))
+	 (rnumsa (make-array cnt))
+	 (rnumsl (list (random cnt))))
+    (dotimes (n cnt) (setf (svref rnumsa n) (random cnt)))
+    (dotimes (n (- cnt 1)) (nconc rnumsl (list (random cnt))))
+    
+    ;; Sort numbers in descending order (array). (single thread)    
+    (do-sort 'merge-sort-arr (list rnumsa #'>) "array" cnt)
+    
+    ;; Sort numbers in descending order (list). (single thread)    
+    (do-sort 'merge-sort-lst (list rnumsl #'>) "list" cnt)
+    
+    ;; Sort numbers in descending order (generic). (single thread)    
+    (do-sort 'merge-sort-gen (list rnumsl #'>) "generic" cnt)
+    
+    ;; Filter numbers with factors of 3 then sort multiples of 9 first in desc.
+    (do-sort 'merge-sort-lst (list 
+			      (map 'list #'(lambda (x) (when (= 0 (mod x 3)) x))
+				   (delete #'(lambda (x) (not (and (> x 0) (= 0 (mod x 3)))))
+					   rnumsl :test #'(lambda (f n) (apply f (list n)))))
+			      #'(lambda (x y) 
+				  (and (= 0 (mod x 9)) (>= x 9)
+				       (or (not (= 0 (mod y 9)))
+					   (and (= 0 (mod y 9)) (>= y 9)
+						(> x y)))))) "generic custom" cnt)
+    ))
 
   
