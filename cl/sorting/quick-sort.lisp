@@ -33,19 +33,35 @@
 (defun quick-sort-generic (sequence cfun &optional result-type)
   (if (<= (length sequence) 1)
       (copy-seq sequence)
-      (progn
-	(let* ((result-type (or result-type 'vector))
-	       (pivot-ind (random (length sequence)))
-	       (pivot-val (elt sequence pivot-ind))
-	       (sequence 
-		(remove pivot-val sequence :start pivot-ind :end (+ 1 pivot-ind))))
-	  (flet ((compfun (x) (apply cfun (list pivot-val x))))
-	    (let ((left-seq (remove-if #'compfun sequence))
-		  (right-seq (remove-if-not #'compfun sequence)))
-	      (concatenate result-type 
-			      (quick-sort-generic left-seq cfun result-type)
-			      (list pivot-val)
-			      (quick-sort-generic right-seq cfun result-type)))))))))
+      (let* ((result-type (or result-type 'vector))
+	     (pivot-ind (random (length sequence)))
+	     (pivot-val (elt sequence pivot-ind))
+	     (sequence 
+	      (remove pivot-val sequence :start pivot-ind :end (+ 1 pivot-ind))))
+	(flet ((compfun (x) (apply cfun (list pivot-val x))))
+	  (let ((left-seq (remove-if #'compfun sequence))
+		(right-seq (remove-if-not #'compfun sequence)))
+	    (concatenate result-type 
+			 (quick-sort-generic left-seq cfun result-type)
+			 (list pivot-val)
+			 (quick-sort-generic right-seq cfun result-type)))))))
+
+;; alternative
+(defun quick-sort-generic2 (sequence cfun &optional result-type)
+  (if (null sequence) 
+      nil
+      (flet ((partition (fun array)
+	       (list (remove-if-not fun array) (remove-if fun array))))
+	(let ((result-type (or result-type 'vector))
+	      (part (partition (lambda (x) 
+			       (apply cfun (list x (elt sequence 0)))) 
+			       (subseq sequence 1))))
+	  (concatenate result-type
+		       (quick-sort-generic2 (car part) cfun result-type) 
+		       (list (elt sequence 0))
+		       (quick-sort-generic2 (cadr part) cfun result-type))))))
+
+;; test functions
 
 (defmacro do-sort (fun args type cnt)
   `(progn
@@ -73,5 +89,14 @@
 
     ;; Sort numbers in descending order (list).    
     (do-sort 'quick-sort-generic (list rnumsl #'> 'list) "generic, list" cnt)
+
+    ;; Sort numbers in descending order
+    (do-sort 'quick-sort-generic2 
+      (list rnumsl #'>) "generic2, array" cnt)
+
+    ;; Sort numbers in descending order (list).    
+    (do-sort 'quick-sort-generic2 
+      (list rnumsl #'> 'list) "generic2, list" cnt)
+
 
     ))
