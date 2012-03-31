@@ -31,18 +31,18 @@
             (speed 0) (compilation-speed 0) (safety 3) (debug 3)))
 
 (defun quick-sort-generic (sequence cfun &optional result-type)
-   (let ((result-type (if (eq nil result-type) 'vector result-type)))
-     (if (<= (length sequence) 1)
-	 (copy-seq sequence)
-	 (progn
-	   (let* ((pivot-ind (random (length sequence)))
-		  (pivot-val (elt sequence pivot-ind))
-		  (sequence 
-		   (remove pivot-val sequence :start pivot-ind :end (+ 1 pivot-ind))))
-	     (flet ((compfun (x) (apply cfun (list pivot-val x))))
-	       (let ((left-seq (remove-if #'compfun sequence))
-		     (right-seq (remove-if-not #'compfun sequence)))
-		 (concatenate result-type 
+  (if (<= (length sequence) 1)
+      (copy-seq sequence)
+      (progn
+	(let* ((result-type (or result-type 'vector))
+	       (pivot-ind (random (length sequence)))
+	       (pivot-val (elt sequence pivot-ind))
+	       (sequence 
+		(remove pivot-val sequence :start pivot-ind :end (+ 1 pivot-ind))))
+	  (flet ((compfun (x) (apply cfun (list pivot-val x))))
+	    (let ((left-seq (remove-if #'compfun sequence))
+		  (right-seq (remove-if-not #'compfun sequence)))
+	      (concatenate result-type 
 			      (quick-sort-generic left-seq cfun result-type)
 			      (list pivot-val)
 			      (quick-sort-generic right-seq cfun result-type)))))))))
@@ -72,6 +72,6 @@
     (do-sort 'quick-sort-generic (list rnumsa #'>) "generic, array" cnt)
 
     ;; Sort numbers in descending order (list).    
-    (do-sort 'quick-sort-generic (list rnumsl #'>) "generic, list" cnt)
+    (do-sort 'quick-sort-generic (list rnumsl #'> 'list) "generic, list" cnt)
 
     ))
