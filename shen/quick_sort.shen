@@ -36,8 +36,7 @@
   {(A --> boolean) --> (list A) --> (list A)}
   _  []      -> []
   T? [A | B] -> (append [A] (filter T? B)) where (T? A)
-  T? [_ | B] -> (filter T? B)
-)
+  T? [_ | B] -> (filter T? B))
 
 (define quick-sort-generic
   {(list A) --> (A --> A --> boolean) --> (A --> A --> boolean) --> (list A)}
