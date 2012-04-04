@@ -85,18 +85,21 @@
     (dotimes (n (- cnt 1)) (nconc rnumsl (list (random cnt))))
     
     ;; Sort numbers in descending order.
-    (do-sort 'quick-sort-generic (list rnumsa #'>) "generic, array" cnt)
+    (time
+    (do-sort 'quick-sort-generic 
+      (list rnumsa #'>) "generic, array" cnt))
 
     ;; Sort numbers in descending order (list).    
-    (do-sort 'quick-sort-generic (list rnumsl #'> 'list) "generic, list" cnt)
+    (time
+     (do-sort 'quick-sort-generic 
+       (list rnumsl #'> 'list) "generic, list" cnt))
 
     ;; Sort numbers in descending order
-    (do-sort 'quick-sort-generic2 
-      (list rnumsl #'>) "generic2, array" cnt)
+    (time 
+     (do-sort 'quick-sort-generic2 
+      (list rnumsl #'>) "generic2, array" cnt))
 
     ;; Sort numbers in descending order (list).    
-    (do-sort 'quick-sort-generic2 
-      (list rnumsl #'> 'list) "generic2, list" cnt)
-
-
-    ))
+    (time
+     (do-sort 'quick-sort-generic2 
+       (list rnumsl #'> 'list) "generic2, list" cnt))))
