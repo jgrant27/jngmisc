@@ -47,30 +47,29 @@
 
 \* *** NUMBERS *** *\
 
-\* descending with duplicates *\
-(quick-sort-generic [3 1 2 7 9 6 6 3 0] <= >)
-\* [9 7 6 6 3 3 2 1 0] : (list number) *\
-
 \* ascending with duplicates *\
-(quick-sort-generic [3 1 2 7 9 6 6 3 0] >= <)
+(quick-sort-generic [3 1 2 7 9 6 6 3 0] <= >)
 \* [0 1 2 3 3 6 6 7 9] : (list number)  *\
 
-\* ascending unique numbers *\
-(quick-sort-generic [3 1 2 7 9 6 6 3 0] > <)
-\* [0 1 2 3 6 7 9] : (list number) *\
+\* descending with duplicates *\
+(quick-sort-generic [3 1 2 7 9 6 6 3 0] >= <)
+\* [9 7 6 6 3 3 2 1 0] : (list number) *\
 
+\* descending unique numbers *\
+(quick-sort-generic [3 1 2 7 9 6 6 3 0] > <)
+\* [9 7 6 3 2 1 0] : (list number) *\
 
 
 \* *** LISTS *** *\
 
-\* descending by length *\
-(quick-sort-rec [[2 1 6] [] [1 1 9 0] [0]] 
+\* ascending by length *\
+(quick-sort-generic [[2 1 6] [] [1 1 9 0] [0]] 
 		(/. X Y (<= (length X) (length Y)))
 		(/. X Y (> (length X) (length Y))))
-\* [[1 1 9 0] [2 1 6] [0] []] : (list (list number)) *\
+\* [[] [0] [2 1 6] [1 1 9 0]] : (list (list number)) *\
 
-\* ascending by length *\
-(quick-sort-rec [[2 1 6] [] [1 1 9 0] [0]] 
+\* descending by length *\
+(quick-sort-generic [[2 1 6] [] [1 1 9 0] [0]] 
 		(/. X Y (> (length X) (length Y)))
 		(/. X Y (<= (length X) (length Y))))
-\* [[] [0] [2 1 6] [1 1 9 0]] : (list (list number)) *\
+\* [[1 1 9 0] [2 1 6] [0] []] : (list (list number)) *\
