@@ -31,6 +31,8 @@
             (speed 0) (compilation-speed 0) (safety 3) (debug 3)))
 
 (defun quick-sort-generic (sequence cfun &optional result-type)
+  "Picks the pivot at random and therefore avoids the edge-case
+   where the list is already sorted and the performance degrades to O(n^2)."
   (if (<= (length sequence) 1)
       (copy-seq sequence)
       (let* ((result-type (or result-type 'vector))
@@ -48,18 +50,25 @@
 
 ;; alternative
 (defun quick-sort-generic2 (sequence cfun &optional result-type)
-  (if (null sequence) 
-      nil
+  (if (not (> (length sequence) 0))
+      sequence
       (flet ((partition (fun array)
 	       (list (remove-if-not fun array) (remove-if fun array))))
-	(let ((result-type (or result-type 'vector))
-	      (part (partition (lambda (x) 
-			       (apply cfun (list x (elt sequence 0)))) 
-			       (subseq sequence 1))))
+	(let* ((result-type (or result-type 'vector))
+	       (pivot-ind (random (length sequence)))
+	       (pivot-val (elt sequence pivot-ind))
+	       (rem-seq
+		(remove pivot-val sequence :start pivot-ind :end (+ 1 pivot-ind)))
+	       (part (partition (lambda (x) 
+				  (apply cfun (list x pivot-val))) rem-seq)))
 	  (concatenate result-type
 		       (quick-sort-generic2 (car part) cfun result-type) 
-		       (list (elt sequence 0))
+		       (list pivot-val)
 		       (quick-sort-generic2 (cadr part) cfun result-type))))))
+
+
+;; (quick-sort-generic2 "ABCDEF" #'(lambda (x y) (> (char-int x) (char-int y))) 'string)
+;;;; "FEDCBA"
 
 ;; test functions
 
