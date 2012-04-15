@@ -50,8 +50,8 @@
 
 ;; alternative
 (defun quick-sort-generic2 (sequence cfun &optional result-type)
-  (if (not (> (length sequence) 0))
-      sequence
+  (if (<= (length sequence) 1)
+      (copy-seq sequence)
       (flet ((partition (fun array)
 	       (list (remove-if-not fun array) (remove-if fun array))))
 	(let* ((result-type (or result-type 'vector))
