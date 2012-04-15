@@ -30,30 +30,14 @@
 (proclaim '(optimize 
             (speed 0) (compilation-speed 0) (safety 3) (debug 3)))
 
+;; alternative
 (defun quick-sort-generic (sequence cfun &optional result-type)
   "Picks the pivot at random and therefore avoids the edge-case
    where the list is already sorted and the performance degrades to O(n^2)."
   (if (<= (length sequence) 1)
       (copy-seq sequence)
-      (let* ((result-type (or result-type 'vector))
-	     (pivot-ind (random (length sequence)))
-	     (pivot-val (elt sequence pivot-ind))
-	     (sequence 
-	      (remove pivot-val sequence :start pivot-ind :end (+ 1 pivot-ind))))
-	(flet ((compfun (x) (apply cfun (list pivot-val x))))
-	  (let ((left-seq (remove-if #'compfun sequence))
-		(right-seq (remove-if-not #'compfun sequence)))
-	    (concatenate result-type 
-			 (quick-sort-generic left-seq cfun result-type)
-			 (list pivot-val)
-			 (quick-sort-generic right-seq cfun result-type)))))))
-
-;; alternative
-(defun quick-sort-generic2 (sequence cfun &optional result-type)
-  (if (<= (length sequence) 1)
-      (copy-seq sequence)
-      (flet ((partition (fun array)
-	       (list (remove-if-not fun array) (remove-if fun array))))
+      (flet ((partition (fun rem-seq)
+	       (list (remove-if-not fun rem-seq) (remove-if fun rem-seq))))
 	(let* ((result-type (or result-type 'vector))
 	       (pivot-ind (random (length sequence)))
 	       (pivot-val (elt sequence pivot-ind))
@@ -62,13 +46,10 @@
 	       (part (partition (lambda (x) 
 				  (apply cfun (list x pivot-val))) rem-seq)))
 	  (concatenate result-type
-		       (quick-sort-generic2 (car part) cfun result-type) 
+		       (quick-sort-generic (car part) cfun result-type) 
 		       (list pivot-val)
-		       (quick-sort-generic2 (cadr part) cfun result-type))))))
+		       (quick-sort-generic (cadr part) cfun result-type))))))
 
-
-;; (quick-sort-generic2 "ABCDEF" #'(lambda (x y) (> (char-int x) (char-int y))) 'string)
-;;;; "FEDCBA"
 
 ;; test functions
 
@@ -89,9 +70,12 @@
   (setf *random-state* (make-random-state t))
   (let* ((cnt (floor 1E4))
 	 (rnumsa (make-array cnt))
-	 (rnumsl (list (random cnt))))
-    (dotimes (n cnt) (setf (svref rnumsa n) (random cnt)))
-    (dotimes (n (- cnt 1)) (nconc rnumsl (list (random cnt))))
+	 (rnumsl (list (random (1+ cnt))))
+	 (rstr (list (+ 64 (random 27)))))
+    (dotimes (n cnt) (setf (svref rnumsa n) (random (1+ cnt))))
+    (dotimes (n (1- cnt)) (nconc rnumsl (list (random (1+ cnt)))))
+    ;; letters only
+    (dotimes (n (1- cnt)) (nconc rstr (list (+ 64 (random 27)))))
     
     ;; Sort numbers in descending order.
     (time
@@ -103,12 +87,11 @@
      (do-sort 'quick-sort-generic 
        (list rnumsl #'> 'list) "generic, list" cnt))
 
-    ;; Sort numbers in descending order
+    ;; Sort string in descending order by char int vals
     (time 
-     (do-sort 'quick-sort-generic2 
-      (list rnumsl #'>) "generic2, array" cnt))
+     (do-sort 'quick-sort-generic
+       (list (map 'string #'(lambda (x) (code-char x)) rstr)
+    	     #'(lambda (x y) (> (char-int x) (char-int y)))
+    	     'string) "generic, string" cnt))))
+       
 
-    ;; Sort numbers in descending order (list).    
-    (time
-     (do-sort 'quick-sort-generic2 
-       (list rnumsl #'> 'list) "generic2, list" cnt))))
