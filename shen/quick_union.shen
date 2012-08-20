@@ -60,28 +60,28 @@
 
 
 \**\
-\* A Quick Union Find data type (weighted and using path compression) demonstrating  *\
+\* Disjoint set data type (weighted and using path compression) demonstrating  *\
 \* (m + n) lg* n worst-case find time *\
 \**\
 
-(datatype union-find
+(datatype disjoint-set
   Count : number ; Ids : (vector number) ; Sizes : (vector number);
   =================================================================
-  [Count Ids Sizes] : union-find;)
+  [Count Ids Sizes] : disjoint-set;)
 
-\* Create a new union-find type *\
+\* Create a new disjoint-set type *\
 (define new
-  { number --> union-find }
+  { number --> disjoint-set }
   N -> [N (range 1 N) (vector-init 1 N)])
 
 \* Return the number of disjoint sets *\
 (define count
-  { union-find --> number }
+  { disjoint-set --> number }
   [Count Ids Sizes] -> Count)
 
 \* Return id of root object *\
 (define find-root
-  { union-find --> number --> number }
+  { disjoint-set --> number --> number }
   [Count Ids Sizes] P -> (let Parent 
 			   \* Path Compression *\
 			   (<-vector Ids (<-vector Ids P))
@@ -91,12 +91,12 @@
 
 \* Are objects P and Q in the set ? *\
 (define connected
-  { union-find --> number --> number --> boolean }
+  { disjoint-set --> number --> number --> boolean }
   UF P Q -> (= (find-root UF P) (find-root UF Q)))
 
 \* Replace sets containing P and Q with their union *\
 (define quick-union
-  { union-find --> number --> number --> union-find }
+  { disjoint-set --> number --> number --> disjoint-set }
   [Count Ids Sizes] P Q 
   -> (let UF      [Count Ids Sizes]
 	  I       (find-root UF P)
@@ -118,7 +118,7 @@
 \* Tests *\
 
 (define create-unions
-  { union-find --> (list (list number)) --> union-find }
+  { disjoint-set --> (list (list number)) --> disjoint-set }
   UF []           -> UF
   UF [[P Q] | XS] -> (create-unions (quick-union UF P Q) XS))
 
