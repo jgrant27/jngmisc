@@ -111,7 +111,7 @@
 
 
 (define run-tests
-  { A --> symbol }
+  { A --> number }
   _ -> (let Tree (insert-number-list-into-tree [11 14 15 2 7 1 5 8] [])
             Count 10000
             Nums (range 1 Count [])
@@ -126,7 +126,7 @@
              (output "~%Performing lookups in tree with ~A elements ...~%" Count)
              (time (output "666 in tree ? ~A" (member [666 666] Tree)))
              (time (output "-1 in tree ? " (member [-1 -1] Tree)))))
-          NIL)))
+          1)))
 
 (run-tests NIL)
 
