@@ -60,8 +60,13 @@
 
 
 \**\
-\* Disjoint set data type (weighted and using path compression) demonstrating  *\
-\* (m + n) lg* n worst-case find time *\
+\* Disjoint set data type (weighted and using path compression). *\
+\**\
+\* O((M+N)lg*N + 2MN) worst-case union time (because of vector copying) *\
+\* For m union operations on a set of n elements.
+\**\
+\* O((M+N)lg*N) worst-case find time *\
+\* For m connected(find) operations on a set of n elements.
 \**\
 
 (datatype disjoint-set
