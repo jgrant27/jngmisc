@@ -29,22 +29,22 @@
 module Main( main ) where
 
 import System.Environment( getArgs )
-import Data.Vector
-
+import Data.Sequence
+import Prelude hiding (replicate)
 
 
 -- Disjoint set data type (weighted and using path compression).
--- O((M+N)lg*N) worst-case union time
+-- O((M+N)lg*N + 2MlogN) worst-case union time (practically O(1))
 -- For M union operations on a set of N elements.
--- O((M+N)lg*N) worst-case find time
+-- O((M+N)lg*N) worst-case find time (practically O(1))
 -- For M connected(find) operations on a set of N elements.
 data DisjointSet = DisjointSet
-     { count :: Int, ids :: (Vector Int), sizes :: (Vector Int) }
+     { count :: Int, ids :: (Seq Int), sizes :: (Seq Int) }
      deriving (Read,  Show)
 
 -- Return id of root object
 findRoot :: DisjointSet -> Int -> Int
-findRoot set p = let parent = (ids set) ! (p - 1)
+findRoot set p = let parent = (index (ids set) (p-1))
                      in if (p == parent)
                         then p else (findRoot set parent)
 
@@ -54,20 +54,20 @@ connected set p q = (findRoot set p) == (findRoot set q)
 
 -- Replace sets containing P and Q with their union
 quickUnion :: DisjointSet -> Int -> Int -> DisjointSet
-quickUnion set p q =
-           let i = findRoot set p
-               j = findRoot set q
-               size = ((sizes set) ! (i-1)) + ((sizes set) ! (j-1))
-               in if (i == j)
-                  then set
-                  -- Always make smaller root point to the larger one
-                  else if (((sizes set) ! (i-1)) < ((sizes set) ! (j-1)))
-                       then (DisjointSet
-                            ((count set)-1) ((ids set) // [(i-1, j)])
-                            ((sizes set) // [(j-1, size)]))
-                       else (DisjointSet
-                            ((count set)-1) ((ids set) // [(j-1, i)])
-                            ((sizes set) // [(i-1, size)]))
+quickUnion set p q = if (i == j)
+                     then set
+                     -- Always make smaller root point to the larger one
+                     else if ((index (sizes set) (i-1)) < (index (sizes set) (j-1)))
+                          then (DisjointSet cnt (update i1 j rids) (update j1 size rsizes))
+                          else (DisjointSet cnt (update j1 i rids) (update i1 size rsizes))
+                          where i = findRoot set p
+                                j = findRoot set q
+                                i1 = i-1
+                                j1 = j-1
+                                size = (index (sizes set) i1) + (index (sizes set) j1)
+                                cnt = (count set)-1
+                                rids = (ids set)
+                                rsizes = (sizes set)
 
 createUnions :: DisjointSet -> [(Int, Int)] -> DisjointSet
 createUnions set [] = set
@@ -78,27 +78,27 @@ createUnions set ((p,q):xs) = createUnions (quickUnion set p q) xs
 main :: IO ()
 main = do
     args <- getArgs
-    let cnt1 = (read (Prelude.head args) :: Int)
+    let cnt1 = (read (head args) :: Int)
         cnt  = if (cnt1 < 10) then 10 else cnt1
         in do
-           let set = (DisjointSet cnt (fromList [1, 2..cnt]) (Data.Vector.replicate cnt 1))
+           let set = (DisjointSet cnt (fromList [1, 2..cnt]) (replicate cnt 1))
                in do
-                  putStr ("\ncreating union find with " Prelude.++ (show cnt) Prelude.++ " objects ...")
-                  putStrLn ("DONE\n" Prelude.++ (show set))
+                  putStr ("\ncreating union find with " ++ (show cnt) ++ " objects ...")
+                  putStrLn ("DONE\n" ++ (show set))
                   putStrLn ("All objects are disconnected.")
-                  putStrLn ("1 and 9 connected ? " Prelude.++ (show (connected set 1 9)))
-                  putStrLn ("4 and 6 connected ? " Prelude.++ (show (connected set 4 6)))
-                  putStrLn ("3 and 1 connected ? " Prelude.++ (show (connected set 3 1)))
-                  putStrLn ("7 and 8 connected ? " Prelude.++ (show (connected set 7 8)))
+                  putStrLn ("1 and 9 connected ? " ++ (show (connected set 1 9)))
+                  putStrLn ("4 and 6 connected ? " ++ (show (connected set 4 6)))
+                  putStrLn ("3 and 1 connected ? " ++ (show (connected set 3 1)))
+                  putStrLn ("7 and 8 connected ? " ++ (show (connected set 7 8)))
                   putStr ("\ncreating unions ...")
                   let nset = (createUnions set [(4,1), (8,2), (7,3), (8,5), (3,4), (5,9), (5,1), (10,4), (6,1)])
                       in do
-                         putStrLn ("DONE\n" Prelude.++ (show nset))
+                         putStrLn ("DONE\n" ++ (show nset))
                          putStrLn ("All objects are connected (only 1 group).")
-                         putStrLn ("1 and 9 connected ? " Prelude.++ (show (connected nset 1 9)))
-                         putStrLn ("4 and 6 connected ? " Prelude.++ (show (connected nset 4 6)))
-                         putStrLn ("3 and 1 connected ? " Prelude.++ (show (connected nset 3 1)))
-                         putStrLn ("7 and 8 connected ? " Prelude.++ (show (connected nset 7 8)))
+                         putStrLn ("1 and 9 connected ? " ++ (show (connected nset 1 9)))
+                         putStrLn ("4 and 6 connected ? " ++ (show (connected nset 4 6)))
+                         putStrLn ("3 and 1 connected ? " ++ (show (connected nset 3 1)))
+                         putStrLn ("7 and 8 connected ? " ++ (show (connected nset 7 8)))
 
 
 
