@@ -44,9 +44,10 @@ data DisjointSet = DisjointSet
 
 -- Return id of root object
 findRoot :: DisjointSet -> Int -> Int
-findRoot set p = let parent = (index (ids set) (p-1))
-                     in if (p == parent)
-                        then p else (findRoot set parent)
+findRoot set p | p == parent = p
+               | otherwise   = findRoot set parent
+               where
+                parent = index (ids set) (p - 1)
 
 -- Are objects P and Q connected ?
 connected :: DisjointSet -> Int -> Int -> Bool
@@ -54,20 +55,17 @@ connected set p q = (findRoot set p) == (findRoot set q)
 
 -- Replace sets containing P and Q with their union
 quickUnion :: DisjointSet -> Int -> Int -> DisjointSet
-quickUnion set p q = if (i == j)
-                     then set
+quickUnion set p q | i == j = set
+                   | otherwise = DisjointSet cnt rids rsizes
                      -- Always make smaller root point to the larger one
-                     else if ((index (sizes set) (i-1)) < (index (sizes set) (j-1)))
-                          then (DisjointSet cnt (update i1 j rids) (update j1 size rsizes))
-                          else (DisjointSet cnt (update j1 i rids) (update i1 size rsizes))
-                          where i = findRoot set p
-                                j = findRoot set q
-                                i1 = i-1
-                                j1 = j-1
-                                size = (index (sizes set) i1) + (index (sizes set) j1)
-                                cnt = (count set)-1
-                                rids = (ids set)
-                                rsizes = (sizes set)
+                     where
+                        (i, j)   = (findRoot set p, findRoot set q)
+                        (i1, j1) = (index (sizes set) (i - 1), index (sizes set) (j - 1))
+                        (cnt, psmaller, size) = (count set - 1, i1 < j1, i1 + j1)
+                        (rids, rsizes) = if psmaller
+                                         then (update (i - 1) j (ids set), update (j - 1) size (sizes set))
+                                         else (update (j - 1) i (ids set), update (i - 1) size (sizes set))
+
 
 createUnions :: DisjointSet -> [(Int, Int)] -> DisjointSet
 createUnions set [] = set
