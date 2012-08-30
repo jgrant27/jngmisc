@@ -57,11 +57,11 @@ connected set p q = (findRoot set p) == (findRoot set q)
 quickUnion :: DisjointSet -> Int -> Int -> DisjointSet
 quickUnion set p q | i == j = set
                    | otherwise = DisjointSet cnt rids rsizes
-                     -- Always make smaller root point to the larger one
                      where
                         (i, j)   = (findRoot set p, findRoot set q)
                         (i1, j1) = (index (sizes set) (i - 1), index (sizes set) (j - 1))
                         (cnt, psmaller, size) = (count set - 1, i1 < j1, i1 + j1)
+                        -- Always make smaller root point to the larger one
                         (rids, rsizes) = if psmaller
                                          then (update (i - 1) j (ids set), update (j - 1) size (sizes set))
                                          else (update (j - 1) i (ids set), update (i - 1) size (sizes set))
