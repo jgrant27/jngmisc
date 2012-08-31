@@ -35,8 +35,8 @@ import System.Random
 
 -- Selection Sort
 selectionSort :: [Int] -> [Int] -> [Int]
-selectionSort sorted [] = sorted
-selectionSort sorted unsorted = selectionSort (sorted ++ [min]) (delete min unsorted)
+selectionSort sorted [] = reverse sorted
+selectionSort sorted unsorted = selectionSort (min:sorted) (delete min unsorted)
                      where min = minimum unsorted
 
 
