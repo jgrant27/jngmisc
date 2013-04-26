@@ -59,14 +59,10 @@ func PalindromesFast(text string) (rlens []int) {
 
 			start := len(lengths) - 2;
 			end := start - plen;
-			//fmt.Printf("plen : %d\n", plen);
+
 			if (plen > 0) {
-				rng := RangeFor(start, end, -1);
-				//fmt.Printf("rng : %d\n", rng[0]);
-				for j:= range rng {
-					//fmt.Printf("j %d range len %d\n", j, len(rng));
-					ind := rng[j];
-					//fmt.Printf("%d\n", ind);
+				for j := start;  j > end; j-- {
+					ind := j;
 					d := ind - end - 1;
 					if ind >= 0 && ind < len(lengths) {
 						if lengths[ind] == d {
@@ -93,9 +89,8 @@ func PalindromesFast(text string) (rlens []int) {
 		start := nlen - 2;
 		end := start - (2 * tlen + 1 - nlen);
 		if (start - end > 0) {
-			rng := RangeFor(start, end, -1);
-			for j:= range rng {
-				ind := rng[j];
+			for j := start;  j > end; j-- {
+				ind := j;
 				d := ind - end - 1;
 				//fmt.Printf("d %d , ind %d\n", d, ind)
 				if ind >= 0 && ind < len(lengths) {

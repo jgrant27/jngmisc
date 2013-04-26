@@ -38,27 +38,22 @@ import (
 	."./palindromes"
 )
 
+func run(strn string, f func(string)([]int), fname string) {
+	start := time.Now();
+  lens := f(strn);
+	end := time.Now();
+  i1, i2 := LongestPalindrome(lens);
+  longest := strn[i1:i2];
+  fmt.Printf("longest : '%s ...' with length %d [%d:%d] (%s)\n",
+		longest[0:22], len(longest), i1, i2, fname);
+	fmt.Printf("%v elapsed (%s) \n", end.Sub(start), fname);
+}
+
 func main() {
   text := bytes.NewBufferString("");
   io.CopyN(text, os.Stdin, 1024 * 1024 * 512); // copies up to 512MB of input
   strn := text.String();
 
-	nstart := time.Now();
-  lens1 := PalindromesNaive(strn);
-	nend := time.Now();
-  ni1, ni2 := LongestPalindrome(lens1);
-  nlongest := strn[ni1:ni2];
-  fmt.Printf("longest : '%s ...' with length %d [%d:%d] (Naive)\n",
-		nlongest[0:22], len(nlongest), ni1, ni2);
-	fmt.Printf("%v elapsed (Naive) \n", nend.Sub(nstart));
-
-
-	fstart := time.Now();
-  lens2 := PalindromesFast(strn);
-	fend := time.Now();
-  fi1, fi2 := LongestPalindrome(lens2);
-  flongest := strn[fi1:fi2];
-  fmt.Printf("longest : '%s ...' with length %d [%d:%d] (Fast)\n",
-		flongest[0:22], len(flongest), fi1, fi2);
-	fmt.Printf("%v elapsed (Fast) \n", fend.Sub(fstart));
+	run(strn, PalindromesNaive, "Naive");
+	run(strn, PalindromesFast, "Fast");
 }
