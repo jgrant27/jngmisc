@@ -81,7 +81,7 @@
 ;; the first 49 chars of the first chromosome of the human genome
 (deftests-lpn-assert-eql     "AATTCTTTGATTGATAATTTTTTCTTCTCAGTCTTTTATCTTGTCTCTTC" "TTTTTT")
 (deftests-lpn-assert-eql "TTTTTT" "TTTTTT")
-
+(deftests-lpn-assert-eql "So my mom and dad said that they would find me a palindrome that is better than a man a plan a canal panama.  I'm not sure that is possible though and don't expect a tattarrattat on my door any time soon. tattarrattattattarrattat" "tattarrattattattarrattat")
 
 ;;(run-tests 'i27.palindromes)
 
