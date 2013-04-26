@@ -31,10 +31,26 @@ package main
 import (
   . "./tests"
   "fmt"
+  "os"
+  "strconv"
 )
 
+const DEFAULT_WORD_CNT int = 1E3
+
 func main() {
-  fmt.Printf("Running tests to find longest palindromes ...\n\n")
+  wordcnt := DEFAULT_WORD_CNT
+  msg := "Using default word count. Alternatively pass this in as first parameter.\n"
+  if len(os.Args) > 1 {
+    var err error
+    wordcnt, err = strconv.Atoi(os.Args[1])
+    if err != nil {
+      fmt.Printf(msg)
+    }
+  } else {
+    fmt.Printf(msg)
+  }
+
+  fmt.Printf("Running tests to find longest palindromes (%d words) ...\n", wordcnt)
   SanityTests()
-  BigTest()
+  BigTest(wordcnt)
 }
