@@ -40,7 +40,7 @@ func PrintDuration(f func()) {
   start := time.Now()
   f()
   end := time.Now()
-  fmt.Printf("%v elapsed\n\n", end.Sub(start))
+  fmt.Printf("%v elapsed\n", end.Sub(start))
 }
 
 func AssertFind(f func(string) (int, int), fname string, instr string, expstr string) {
@@ -68,9 +68,9 @@ func SanityTests() {
   AssertFind(PalindromesFast, "Fast", "So my mom and dad said that they would find me a palindrome that is better than a man a plan a canal panama.  I'm not sure that is possible though and don't expect a tattarrattat on my door any time soon. tattarrattattattarrattat", "tattarrattattattarrattat")
 }
 
-func BigTest() {
-  paltxt := strings.Repeat(" amanaplanacanalpanama ", 1E3)
-  fmt.Printf("Big test ...\n")
+func BigTest(wordcnt int) {
+  paltxt := strings.Repeat(" amanaplanacanalpanama ", wordcnt)
+  fmt.Printf("\nBig tests (%d) ...\n", wordcnt)
   PrintDuration(func() { AssertFind(PalindromesNaive, "Slow", paltxt, paltxt) })
   PrintDuration(func() { AssertFind(PalindromesFast, "Fast", paltxt, paltxt) })
 }
