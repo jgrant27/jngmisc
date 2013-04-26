@@ -26,118 +26,85 @@
 // EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-
 package palindromes
 
-
 import (
-  . "../utils";
-//  "fmt";
+  . "../utils"
+  //"fmt"
 )
 
-
-
+func LargestStartEnd(lengths []int) (int, int) {
+  // Given a slice of palindrome lengths,
+  // returns the start and end indexes of the longest
+  // palindrome.
+  max := Max(lengths)
+  im := IndexOf(lengths, max)
+  s := MaxInt(0, im/2-max/2)
+  return s, s + max
+}
 
 // Finds the lengths of palindromes in a string.
 // O(n) time complexity. O(n) space complexity.
-func PalindromesFast(text string) (rlens []int) {
-  tlen := len(text);
-  lengths := make([]int, 0);
-  var i int = 0;
-  var plen int = 0;
-
-	if tlen > 1 {
-
-		for i < tlen {
-			if i > plen && text[i - plen - 1] == text[i] {
-				plen += 2;
-				i++;
-				continue;
-			}
-
-			lengths = append(lengths, plen);
-
-			start := len(lengths) - 2;
-			end := start - plen;
-
-			if (plen > 0) {
-				for j := start;  j > end; j-- {
-					ind := j;
-					d := ind - end - 1;
-					if ind >= 0 && ind < len(lengths) {
-						if lengths[ind] == d {
-							plen = d;
-							break;
-						}
-						lengths = append(lengths, MinInt(d, lengths[ind]));
-					} else {
-						plen = 1;
-						i++;
-					}
-				}
-			} else {
-				plen = 1;
-				i++;
-			}
-		}
-    plen = 1;
-    i++;
-
-		lengths = append(lengths, plen);
-
-		nlen := len(lengths);
-		start := nlen - 2;
-		end := start - (2 * tlen + 1 - nlen);
-		if (start - end > 0) {
-			for j := start;  j > end; j-- {
-				ind := j;
-				d := ind - end - 1;
-				//fmt.Printf("d %d , ind %d\n", d, ind)
-				if ind >= 0 && ind < len(lengths) {
-					lengths = append(lengths, MinInt(d, lengths[ind]));
-				}
-			}
-		}
-	}
-
-  return lengths;
+func PalindromesFast(text string) (int, int) {
+  lengths := make([]int, 2*len(text)+1)
+  i, j, d, s, e, plen, llen, k := 0, 0, 0, 0, 0, 0, 0, 0
+  for i < len(text) {
+    if i > plen && text[i-plen-1] == text[i] {
+      plen += 2
+      i++
+      continue
+    }
+    lengths[k] = plen
+    k++
+    s = k - 2
+    e = s - plen
+    b := true
+    for j = s; j > e; j-- {
+      d = j - e - 1
+      if lengths[j] == d {
+        plen = d
+        b = false
+        break
+      }
+      lengths[k] = MinInt(d, lengths[j])
+      k++
+    }
+    if b {
+      plen = 1
+      i++
+    }
+  }
+  lengths[k] = plen
+  k++
+  llen = k
+  s = llen - 2
+  e = s - (2*len(text) + 1 - llen)
+  for i := s; i > e; i-- {
+    d = i - e - 1
+    lengths[k] = MinInt(d, lengths[i])
+    k++
+  }
+  return LargestStartEnd(lengths)
 }
-
 
 // Finds the lengths of palindromes in a string.
 // O(n^2) time complexity. O(n) space complexity.
-func PalindromesNaive(text string) (rlens []int) {
-  tlen := len(text);
-	var llen int = 0;
-	if tlen > 1 {
-		llen = 2 * tlen + 1;
-	}
-  lengths := make([]int, llen);
-
-	for i := 0;  i < llen; i++ {
-		start := i / 2;
-		end := start + i % 2;
-
-		for start > 0 && end < tlen && text[start - 1] == text[end] {
-			start -= 1;
-			end += 1;
-			lengths[i] = end - start;
-		}
-
-		lengths[i] = end - start;
-	}
-
-  return lengths;
-}
-
-
-// Given a slice of palindrome lengths,
-// returns the start and end indexes of the longest
-// palindrome.
-func LongestPalindrome(lens []int) (i1 int, i2 int){
-  max := Max(lens);
-  im := IndexOf(lens, max);
-  s := im / 2 - max / 2;
-
-  return s, s + max;
+func PalindromesNaive(text string) (int, int) {
+  tlen := len(text)
+  llen := 0
+  if tlen > 1 {
+    llen = 2*tlen + 1
+  }
+  lengths := make([]int, llen)
+  for i := 0; i < llen; i++ {
+    start := i / 2
+    end := start + i%2
+    for start > 0 && end < tlen && text[start-1] == text[end] {
+      start -= 1
+      end += 1
+      lengths[i] = end - start
+    }
+    lengths[i] = end - start
+  }
+  return LargestStartEnd(lengths)
 }
