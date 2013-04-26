@@ -31,7 +31,6 @@ package utils
 
 
 import (
-  "fmt";
 )
 
 
@@ -78,85 +77,5 @@ func IndexOf(sl []int, si int) (rind int) {
 func Abs(num int) (rnum int) {
   if (num < 0) { return (-1 * num); }
   return num;
-}
-
-// This implementation of range sucks.
-func RangeFor(start int, end int, step int) (ra []int) {
-  var val []int;
-  var i int = 0;
-
-  if (start < end) {
-    if (step < 1) { return val; }
-    if (step > end - start) {
-      val = make([]int, 1);
-      val[0] = start;
-      return val;
-    }
-    size := (end - start) / step;
-    if (end - start) % step > 0 { size++; }
-    if (end - start >= 1) {
-      val = make([]int, size);
-      for j := start; j < end; j += step {
-        val[i] = j;
-        i++;
-      }
-    }
-  } else if (start > end) {
-    if (step > -1) { return val; }
-    if (Abs(step) > start - end) {
-      val = make([]int, 1);
-      val[0] = start;
-      return val;
-    }
-    size := (start - end) / Abs(step);
-    if (start - end >= 1) {
-      val = make([]int, size);
-      for j := start; j > end; j += step {
-        val[i] = j;
-        i++;
-      }
-    }
-  }
-
-  return val;
-}
-
-
-func RangeTest() {
-
-  fmt.Printf("\n\nUp\n");
-  // Up
-  rng := RangeFor(0, 7, 3);
-  fmt.Printf("%s\n", rng);
-  rng2 := RangeFor(1, 7, 3);
-  fmt.Printf("%s\n", rng2);
-  rng3 := RangeFor(2, -3, -1);
-  fmt.Printf("%s\n", rng3);
-  rng4 := RangeFor(-4, 5, 2);
-  fmt.Printf("%s\n", rng4);
-  rng6 := RangeFor(1, 2, 4);
-  fmt.Printf("%s\n", rng6);
-  rng7 := RangeFor(-2, -1, 5);
-  fmt.Printf("%s\n", rng7);
-  rng10 := RangeFor(0, 1, 4);
-  fmt.Printf("%s\n", rng10);
-
-  fmt.Printf("\n\nDown\n");
-  // Down
-  rng5 := RangeFor(2, 1, -5);
-  fmt.Printf("%s\n", rng5);
-  rng8 := RangeFor(-1, -2, -4);
-  fmt.Printf("%s\n", rng8);
-  rng9 := RangeFor(1, 0, -5);
-  fmt.Printf("%s\n", rng9);
-  rng11 := RangeFor(1, -3, -1);
-  fmt.Printf("%s\n", rng11);
-  rng12 := RangeFor(5, 2, -1);
-  fmt.Printf("%s\n", rng12);
-  rng13 := RangeFor(0, -2, -1);
-  fmt.Printf("%s\n", rng13);
-  rng14 := RangeFor(1, -1, -1);
-  fmt.Printf("%s\n", rng14);
-
 }
 
