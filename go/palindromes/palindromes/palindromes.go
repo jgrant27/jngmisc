@@ -49,31 +49,46 @@ func PalindromesFast(text string) (int, int) {
   lengths := make([]int, 2*len(text)+1)
   i, j, d, s, e, plen, llen, k := 0, 0, 0, 0, 0, 0, 0, 0
   for i < len(text) {
+		// is the string so far a palindrome ?
     if i > plen && text[i-plen-1] == text[i] {
+			// yes, so we extend the current found palindrome length
+			// and keep checking forward else ...
       plen += 2
       i++
       continue
     }
+		// ... we have reached the end of the current found palindrome
+		// so we set the current palindrome length etc. ...
     lengths[k] = plen
     k++
     s = k - 2
     e = s - plen
+		// ... then backtrack over the last found palindrome to see ...
     b := true
     for j = s; j > e; j-- {
       d = j - e - 1
+			// ... if we have a reflection of the same length ...
       if lengths[j] == d {
+				// ... yes, so we set new palindrome length ...
         plen = d
+				// ... and stop backtracking.
         b = false
         break
       }
+			// ... no, so we take the smaller length,
+			// update the lengths and continue backtracking.
       lengths[k] = MinInt(d, lengths[j])
       k++
     }
+		// if we we're backtracking then reset palindrome length
+		// and move on.
     if b {
       plen = 1
       i++
     }
   }
+	// we're done scanning the text so we perform 
+	// one last backtrack.
   lengths[k] = plen
   k++
   llen = k
@@ -90,8 +105,7 @@ func PalindromesFast(text string) (int, int) {
 // Finds the lengths of palindromes in a string.
 // O(n^2) time complexity. O(n) space complexity.
 func PalindromesNaive(text string) (int, int) {
-  tlen := len(text)
-  llen := 0
+  llen, tlen := 0, len(text)
   if tlen > 1 {
     llen = 2*tlen + 1
   }
@@ -101,7 +115,7 @@ func PalindromesNaive(text string) (int, int) {
     end := start + i%2
     for start > 0 && end < tlen && text[start-1] == text[end] {
       start -= 1
-      end += 1
+			end += 1
       lengths[i] = end - start
     }
     lengths[i] = end - start
