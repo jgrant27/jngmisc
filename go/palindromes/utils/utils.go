@@ -28,7 +28,11 @@
 
 package utils
 
-import ()
+import (
+	"reflect"
+	"runtime"
+	"strings"
+)
 
 // Util functions
 
@@ -90,11 +94,16 @@ func Abs(num int) (rnum int) {
   return num
 }
 
-func FindLongestPal(f func(string) (int, int), fname string, strn string) string {
+func FindLongestPal(f func(string) (int, int), strn string) string {
   i1, i2 := f(strn)
   longest := ""
   if i1 < i2 {
     longest = strn[i1:i2]
   }
   return longest
+}
+
+func GetFunctionName(i interface{}) string {
+  fullName := runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
+	return strings.Split(fullName, "/")[strings.Count(fullName, "/")]
 }

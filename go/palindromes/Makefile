@@ -14,7 +14,7 @@ MAIN_FILE_PREFIX=main
 MAIN_FILE=$(MAIN_FILE_PREFIX).go
 MAIN_BINARY=$(MAIN_FILE_PREFIX)_$(ARCH)
 
-all: fmt build run
+all: build run
 
 clean:
 	rm $(MAIN_BINARY) || true
