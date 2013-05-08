@@ -47,7 +47,10 @@ func AssertFind(funcs [](func(string) (int, int)), instr string, expstr string) 
 	for i:=0; i < len(funcs); i++ {
 		f := funcs[i]
 		fname := GetFunctionName(f)
-		longest := FindLongestPal(f, instr)
+		var longest = ""
+		PrintDuration(func() { 
+			longest = FindLongestPal(f, instr)
+		})
 		result := "FAIL"
 		if longest == expstr {
 			result = "PASS"
@@ -62,7 +65,7 @@ func AssertFind(funcs [](func(string) (int, int)), instr string, expstr string) 
 }
 
 func SanityTests() {
-	funcs := [](func(string) (int, int)) {PalindromesFast, PalindromesNaive}
+	funcs := [](func(string) (int, int)) {PalindromesNaive, PalindromesFast}
   fmt.Printf("\nSanity tests ...\n")
   AssertFind(funcs, "eat a banana bob !", "anana")
   AssertFind(funcs, "lol", "lol")
@@ -75,8 +78,8 @@ func SanityTests() {
 }
 
 func BigTest(wordcnt int) {
-	funcs := [](func(string) (int, int)) {PalindromesFast, PalindromesNaive}
+	funcs := [](func(string) (int, int)) {PalindromesNaive, PalindromesFast}
   paltxt := strings.Repeat(" amanaplanacanalpanama ", wordcnt)
   fmt.Printf("\nBig tests (%d) ...\n", wordcnt)
-  PrintDuration(func() { AssertFind(funcs, paltxt, paltxt) })
+  AssertFind(funcs, paltxt, paltxt)
 }

@@ -9,10 +9,10 @@ GOTEST=$(GOCMD) test
 GODEP=$(GOTEST) -i
 GOFMT=gofmt -w -tabs=false -tabwidth=2 .
 
-ARCH=`uname -p`
+ARCH=`uname -s`-`uname -r`-`uname -m`
 MAIN_FILE_PREFIX=main
 MAIN_FILE=$(MAIN_FILE_PREFIX).go
-MAIN_BINARY=$(MAIN_FILE_PREFIX)_$(ARCH)
+MAIN_BINARY=$(MAIN_FILE_PREFIX)-$(ARCH)
 
 all: build run
 
