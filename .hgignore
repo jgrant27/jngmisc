@@ -13,6 +13,8 @@ bin/*
 *.dSYM*
 clojure/bloom
 
+build
+
 # switch to regexp syntax.
 syntax: regexp
 .*~
