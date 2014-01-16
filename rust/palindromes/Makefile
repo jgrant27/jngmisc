@@ -4,7 +4,7 @@
 ARCH=`uname -s`-`uname -r`-`uname -m`
 SRC=src
 BUILD=build
-RUSTC=rustc -Z debug-info --out-dir $(BUILD) -L $(BUILD) 
+RUSTC=rustc --opt-level 2 --out-dir $(BUILD) -L $(BUILD) 
 MAIN_FILE_SRC=$(SRC)/main.rs
 PALINDROMES_MODULE_SRC=$(SRC)/palindromes.rs
 TESTS_MODULE_SRC=$(SRC)/tests.rs
