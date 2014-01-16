@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2009, Justin Grant <justin at imagine27 dot com>
+// Copyright (c) 2013, Justin Grant <justin at imagine27 dot com>
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without modification,
@@ -26,34 +26,33 @@
 // EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#[link(name = "tests", vers = "1.0")];
-
-extern mod std;
+#[crate_id(name = "tests", vers = "1.0")];
 
 extern mod palindromes;
+extern mod extra;
 
 
 fn assert_find(funcs:&~[(&~str, extern fn(&~str) -> (uint, uint))], 
                instr:&~str, expstr:&~str) -> bool {
-  funcs.foldl(true, |res, pair:&(&~str, extern fn(&~str) -> (uint, uint))| {
+  funcs.iter().fold(true, |res, pair:&(&~str, extern fn(&~str) -> (uint, uint))| {
     let fname = pair.first();
     let func = pair.second();
-    let start = std::time::precise_time_ns();
+    let start = extra::time::precise_time_ns();
     let longest = palindromes::find_longest_pal(func, instr);
-    let dur = (std::time::precise_time_ns() - start) as float / 1000000f;
+    let dur = (extra::time::precise_time_ns() - start) as f64 / 1000000.0;
     let success = expstr.eq(&longest);
     let result = if success { "PASS" } else { "FAIL" };
-    let maxilen = uint::min(300, instr.len()); 
-    let maxelen = uint::min(10, expstr.len()); 
-    io::println(fmt!("%s\t(%s)\tAsserted >>>%s<<< (length %u) in >>>%s ...<<< %.6fms",
-                     result, *fname, expstr.substr(0, maxelen), longest.len(),
-                     instr.substr(0, maxilen), dur as float));
-    *res && success
+    let maxilen = std::num::min(300, instr.len()); 
+    let maxelen = std::num::min(10, expstr.len()); 
+    std::io::println(format!("{:s}\t{:s}\tAsserted >>>{:s}<<< (length {:u}) in >>>{:s} ...<<< {:.9f}ms",
+                     result, *fname, expstr.slice(0, maxelen), longest.len(),
+                     instr.slice(0, maxilen), dur));
+    res && success
   })
 }
 
 pub fn sanity_tests() {
-  io::println(fmt!("Sanity tests ...\n"));
+  std::io::println(format!("Sanity tests ...\n"));
 
   let funcs = ~[(&~"pals_naive", palindromes::pals_naive), 
                 (&~"pals_fast", palindromes::pals_fast)];
@@ -70,13 +69,13 @@ pub fn sanity_tests() {
 }
 
 pub fn big_tests(wordcnt:uint) {
-  io::println(fmt!("Running tests to find longest palindromes (%u words) ...\n", wordcnt));
+  std::io::println(format!("Running tests to find longest palindromes ({:u} words) ...\n", wordcnt));
 
   let funcs = ~[(&~"pals_naive", palindromes::pals_naive), 
                 (&~"pals_fast", palindromes::pals_fast)];
 
-  let paltxt = str::repeat(&" amanaplanacanalpanama ", wordcnt);
-  io::println(fmt!("\nBig tests (%u) ...\n", wordcnt));
+  let paltxt = " amanaplanacanalpanama ".repeat(wordcnt);
+  std::io::println(format!("\nBig tests {:u} ...\n", wordcnt));
   assert_find(&funcs, &paltxt, &paltxt);
   println("\n");
 }

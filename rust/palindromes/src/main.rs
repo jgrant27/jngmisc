@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2009, Justin Grant <justin at imagine27 dot com>
+// Copyright (c) 2013, Justin Grant <justin at imagine27 dot com>
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without modification,
@@ -33,10 +33,16 @@ extern mod tests;
 static DEFAULT_WORD_CNT:uint = 1000;
 
 fn main() {
-  let args:~[~str] = os::real_args();
-  let wordcnt:uint = 
-    if (args.len() > 1) { uint::from_str(args[1]).unwrap() } else { DEFAULT_WORD_CNT };
-  
+  let args:~[~str] = std::os::args();
+  let wordcnt:uint = if (args.len() > 1) {
+    match from_str(args[1]) {
+         Some(x) => x,
+         None => DEFAULT_WORD_CNT
+    }
+  } else {
+    DEFAULT_WORD_CNT
+  };
+
   tests::sanity_tests();
   tests::big_tests(wordcnt);
 }
