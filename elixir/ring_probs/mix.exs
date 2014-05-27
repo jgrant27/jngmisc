@@ -5,7 +5,7 @@ defmodule RingProbs.Mixfile do
     [app: :ring_probs,
      version: "0.0.1",
      elixir: "~> 0.13.2",
-     escript_main_module: RingProbs,
+     escript_main_module: RingProbsAlt,
      escript_embed_elixir: true,
      deps: deps]
   end
@@ -15,7 +15,7 @@ defmodule RingProbs.Mixfile do
   # Type `mix help compile.app` for more information
   def application do
     [applications: [],
-     mod: {RingProbs, []}]
+     mod: {RingProbsAlt, []}]
   end
 
   # Dependencies can be hex.pm packages:
