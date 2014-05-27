@@ -109,11 +109,51 @@
 #
 
 
-defmodule RingProbs do
+defmodule RingProbsAlt do
   use Application
 
   import Enum
-  import List
+
+  # Util functions for Erlang arrays. 
+  def atake(arr, n) do
+    reduce 0..n-1, :array.new([size: n, fixed: true, default: 0.0]), 
+                          fn(i, res) -> :array.set(i, :array.get(i, arr), res) end
+  end
+
+  def adrop(arr, n) do
+    sz = :array.size(arr)
+    if n < sz do
+      reduce 0..sz-1-n, 
+                :array.new([size: n, fixed: true, default: 0.0]), 
+                       fn(i, res) -> :array.set(i, :array.get(n+i, arr), res) end
+    else 
+      :array.new(0) 
+    end
+  end
+
+  def pmap_earray(fun, arr) do
+    IO.puts :erlang.system_info(:process_limit)
+    me = self    
+    pids = :array.map fn (i, elem) ->
+                           spawn fn -> (send me, { self, fun.(i, elem) }) end
+                      end, arr
+    :array.map fn (_, pid) ->
+                    receive do { ^pid, result } -> result end
+               end, pids
+  end
+
+  def calc_state_probs(p, prev_probs)
+  when is_float(p) and p >= 0 and p <= 1 do
+    sz = :array.size(prev_probs)
+    #pmap_earray fn(i, _) ->
+    :array.map fn(i, _) ->
+                   prev_i = if i == 0 do sz - 1 else i - 1 end
+                   prev_prob = :array.get(prev_i, prev_probs)
+                   next_i = if i == sz - 1 do 0 else i + 1 end
+                   next_prob = :array.get(next_i, prev_probs)
+                   p * prev_prob + (1 - p) * next_prob
+               end, prev_probs
+  end
 
   def calc_ring_probs(p, n, s)
   when is_float(p) and p >= 0 and p <= 1 and
@@ -123,40 +163,21 @@ defmodule RingProbs do
     # Probs at S = 0. 
     #   Certain that we are positioned at only start location.
     #     e.g. P(Start Node) = 1
-    # Duplicate last value before first node and first value after last node
-    # because this is a ring and we need these extra locations for pattern
-    # matching on our list.
-    initial_probs_padded = [0, [1.0 | List.duplicate(0.0, n-1)], 1.0]
-    [_, final_probs, _] = initial_probs_padded
-
+    initial_probs = :array.new [size: n, fixed: true, default: 0.0]
+    initial_probs = :array.set 0, 1.0, initial_probs
+    final_probs = initial_probs
     IO.puts "Calculating ring node probabilities where P=#{p} N=#{n} S=#{s} ...\n"
 
     # If we are moving beyond the initial state then do the calculation ...
     if s > 0 do
-      [_, final_probs, _] =
-        # ... through all the states ...
-        reduce(1..s, initial_probs_padded,
-                  fn (_, [last, new_probs, first]) ->
-                       new_probs_padded_flat = [last] ++ new_probs ++ [first]
-                       # ... for each state at a time.
-                       calc_state_probs(p, [], new_probs_padded_flat)
-                  end)
+      # ... through all the states ...
+      final_probs = 
+        reduce 1..s, 
+                  initial_probs,
+                  fn (_, new_probs) -> calc_state_probs(p, new_probs) end
     end
 
     final_probs
-  end
-
-  def calc_state_probs(p, prev_probs, [prev | [_ | [first | []]]]) do
-    new_prob = p * prev + (1 - p) * first
-    new_probs = reverse([new_prob | prev_probs])
-    # the probs get padded with last prob at the beginning and the first
-    # prob at the end so that matching works (because we have a ring).
-    [new_prob, new_probs, first(new_probs)]
-  end
-  def calc_state_probs(p, prev_probs, [prev | [curr | rest]]) do
-    new_prob = p * prev + (1 - p) * first(rest)
-    new_probs = [new_prob | prev_probs]
-    calc_state_probs(p, new_probs, [curr | rest])
   end
 
   # See http://elixir-lang.org/docs/stable/Application.html
@@ -165,14 +186,14 @@ defmodule RingProbs do
     res = RingProbs.Supervisor.start_link
 
     if count(System.argv) === 3 do
-      {p, _} = Float.parse(at(System.argv, 0))
+     {p, _} = Float.parse(at(System.argv, 0))
       {n, _} = Integer.parse(at(System.argv, 1))
       {s, _} = Integer.parse(at(System.argv, 2))
     else
       [p, n, s] = [0.5, 10000, 2]
     end
 
-    {time, probs} = :timer.tc(fn -> RingProbs.calc_ring_probs(p, n, s) end, [])
+    {time, probs} = :timer.tc(fn -> RingProbsAlt.calc_ring_probs(p, n, s) end, [])
 
     nc = 100
     truncated = true
@@ -182,9 +203,9 @@ defmodule RingProbs do
     end
 
     if truncated do
-      IO.inspect take(probs, div(nc,2)), limit: :infinity
+      IO.inspect atake(probs, div(nc,2)), limit: :infinity
       IO.puts "... #{n - div(nc, 2)} node probabilities ..."
-      IO.inspect drop(probs, n - div(nc,2)), limit: :infinity
+      IO.inspect adrop(probs, n - div(nc,2)), limit: :infinity
     else
       IO.inspect probs, limit: :infinity
     end
