@@ -19,6 +19,9 @@ deps/
 erl_crash.dump
 *.ez
 
+# FSharp Fake stuff
+packages/
+
 
 build
 
