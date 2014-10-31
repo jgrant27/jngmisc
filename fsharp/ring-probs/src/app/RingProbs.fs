@@ -96,6 +96,37 @@ let printUsage msg = printfn "\n%s\n\n\
                               \te.g. RingProbs.exe 0.5 5 10\n" msg
                      exit 0
 
+let rec calcStateProbs (prob: float, i: int,
+                        currProbs: float [], newProbs: float []) = 
+  // If we're at the end then return the newly calculated probs.
+  if i = currProbs.Length then
+    newProbs
+  else 
+    let maxIndex = currProbs.Length-1
+    // Match prev, next probs based on the fact that this is a
+    // ring structure.
+    let (prevProb, nextProb) =
+      match i with
+        | i when i = maxIndex -> (currProbs.[i-1], currProbs.[0])
+        | 0 -> (currProbs.[maxIndex], currProbs.[i+1])
+        | _ -> (currProbs.[i-1], currProbs.[i+1])
+    let newProb = prob * prevProb + (1.0 - prob) * nextProb
+    Array.set newProbs i newProb
+    calcStateProbs(prob, i+1, currProbs, newProbs)
+
+let calcRingProbs parsedArgs =
+  // Probs at S = 0.
+  //   Make certain that we are positioned at only start location.
+  //     e.g. P(Start Node) = 1
+  let startProbs =
+    Array.concat [ [| 1.0 |] ; [| for _ in 1 .. parsedArgs.nodes - 1 -> 0.0 |] ] 
+  let endProbs =
+    List.fold (fun probs stateNum ->
+               calcStateProbs(parsedArgs.probability, 0,
+                              probs, Array.create probs.Length 0.0))
+              startProbs [1..parsedArgs.states]
+  endProbs
+  
 let getParsedArgs args =
   try
     match args with
@@ -110,6 +141,5 @@ let main (args : string[]) =
 
   let args = getParsedArgs(args).Value
   printfn "\nRunning ring probabilities with parameters ...\n%A\n" args
-  
-  // Return 0. This indicates success.
+  printfn "%A" (calcRingProbs args)
   0
