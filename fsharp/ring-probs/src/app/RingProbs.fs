@@ -96,12 +96,9 @@ let printUsage msg = printfn "\n%s\n\n\
                               \te.g. RingProbs.exe 0.5 5 10\n" msg
                      exit 0
 
-let rec calcStateProbs (prob: float, i: int,
-                        currProbs: float [], newProbs: float []) = 
-  // If we're at the end then return the newly calculated probs.
-  if i = currProbs.Length then
-    newProbs
-  else 
+let calcStateProbs (prob: float,
+                    currProbs: float [], newProbs: float []) = 
+  for i in [0..currProbs.Length-1] do
     let maxIndex = currProbs.Length-1
     // Match prev, next probs based on the fact that this is a
     // ring structure.
@@ -112,7 +109,9 @@ let rec calcStateProbs (prob: float, i: int,
         | _ -> (currProbs.[i-1], currProbs.[i+1])
     let newProb = prob * prevProb + (1.0 - prob) * nextProb
     Array.set newProbs i newProb
-    calcStateProbs(prob, i+1, currProbs, newProbs)
+  newProbs
+
+
 
 let calcRingProbs parsedArgs =
   // Probs at S = 0.
@@ -121,8 +120,8 @@ let calcRingProbs parsedArgs =
   let startProbs =
     Array.concat [ [| 1.0 |] ; [| for _ in 1 .. parsedArgs.nodes - 1 -> 0.0 |] ] 
   let endProbs =
-    List.fold (fun probs stateNum ->
-               calcStateProbs(parsedArgs.probability, 0,
+    List.fold (fun probs _ ->
+               calcStateProbs(parsedArgs.probability,
                               probs, Array.create probs.Length 0.0))
               startProbs [1..parsedArgs.states]
   endProbs
