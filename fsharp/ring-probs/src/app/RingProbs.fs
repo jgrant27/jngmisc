@@ -87,6 +87,10 @@
 
 module RingProbs
 
+open System.Threading
+
+
+type Agent<'T> = MailboxProcessor<'T>
 
 type ParsedArgs = { probability : float; nodes : int; states : int }
 
@@ -96,38 +100,56 @@ let printUsage msg = printfn "\n%s\n\n\
                               \te.g. RingProbs.exe 0.5 5 10\n" msg
                      exit 0
 
+let calcNodeProb (i, maxIndex, prob, currProbs: float[]) =
+  // Match prev, next probs based on the fact that this is a
+  // ring structure.
+  let (prevProb, nextProb) =
+    match i with
+      | i when i = maxIndex -> (currProbs.[i-1], currProbs.[0])
+      | 0 -> (currProbs.[maxIndex], currProbs.[i+1])
+      | _ -> (currProbs.[i-1], currProbs.[i+1])
+  let newProb = prob * prevProb + (1.0 - prob) * nextProb
+  newProb
+
 let rec calcStateProbs (prob: float, i: int,
-                        currProbs: float [], newProbs: float []) = 
-  if i < 0 then
+                        currProbs: float [], newProbs: float []) =
+  // If we're at the end then return the newly calculated probs.
+  if i = currProbs.Length then
     newProbs
   else
     let maxIndex = currProbs.Length-1
-    // Match prev, next probs based on the fact that this is a
-    // ring structure.
-    let (prevProb, nextProb) =
-      match i with
-        | i when i = maxIndex -> (currProbs.[i-1], currProbs.[0])
-        | 0 -> (currProbs.[maxIndex], currProbs.[i+1])
-        | _ -> (currProbs.[i-1], currProbs.[i+1])
-    let newProb = prob * prevProb + (1.0 - prob) * nextProb
+    let newProb = calcNodeProb(i, maxIndex, prob, currProbs)
+    Thread.Sleep 1000 // Simulate longer time for computation
     Array.set newProbs i newProb
-    calcStateProbs(prob, i-1, currProbs, newProbs)
+    calcStateProbs(prob, i+1, currProbs, newProbs)
 
-
+let calcStateProbsParr (prob: float, currProbs: float []) =
+  let maxIndex = currProbs.Length-1
+  let newProbs = Array.create currProbs.Length 0.0
+  let asyncs = Seq.map (fun i ->
+                          async { let newProb = calcNodeProb(i, maxIndex,
+                                                             prob, currProbs)
+                                  // Simulate longer time for computation
+                                  do! Async.Sleep 1000 
+                                  Array.set newProbs i newProb })
+                       [0..maxIndex]
+  asyncs |> Async.Parallel |> Async.RunSynchronously |> ignore
+  newProbs
 
 let calcRingProbs parsedArgs =
   // Probs at S = 0.
   //   Make certain that we are positioned at only start location.
   //     e.g. P(Start Node) = 1
   let startProbs =
-    Array.concat [ [| 1.0 |] ; [| for _ in 1 .. parsedArgs.nodes - 1 -> 0.0 |] ] 
+    Array.concat [ [| 1.0 |] ; [| for _ in 1 .. parsedArgs.nodes - 1 -> 0.0 |] ]
   let endProbs =
     List.fold (fun probs _ ->
-               calcStateProbs(parsedArgs.probability, probs.Length-1,
-                              probs, Array.create probs.Length 0.0))
+               calcStateProbsParr(parsedArgs.probability, probs))
+               //calcStateProbs(parsedArgs.probability, 0,
+               //               probs, Array.create probs.Length 0.0))
               startProbs [1..parsedArgs.states]
   endProbs
-  
+
 let getParsedArgs args =
   try
     match args with
@@ -139,7 +161,6 @@ let getParsedArgs args =
 
 [<EntryPoint>]
 let main (args : string[]) =
-
   let args = getParsedArgs(args).Value
   printfn "\nRunning ring probabilities with parameters ...\n%A\n" args
   printfn "%A" (calcRingProbs args)
