@@ -1,0 +1,32 @@
+# use glob syntax.
+syntax: glob
+
+*\#*
+*.6
+*.out
+*.[oa]
+*.gcno
+*.fasl
+.DS_Store
+patches/
+bin/*
+*.dSYM*
+clojure/bloom
+
+# Elixir mix stuff
+_build/
+deps/
+erl_crash.dump
+*.ez
+
+# FSharp Fake stuff
+packages/
+
+
+build
+
+# switch to regexp syntax.
+syntax: regexp
+.*~
+.*classes/clojure.*
+.*classes/i27.*
