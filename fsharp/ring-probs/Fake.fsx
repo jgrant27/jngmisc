@@ -29,7 +29,8 @@ Target "RingProbs.exe" (fun _ ->
                         ScanImmediately !! (srcAppDir + "**/*.fs")
                         |> Fsc (fun parameters ->
                                 { parameters with
-                                  Output = @"./build" + "RingProbs.exe"
+                                  OtherParams = ["--standalone"]
+                                  Output = buildRootDir + "RingProbs.exe"
                                   FscTarget = Exe })
                         )
 
