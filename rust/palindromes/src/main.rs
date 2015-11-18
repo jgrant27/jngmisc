@@ -27,13 +27,13 @@
 //
 
 
-extern mod tests;
+//extern crate tests;
 
 
 static DEFAULT_WORD_CNT:uint = 1000;
 
 fn main() {
-  let args:~[~str] = std::os::args();
+  let args = std::os::args();
   let wordcnt:uint = if (args.len() > 1) {
     match from_str(args[1]) {
          Some(x) => x,
@@ -43,6 +43,6 @@ fn main() {
     DEFAULT_WORD_CNT
   };
 
-  tests::sanity_tests();
-  tests::big_tests(wordcnt);
+  //tests::sanity_tests();
+  //tests::big_tests(wordcnt);
 }

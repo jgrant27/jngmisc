@@ -1,0 +1,4 @@
+[package]
+name = "palindromes"
+version = "0.1.0"
+authors = ["jgrant"]
