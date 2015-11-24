@@ -4,10 +4,9 @@ use std::env;
 
 use rand::Rng;
 
+mod jngmisc;
 
-fn quicksort(nums: Vec<u64>) -> Vec<u64> {
-    return nums;
-}
+use jngmisc::sort::quicksort;
 
 fn gen_random_vec(cnt: u64) -> Vec<u64> {
     let mut rng = rand::thread_rng();
@@ -34,7 +33,7 @@ fn main() {
     println!("Running sort funcs for {} random numbers :\n{:?}\n...",
              cnt, nums);
 
-    let sorted_nums = quicksort(nums);
+    let sorted_nums = quicksort::quicksort_rec(nums);
 
     println!("Sorted:\n{:?}",
              sorted_nums);
