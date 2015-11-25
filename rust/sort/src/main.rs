@@ -11,7 +11,7 @@ use jngmisc::sort::quicksort;
 fn gen_random_vec(cnt: u64) -> Vec<u64> {
     let mut rng = rand::thread_rng();
     let mut nums: Vec<u64> = Vec::new();
-    for _ in 0..cnt-1 {
+    for _ in 0..cnt {
         nums.push(rng.gen_range(0, cnt));
     }
     return nums;
@@ -35,7 +35,7 @@ fn main() {
 
     let sorted_nums = quicksort::quicksort_rec(nums);
 
-    println!("Sorted:\n{:?}",
-             sorted_nums);
+    println!("Sorted {} nums :\n{:?}",
+             sorted_nums.len(), sorted_nums);
 
 }
