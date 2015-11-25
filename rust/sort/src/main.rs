@@ -12,7 +12,7 @@ fn gen_random_vec(cnt: u64) -> Vec<u64> {
     let mut rng = rand::thread_rng();
     let mut nums: Vec<u64> = Vec::new();
     for _ in 0..cnt {
-        nums.push(rng.gen_range(0, cnt));
+        nums.push(rng.gen_range(1, cnt+1));
     }
     return nums;
 }
