@@ -1,12 +1,13 @@
 extern crate rand;
+extern crate time;
 
 use std::env;
-
 use rand::Rng;
+use time::*;
 
 mod jngmisc;
-
 use jngmisc::sort::quicksort;
+
 
 fn gen_random_vec(cnt: u64) -> Vec<u64> {
     let mut rng = rand::thread_rng();
@@ -33,9 +34,12 @@ fn main() {
     println!("Running sort funcs for {} random numbers :\n{:?}\n...",
              cnt, nums);
 
+    let start = precise_time_ns();
     let sorted_nums = quicksort::quicksort_rec(nums);
+    let end = precise_time_ns();
+    let duration_us = (end - start) / 1000;
 
-    println!("Sorted {} nums :\n{:?}",
-             sorted_nums.len(), sorted_nums);
+    println!("Sorted {} nums:\n{:?}\nin {}us",
+             sorted_nums.len(), sorted_nums, duration_us);
 
 }
