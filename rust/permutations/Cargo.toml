@@ -1,0 +1,8 @@
+[package]
+name = "permutations"
+version = "0.1.0"
+authors = ["Justin Grant <jgrant@imagine27.com>"]
+
+[dependencies]
+rand = "0.3"
+time = "0.1"
