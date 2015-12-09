@@ -29,7 +29,7 @@ fn main() {
     let end = precise_time_ns();
     let duration_us = (end - start) / 1000;
 
-    println!("Permutations:\n{:?}\ntook {}us.",
-             perms, duration_us);
+    println!("Permutations ({}) :\n{:?}\ntook {}us.",
+             perms.len(), perms, duration_us);
 
 }
