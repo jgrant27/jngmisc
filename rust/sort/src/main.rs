@@ -19,6 +19,21 @@ fn gen_random_vec(cnt: u64) -> Vec<u64> {
     return nums;
 }
 
+fn run_sort_fn<F>(sortfn: F, name: String, cnt: u64) where
+    F: Fn(Vec<u64>) -> Vec<u64> {
+        let nums = gen_random_vec(cnt);
+
+        println!("\nRunning sort {} func for {} random numbers :\n{:?} ...",
+                 name, cnt, nums);
+
+        let start = precise_time_ns();
+        let sorted_nums = sortfn(nums);
+        let end = precise_time_ns();
+        let duration_us = (end - start) / 1000;
+
+        println!("Sorted {} nums:\n{:?}\nusing {} func in {}us\n",
+                 sorted_nums.len(), sorted_nums, name, duration_us);
+    }
 
 fn main() {
 
@@ -31,28 +46,7 @@ fn main() {
         },
     };
 
-    let nums = gen_random_vec(cnt);
-    println!("Running sort funcs for {} random numbers :\n{:?}\n...",
-             cnt, nums);
-
-    let start = precise_time_ns();
-    let sorted_nums = quicksort::quicksort_rec(nums);
-    let end = precise_time_ns();
-    let duration_us = (end - start) / 1000;
-
-    println!("Sorted {} nums:\n{:?}\nusing quicksort in {}us",
-             sorted_nums.len(), sorted_nums, duration_us);
-
-    let nums = gen_random_vec(cnt);
-    println!("\n\nRunning sort funcs for {} random numbers :\n{:?}\n...",
-             cnt, nums);
-
-    let start = precise_time_ns();
-    let sorted_nums = mergesort::mergesort_rec(nums);
-    let end = precise_time_ns();
-    let duration_us = (end - start) / 1000;
-
-    println!("Sorted {} nums:\n{:?}\nusing mergesort in {}us",
-             sorted_nums.len(), sorted_nums, duration_us);
+    run_sort_fn(quicksort::quicksort_rec, "quicksort".to_string(), cnt);
+    run_sort_fn(mergesort::mergesort_rec, "mergesort".to_string(), cnt);
 
 }
