@@ -5,12 +5,11 @@ pub fn process_bucket(source_bucket: &mut Vec<u64>,
 
     for i in 0..source_bucket.len() {
         let number = source_bucket[i];
-        let bit = number.rotate_right(bit_index) & 1;
-        if bit == 0 {
-            new_zeros.push(number);
-        } else {
-            new_ones.push(number);
-        }
+
+        match number.rotate_right(bit_index) & 1 {
+          0 => new_zeros.push(number),
+          _ => new_ones.push(number),
+        };
     }
 
 }
