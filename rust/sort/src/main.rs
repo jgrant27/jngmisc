@@ -48,5 +48,6 @@ fn main() {
 
     run_sort_fn(quicksort::quicksort_rec, "quicksort".to_string(), cnt);
     run_sort_fn(mergesort::mergesort_rec, "mergesort".to_string(), cnt);
+    run_sort_fn(radixsort::radixsort, "radixsort".to_string(), cnt);
 
 }
