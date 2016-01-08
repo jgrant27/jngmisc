@@ -4,13 +4,14 @@ pub fn process_bucket(source_bucket: &mut Vec<u64>,
                       new_ones: &mut Vec<u64>) {
 
     for i in 0..source_bucket.len() {
-            let bit = source_bucket[i].rotate_right(bit_index) & 1;
-            if bit == 0 {
-                new_zeros.push(source_bucket[i]);
-            } else {
-                new_ones.push(source_bucket[i]);
-            }
+        let number = source_bucket[i];
+        let bit = number.rotate_right(bit_index) & 1;
+        if bit == 0 {
+            new_zeros.push(number);
+        } else {
+            new_ones.push(number);
         }
+    }
 
 }
 
@@ -23,6 +24,7 @@ pub fn radixsort(mut nums: Vec<u64>) -> Vec<u64> {
     for i in 0..64 {
         let mut new_zeros: Vec<u64> = Vec::with_capacity(half_len);
         let mut new_ones: Vec<u64> = Vec::with_capacity(half_len);
+
         process_bucket(&mut zeros, i, &mut new_zeros, &mut new_ones);
         process_bucket(&mut ones, i, &mut new_zeros, &mut new_ones);
         zeros = new_zeros;
