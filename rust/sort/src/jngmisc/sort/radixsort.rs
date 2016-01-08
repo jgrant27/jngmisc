@@ -20,7 +20,7 @@ pub fn radixsort(mut nums: Vec<u64>) -> Vec<u64> {
     let mut ones = nums.split_off(half_len);
     let mut zeros = nums;
 
-    for i in 0..64 {
+    for i in 0..16 {
         let mut new_zeros: Vec<u64> = Vec::with_capacity(half_len);
         let mut new_ones: Vec<u64> = Vec::with_capacity(half_len);
 
