@@ -19,12 +19,11 @@ fn gen_random_vec(cnt: u64) -> Vec<u64> {
     return nums;
 }
 
-fn run_sort_fn<F>(sortfn: F, name: String, cnt: u64) where
+fn run_sort_fn<F>(sortfn: F, name: String, nums: Vec<u64>) where
     F: Fn(Vec<u64>) -> Vec<u64> {
-        let nums = gen_random_vec(cnt);
 
         println!("\nRunning sort {} func for {} random numbers :\n{:?} ...",
-                 name, cnt, nums);
+                 name, nums.len(), nums);
 
         let start = precise_time_ns();
         let sorted_nums = sortfn(nums);
@@ -46,8 +45,10 @@ fn main() {
         },
     };
 
-    run_sort_fn(quicksort::quicksort_rec, "quicksort".to_string(), cnt);
-    run_sort_fn(mergesort::mergesort_rec, "mergesort".to_string(), cnt);
-    run_sort_fn(radixsort::radixsort, "radixsort".to_string(), cnt);
+    let nums = gen_random_vec(cnt);
+
+    run_sort_fn(quicksort::quicksort_rec, "quicksort".to_string(), nums.clone());
+    run_sort_fn(mergesort::mergesort_rec, "mergesort".to_string(), nums.clone());
+    run_sort_fn(radixsort::radixsort, "radixsort".to_string(), nums.clone());
 
 }
