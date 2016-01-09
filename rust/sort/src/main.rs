@@ -35,7 +35,7 @@ fn run_sort_fn<F>(sortfn: F, name: String, nums: Vec<u64>) -> Vec<u64>
     println!("Sorted {} nums:\n{:?}\nusing {} func in {}us\n",
              sorted_nums.len(), sorted_nums, name, duration_us);
 
-        sorted_nums
+    sorted_nums
 }
 
 fn main() {
