@@ -1,8 +1,3 @@
-extern crate rand;
-
-use rand::Rng;
-
-
 fn merge(mut left: Vec<u64>, mut right: Vec<u64>) -> Vec<u64> {
     let mut merged = Vec::new();
     while !left.is_empty() && !right.is_empty() {
