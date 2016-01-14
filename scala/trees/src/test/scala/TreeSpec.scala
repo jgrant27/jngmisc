@@ -3,8 +3,8 @@ import org.scalatest._
 import jngmisc.trees._
 
 
-class RootBinaryNodeSpec extends FlatSpec with Matchers {
-  "BinaryNode" should "be valid" in {
+class TreeSpec extends FlatSpec with Matchers {
+  "Root BinaryNode" should "be valid" in {
     val left = new BinaryNode(666)
     val right = new BinaryNode(777)
     val root = new BinaryNode(555, left, right)
