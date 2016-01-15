@@ -18,7 +18,7 @@ class TreeSpec extends FlatSpec with Matchers {
   }
 
   "Balanced Binary Tree" should "be valid" in {
-    val vals = Vector(0,1,2,3,4,5,6,7,8,9)
+    val vals = Vector.range(0,10)
     val tree = BinaryNode.createBalancedBinaryTree(vals)
 
     println(tree)
@@ -36,7 +36,7 @@ class TreeSpec extends FlatSpec with Matchers {
   }
 
   "Traverse Binary Tree" should "be valid" in {
-    val vals = Vector(0,1,2,3,4,5,6,7,8,9)
+    val vals = Vector.range(0,10)
     val tree = BinaryNode.createBalancedBinaryTree(vals)
 
     BinaryNode.traverseBinaryTreeInOrder(tree)
