@@ -8,3 +8,20 @@ class BinaryNode[T]
 
 
 }
+
+object BinaryNode {
+
+  def createBalancedBinaryTree(items: Vector[Int]): BinaryNode[Int] = {
+
+    if (items.size < 1) {
+      null
+    } else {
+      val mid = items.size / 2
+      val left = createBalancedBinaryTree(items.slice(0, mid))
+      val right = createBalancedBinaryTree(items.slice(mid+1, items.size))
+      new BinaryNode(items(mid), left, right)
+    }
+
+  }
+
+}
