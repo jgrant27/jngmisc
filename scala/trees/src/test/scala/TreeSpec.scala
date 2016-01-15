@@ -35,4 +35,11 @@ class TreeSpec extends FlatSpec with Matchers {
     tree.right.right.data should === (9)
   }
 
+  "Traverse Binary Tree" should "be valid" in {
+    val vals = Vector(0,1,2,3,4,5,6,7,8,9)
+    val tree = BinaryNode.createBalancedBinaryTree(vals)
+
+    BinaryNode.traverseBinaryTreeInOrder(tree)
+  }
+
 }
