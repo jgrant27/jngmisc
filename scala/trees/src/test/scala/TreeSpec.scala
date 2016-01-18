@@ -55,4 +55,23 @@ class TreeSpec extends FlatSpec with Matchers {
     depth should === (11)
   }
 
+  "Binary Tree is Balanced" should "be valid" in {
+    val vals = Vector.range(0,1024)
+    val tree = BinaryNode.createBalancedBinaryTree(vals)
+    val isBalanced = BinaryNode.binaryTreeIsBalanced(tree)
+
+    isBalanced should === (true)
+  }
+
+  "Binary Tree is NOT Balanced" should "be valid" in {
+    val left2 = new BinaryNode(777)
+    val left = new BinaryNode(666, left2)
+    val root = new BinaryNode(555, left, null)
+
+    val isBalanced = BinaryNode.binaryTreeIsBalanced(root)
+
+    isBalanced should === (false)
+  }
+
+
 }

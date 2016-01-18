@@ -52,4 +52,31 @@ object BinaryNode {
 
   }
 
+  def binaryTreeDepth2(node: BinaryNode[Int]): Int = {
+
+    if (null != node) {
+      val leftDepth = binaryTreeDepth2(node.left)
+      if (leftDepth == -1) return -1
+      val rightDepth = binaryTreeDepth2(node.right)
+      if (rightDepth == -1) return -1
+      val diff = (leftDepth - rightDepth).abs
+      if (diff > 1) return -1
+      if (leftDepth > rightDepth) {
+        leftDepth + 1
+      } else {
+        rightDepth + 1
+      }
+    } else {
+      0
+    }
+
+  }
+
+  def binaryTreeIsBalanced(node: BinaryNode[Int]): Boolean = {
+
+    (binaryTreeDepth2(node) != -1)
+
+  }
+
+
 }
