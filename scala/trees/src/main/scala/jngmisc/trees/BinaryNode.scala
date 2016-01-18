@@ -24,12 +24,30 @@ object BinaryNode {
 
   }
 
-  def traverseBinaryTreeInOrder(node: BinaryNode[Int]): Unit = {
+  def traverseBinaryTreeInOrder(
+    node: BinaryNode[Int],
+    fun: BinaryNode[Int] => Unit): Unit = {
 
     if (null != node) {
-      traverseBinaryTreeInOrder(node.left)
-      println(node.data)
-      traverseBinaryTreeInOrder(node.right)
+      traverseBinaryTreeInOrder(node.left, fun)
+      fun(node)
+      traverseBinaryTreeInOrder(node.right, fun)
+    }
+
+  }
+
+  def binaryTreeDepth(node: BinaryNode[Int]): Int = {
+
+    if (null != node) {
+      val leftDepth = binaryTreeDepth(node.left)
+      val rightDepth = binaryTreeDepth(node.right)
+      if (leftDepth > rightDepth) {
+        leftDepth + 1
+      } else {
+        rightDepth + 1
+      }
+    } else {
+      0
     }
 
   }

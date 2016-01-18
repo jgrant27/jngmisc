@@ -21,8 +21,6 @@ class TreeSpec extends FlatSpec with Matchers {
     val vals = Vector.range(0,10)
     val tree = BinaryNode.createBalancedBinaryTree(vals)
 
-    println(tree)
-
     tree.data should === (5)
     tree.left.data should === (2)
     tree.left.left.data should === (1)
@@ -36,10 +34,25 @@ class TreeSpec extends FlatSpec with Matchers {
   }
 
   "Traverse Binary Tree" should "be valid" in {
-    val vals = Vector.range(0,10)
+    val vals = Vector.range(0,100)
     val tree = BinaryNode.createBalancedBinaryTree(vals)
 
-    BinaryNode.traverseBinaryTreeInOrder(tree)
+    var res:Vector[Int] = Vector()
+    val fun = (node: BinaryNode[Int]) => {
+      res = res :+ node.data
+    }
+    BinaryNode.traverseBinaryTreeInOrder(tree, fun)
+
+    res should === (vals)
+  }
+
+  "Binary Tree Depth" should "be valid" in {
+    val vals = Vector.range(0,1024)
+    val tree = BinaryNode.createBalancedBinaryTree(vals)
+
+    val depth = BinaryNode.binaryTreeDepth(tree)
+
+    depth should === (11)
   }
 
 }
