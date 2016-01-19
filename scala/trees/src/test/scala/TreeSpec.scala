@@ -4,6 +4,7 @@ import jngmisc.trees._
 
 
 class TreeSpec extends FlatSpec with Matchers {
+
   "Root BinaryNode" should "be valid" in {
     val left = new BinaryNode(666)
     val right = new BinaryNode(777)
@@ -17,10 +18,10 @@ class TreeSpec extends FlatSpec with Matchers {
     root.right.data should === (777)
   }
 
-  "Balanced Binary Tree" should "be valid" in {
-    val vals = Vector.range(0,10)
-    val tree = BinaryNode.createBalancedBinaryTree(vals)
+  val vals = Vector.range(0,10)
+  val tree = BinaryNode.createBalancedBinaryTree(vals)
 
+  "Balanced Binary Tree" should "be valid" in {
     tree.data should === (5)
     tree.left.data should === (2)
     tree.left.left.data should === (1)
@@ -34,9 +35,6 @@ class TreeSpec extends FlatSpec with Matchers {
   }
 
   "Traverse Binary Tree" should "be valid" in {
-    val vals = Vector.range(0,100)
-    val tree = BinaryNode.createBalancedBinaryTree(vals)
-
     var res:Vector[Int] = Vector()
     val fun =
 
@@ -46,10 +44,7 @@ class TreeSpec extends FlatSpec with Matchers {
     res should === (vals)
   }
 
-  "Traverse Binary Tree Depth First" should "be valid" in {
-    val vals = Vector.range(0, 10)
-    val tree = BinaryNode.createBalancedBinaryTree(vals)
-
+  "Traverse Binary Tree Breadth First" should "be valid" in {
     var res:Vector[Int] = Vector()
 
     BinaryNode.traverseBinaryTreeBreadthFirst(tree,
@@ -59,17 +54,12 @@ class TreeSpec extends FlatSpec with Matchers {
   }
 
   "Binary Tree Depth" should "be valid" in {
-    val vals = Vector.range(0, 10)
-    val tree = BinaryNode.createBalancedBinaryTree(vals)
-
     val depth = BinaryNode.binaryTreeDepth(tree)
 
     depth should === (4)
   }
 
   "Binary Tree is Balanced" should "be valid" in {
-    val vals = Vector.range(0, 10)
-    val tree = BinaryNode.createBalancedBinaryTree(vals)
     val isBalanced = BinaryNode.binaryTreeIsBalanced(tree)
 
     isBalanced should === (true)
