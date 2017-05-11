@@ -12,7 +12,7 @@ use jngmisc::*;
 fn main() {
 
     let args: Vec<String> = env::args().collect();
-    let default_word = String::from("abcd");
+    let default_word = String::from("abc");
     let word: String = match args.len() {
         n if n <= 1 => default_word,
         _ => match args[1].parse::<String>().ok() {
