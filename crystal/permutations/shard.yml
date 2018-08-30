@@ -1,0 +1,13 @@
+name: permutations
+version: 0.1.0
+
+authors:
+  - Justin Grant <jgrant27@gmail.com>
+
+targets:
+  permutations:
+    main: src/permutations.cr
+
+crystal: 0.26.1
+
+license: MIT
