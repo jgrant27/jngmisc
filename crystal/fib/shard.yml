@@ -1,0 +1,13 @@
+name: fib
+version: 0.1.0
+
+authors:
+  - Justin Grant <jgrant27@gmail.com>
+
+targets:
+  fib:
+    main: src/fib.cr
+
+crystal: 0.26.1
+
+license: MIT
