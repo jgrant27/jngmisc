@@ -1,12 +1,7 @@
-extern crate rand;
-extern crate time;
-
 use std::env;
 use time::*;
 
-mod jngmisc;
-
-use jngmisc::*;
+mod permutations;
 
 
 fn main() {

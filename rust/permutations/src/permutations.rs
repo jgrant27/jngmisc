@@ -1,6 +1,3 @@
-extern crate rand;
-
-
 fn for_string_rec_aux(word: &String,
                       new_word: String,
                       used: &mut Vec<bool>,
