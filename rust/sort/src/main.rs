@@ -1,13 +1,10 @@
-extern crate rand;
-extern crate time;
-
+use rand::prelude::*;
 use std::env;
-use rand::Rng;
 use time::*;
 
-mod jngmisc;
-
-use jngmisc::sort::*;
+mod quicksort;
+mod mergesort;
+mod radixsort;
 
 
 fn gen_random_vec(cnt: u64) -> Vec<u64> {

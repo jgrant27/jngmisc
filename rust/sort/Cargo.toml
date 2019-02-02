@@ -1,8 +1,9 @@
 [package]
 name = "sort"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Justin Grant <jgrant@imagine27.com>"]
+edition = "2018"
 
 [dependencies]
-rand = "0.3"
+rand = "0.6"
 time = "0.1"
