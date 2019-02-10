@@ -17,7 +17,9 @@ fn collatz(mut nums: Vec<u64>) -> Vec<u64> {
 fn main() {
     let args: Vec<String> = env::args().collect();
     let n = args[1].parse::<u64>().unwrap();
-    let res = collatz(vec![n]);
-    println!("{:?}", res);
-    println!("{} steps", res.len());
+    for i in 1..=n {
+        let res = collatz(vec![i]);
+        println!("{:?}", res);
+        println!("{} steps", res.len());
+    }
 }
