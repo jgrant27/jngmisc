@@ -26,23 +26,6 @@
 // EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-
-//extern crate tests;
-
-
-static DEFAULT_WORD_CNT:uint = 1000;
-
 fn main() {
-  let args = std::os::args();
-  let wordcnt:uint = if (args.len() > 1) {
-    match from_str(args[1]) {
-         Some(x) => x,
-         None => DEFAULT_WORD_CNT
-    }
-  } else {
-    DEFAULT_WORD_CNT
-  };
-
-  //tests::sanity_tests();
-  //tests::big_tests(wordcnt);
+    let _args: Vec<String> = std::env::args().collect();
 }

@@ -1,0 +1,12 @@
+# Install just from https://github.com/casey/just
+# - cargo install just
+# - just test --release
+
+test TARGET="":
+	cargo test {{TARGET}} -- --nocapture
+
+run PATH TARGET="":
+	cargo run {{TARGET}} {{PATH}}
+
+clean:
+	cargo clean
