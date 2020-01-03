@@ -3,3 +3,4 @@
 **/target
 **/.inc
 **/*.lock
+**/a.out
