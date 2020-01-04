@@ -29,96 +29,96 @@
 package palindromes
 
 import (
-  . "../utils"
-  //"fmt"
+	. "../utils"
+	//"fmt"
 )
 
 func LargestStartEnd(lengths []int) (int, int) {
-  // Given a slice of palindrome lengths,
-  // returns the start and end indexes of the longest
-  // palindrome.
-  max := Max(lengths)
-  im := IndexOf(lengths, max)
-  s := MaxInt(0, im/2-max/2)
-  return s, s + max
+	// Given a slice of palindrome lengths,
+	// returns the start and end indexes of the longest
+	// palindrome.
+	max := Max(lengths)
+	im := IndexOf(lengths, max)
+	s := MaxInt(0, im/2-max/2)
+	return s, s + max
 }
 
 // Finds the lengths of palindromes in a string.
 // O(n) time complexity. O(n) space complexity.
 func PalindromesFast(text string) (int, int) {
-  lengths := make([]int, 2*len(text)+1)
-  i, j, d, s, e, plen, llen, k := 0, 0, 0, 0, 0, 0, 0, 0
-  for i < len(text) {
+	lengths := make([]int, 2*len(text)+1)
+	i, j, d, s, e, plen, llen, k := 0, 0, 0, 0, 0, 0, 0, 0
+	for i < len(text) {
 		// is the string so far a palindrome ?
-    if i > plen && text[i-plen-1] == text[i] {
+		if i > plen && text[i-plen-1] == text[i] {
 			// yes, so we extend the current found palindrome length
 			// and keep checking forward else ...
-      plen += 2
-      i++
-      continue
-    }
+			plen += 2
+			i++
+			continue
+		}
 		// ... we have reached the end of the current found palindrome
 		// so we set the current palindrome length etc. ...
-    lengths[k] = plen
-    k++
-    s = k - 2
-    e = s - plen
+		lengths[k] = plen
+		k++
+		s = k - 2
+		e = s - plen
 		// ... then backtrack over the last found palindrome to see ...
-    b := true
-    for j = s; j > e; j-- {
-      d = j - e - 1
+		b := true
+		for j = s; j > e; j-- {
+			d = j - e - 1
 			// ... if we have a reflection of the same length ...
-      if lengths[j] == d {
+			if lengths[j] == d {
 				// ... yes, so we set new palindrome length ...
-        plen = d
+				plen = d
 				// ... and stop backtracking.
-        b = false
-        break
-      }
+				b = false
+				break
+			}
 			// ... no, so we take the smaller length,
 			// update the lengths and continue backtracking.
-      lengths[k] = MinInt(d, lengths[j])
-      k++
-    }
+			lengths[k] = MinInt(d, lengths[j])
+			k++
+		}
 		// if we we're backtracking then reset palindrome length
 		// and move on.
-    if b {
-      plen = 1
-      i++
-    }
-  }
-	// we're done scanning the text so we perform 
+		if b {
+			plen = 1
+			i++
+		}
+	}
+	// we're done scanning the text so we perform
 	// one last backtrack.
-  lengths[k] = plen
-  k++
-  llen = k
-  s = llen - 2
-  e = s - (2*len(text) + 1 - llen)
-  for i := s; i > e; i-- {
-    d = i - e - 1
-    lengths[k] = MinInt(d, lengths[i])
-    k++
-  }
-  return LargestStartEnd(lengths)
+	lengths[k] = plen
+	k++
+	llen = k
+	s = llen - 2
+	e = s - (2*len(text) + 1 - llen)
+	for i := s; i > e; i-- {
+		d = i - e - 1
+		lengths[k] = MinInt(d, lengths[i])
+		k++
+	}
+	return LargestStartEnd(lengths)
 }
 
 // Finds the lengths of palindromes in a string.
 // O(n^2) time complexity. O(n) space complexity.
 func PalindromesNaive(text string) (int, int) {
-  llen, tlen := 0, len(text)
-  if tlen > 1 {
-    llen = 2*tlen + 1
-  }
-  lengths := make([]int, llen)
-  for i := 0; i < llen; i++ {
-    start := i / 2
-    end := start + i%2
-    for start > 0 && end < tlen && text[start-1] == text[end] {
-      start -= 1
+	llen, tlen := 0, len(text)
+	if tlen > 1 {
+		llen = 2*tlen + 1
+	}
+	lengths := make([]int, llen)
+	for i := 0; i < llen; i++ {
+		start := i / 2
+		end := start + i%2
+		for start > 0 && end < tlen && text[start-1] == text[end] {
+			start -= 1
 			end += 1
-      lengths[i] = end - start
-    }
-    lengths[i] = end - start
-  }
-  return LargestStartEnd(lengths)
+			lengths[i] = end - start
+		}
+		lengths[i] = end - start
+	}
+	return LargestStartEnd(lengths)
 }

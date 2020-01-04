@@ -29,18 +29,18 @@
 package tests
 
 import (
-  . "../palindromes"
-  . "../utils"
-  "fmt"
-  "strings"
-  "time"
+	. "../palindromes"
+	. "../utils"
+	"fmt"
+	"strings"
+	"time"
 )
 
 func PrintDuration(f func()) {
-  start := time.Now()
-  f()
-  end := time.Now()
-  fmt.Printf("%v elapsed\n", end.Sub(start))
+	start := time.Now()
+	f()
+	end := time.Now()
+	fmt.Printf("%v elapsed\n", end.Sub(start))
 }
 
 func AssertFind(funcs [](func(string) (int, int)), instr string, expstr string) {
@@ -48,7 +48,7 @@ func AssertFind(funcs [](func(string) (int, int)), instr string, expstr string) 
 		f := funcs[i]
 		fname := GetFunctionName(f)
 		var longest = ""
-		PrintDuration(func() { 
+		PrintDuration(func() {
 			longest = FindLongestPal(f, instr)
 		})
 		result := "FAIL"
@@ -57,29 +57,29 @@ func AssertFind(funcs [](func(string) (int, int)), instr string, expstr string) 
 		}
 		fmt.Printf(
 			"%s\t(%s)\tAsserted >>>%s<<< in >>>%s ...<<< \tlength %d\n",
-			result, fname, 
+			result, fname,
 			expstr[0:MinInt(len(expstr), 50)],
-			instr[0:MinInt(len(instr), 24)], 
+			instr[0:MinInt(len(instr), 24)],
 			len(longest))
 	}
 }
 
 func SanityTests() {
 	funcs := [](func(string) (int, int)) {PalindromesNaive, PalindromesFast}
-  fmt.Printf("\nSanity tests ...\n")
-  AssertFind(funcs, "eat a banana bob !", "anana")
-  AssertFind(funcs, "lol", "lol")
-  AssertFind(funcs, "", "")
-  AssertFind(funcs, "A876BC110115438776E0FC16BFF7B24537", "11011")
-   // AssertFind 49 chars of the first chromosome of the human genome
-  AssertFind(funcs, "AATTCTTTGATTGATAATTTTTTCTTCTCAGTCTTTTATCTTGTCTCTTC", "TTTTTT")
-  AssertFind(funcs, "TTTTTT", "TTTTTT")
-  AssertFind(funcs, "So my mom and dad said that they would find me a palindrome that is better than a man a plan a canal panama.  I'm not sure that is possible though and don't expect a tattarrattat on my door any time soon. tattarrattattattarrattat", "tattarrattattattarrattat")
+	fmt.Printf("\nSanity tests ...\n")
+	AssertFind(funcs, "eat a banana bob !", "anana")
+	AssertFind(funcs, "lol", "lol")
+	AssertFind(funcs, "", "")
+	AssertFind(funcs, "A876BC110115438776E0FC16BFF7B24537", "11011")
+	 // AssertFind 49 chars of the first chromosome of the human genome
+	AssertFind(funcs, "AATTCTTTGATTGATAATTTTTTCTTCTCAGTCTTTTATCTTGTCTCTTC", "TTTTTT")
+	AssertFind(funcs, "TTTTTT", "TTTTTT")
+	AssertFind(funcs, "So my mom and dad said that they would find me a palindrome that is better than a man a plan a canal panama.  I'm not sure that is possible though and don't expect a tattarrattat on my door any time soon. tattarrattattattarrattat", "tattarrattattattarrattat")
 }
 
 func BigTest(wordcnt int) {
 	funcs := [](func(string) (int, int)) {PalindromesNaive, PalindromesFast}
-  paltxt := strings.Repeat(" amanaplanacanalpanama ", wordcnt)
-  fmt.Printf("\nBig tests (%d) ...\n", wordcnt)
-  AssertFind(funcs, paltxt, paltxt)
+	paltxt := strings.Repeat(" amanaplanacanalpanama ", wordcnt)
+	fmt.Printf("\nBig tests (%d) ...\n", wordcnt)
+	AssertFind(funcs, paltxt, paltxt)
 }
