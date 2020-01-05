@@ -47,7 +47,7 @@ func LargestStartEnd(lengths []int) (int, int) {
 // O(n) time complexity. O(n) space complexity.
 func PalindromesFast(text string) (int, int) {
 	lengths := make([]int, 2*len(text)+1)
-	i, j, d, s, e, plen, llen, k := 0, 0, 0, 0, 0, 0, 0, 0
+	i, j, d, s, e, plen, k := 0, 0, 0, 0, 0, 0, 0
 	for i < len(text) {
 		// is the string so far a palindrome ?
 		if i > plen && text[i-plen-1] == text[i] {
@@ -91,9 +91,8 @@ func PalindromesFast(text string) (int, int) {
 	// one last backtrack.
 	lengths[k] = plen
 	k++
-	llen = k
-	s = llen - 2
-	e = s - (2*len(text) + 1 - llen)
+	s = k - 2
+	e = s - (2*len(text) + 1 - k)
 	for i := s; i > e; i-- {
 		d = i - e - 1
 		lengths[k] = MinInt(d, lengths[i])
