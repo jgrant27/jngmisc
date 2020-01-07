@@ -94,7 +94,7 @@ pub fn pals_fast(text: &str) -> (usize, usize) {
         let mut b = true;
         j = s;
         while j > e {
-            d = j.checked_sub(e).unwrap_or(0).checked_sub(1).unwrap_or(0);
+            d = j.checked_sub(e).unwrap_or(1) - 1;
             // ... if we have a reflection of the same length ...
             if lengths[j] == d {
                 // ... yes, so we set new palindrome length ...
@@ -124,7 +124,7 @@ pub fn pals_fast(text: &str) -> (usize, usize) {
     e = s.checked_sub(2 * text.len() + 1 - k).unwrap_or(0);
     let mut i = s;
     while i > e {
-        d = i.checked_sub(e).unwrap_or(1).checked_sub(1).unwrap_or(0);
+        d = i.checked_sub(e).unwrap_or(1) - 1;
         lengths[k] = std::cmp::min(d, lengths[i]);
         k += 1;
         i -= 1;
