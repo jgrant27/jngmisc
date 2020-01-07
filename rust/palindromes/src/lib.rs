@@ -32,15 +32,14 @@ fn start_end(lengths: &[usize]) -> (usize, usize) {
     // Given a slice of palindrome lengths,
     // returns the start and end indexes of the longest
     // palindrome.
-    let mut max = 0;
-    let mut im = 0;
-    if !lengths.is_empty() {
-        max = *lengths.iter().max().unwrap();
-        im = lengths.iter().position(|&n| n == max).unwrap();
-    };
-    //println!("{:?} {} {}", lengths, im, max);
-    let s = std::cmp::max(0, im / 2 - max / 2);
-    (s, s + max)
+    if lengths.is_empty() {
+        (0, 0)
+    } else {
+        let max = lengths.iter().max().unwrap();
+        let im = lengths.iter().position(|&v| v == *max).unwrap();
+        let s = std::cmp::max(0, (im / 2).checked_sub(max / 2).unwrap_or(0));
+        (s, s + max)
+    }
 }
 
 // Finds the lengths of palindromes in a string.
@@ -68,17 +67,17 @@ pub fn pals_naive(text: &str) -> (usize, usize) {
 // O(n) time complexity. O(n) space complexity.
 pub fn pals_fast(text: &str) -> (usize, usize) {
     let mut lengths = vec![0; 2 * text.len() + 1];
+    let mut i = 0;
+    let mut j;
     let mut d;
     let mut s;
-    let mut j;
     let mut e;
     let mut plen = 0;
     let mut k = 0;
-    let mut i = 0;
 
     while i < text.len() {
         // is the string so far a palindrome ?
-        if i > plen && text[i - plen - 1..i - plen] == text[i..i + 1] {
+        if i > plen && text.chars().nth(i - plen - 1) == text.chars().nth(i) {
             // yes, so we extend the current found palindrome length
             // and keep checking forward else ...
             plen += 2;
@@ -89,14 +88,13 @@ pub fn pals_fast(text: &str) -> (usize, usize) {
         // so we set the current palindrome length etc. ...
         lengths[k] = plen;
         k += 1;
-        s = if k < 2 { 0 } else { k - 2 };
-        e = if s < plen { plen } else { s - plen };
+        s = k.checked_sub(2).unwrap_or(0);
+        e = s.checked_sub(plen).unwrap_or(0);
         // ... then backtrack over the last found palindrome to see ...
         let mut b = true;
         j = s;
         while j > e {
-            j -= 1;
-            d = j - e;
+            d = j.checked_sub(e).unwrap_or(0).checked_sub(1).unwrap_or(0);
             // ... if we have a reflection of the same length ...
             if lengths[j] == d {
                 // ... yes, so we set new palindrome length ...
@@ -109,6 +107,7 @@ pub fn pals_fast(text: &str) -> (usize, usize) {
             // update the lengths and continue backtracking.
             lengths[k] = std::cmp::min(d, lengths[j]);
             k += 1;
+            j -= 1;
         }
         // if we are back-tracking then reset palindrome length
         // and move on.
@@ -121,15 +120,11 @@ pub fn pals_fast(text: &str) -> (usize, usize) {
     // one last backtrack.
     lengths[k] = plen;
     k += 1;
-    s = if k < 2 { 0 } else { k - 2 };
-    e = if s < (2 * text.len() + 1 - k) {
-        s
-    } else {
-        s - (2 * text.len() + 1 - k)
-    };
+    s = k.checked_sub(2).unwrap_or(0);
+    e = s.checked_sub(2 * text.len() + 1 - k).unwrap_or(0);
     let mut i = s;
     while i > e {
-        d = i - e - 1;
+        d = i.checked_sub(e).unwrap_or(1).checked_sub(1).unwrap_or(0);
         lengths[k] = std::cmp::min(d, lengths[i]);
         k += 1;
         i -= 1;
@@ -139,7 +134,7 @@ pub fn pals_fast(text: &str) -> (usize, usize) {
 
 pub fn find_longest_pal(func: &PalFunc, text: &str) -> String {
     let (i1, i2) = func(text);
-    if i1 < i2 && text.len() > 0 {
+    if !text.is_empty() && i1 < i2 {
         text[i1..i2].to_string()
     } else {
         String::new()

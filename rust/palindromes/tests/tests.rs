@@ -40,17 +40,21 @@ fn assert_find(funcpair: &PalFuncPair, instr: &str, expstr: &str) -> bool {
     let dur = std::time::Instant::now() - start;
     let success = expstr == longest;
     let result = if success { "PASS" } else { "FAIL" };
-    let maxilen = std::cmp::min(300, instr.len());
-    let maxelen = std::cmp::min(10, expstr.len());
+    let maxilen = std::cmp::min(24, instr.len());
+    let maxelen = std::cmp::min(50, expstr.len());
+    let llen = std::cmp::min(10, longest.len());
     println!(
-        "{}\t{}\tAsserted >>>{}<<< (length {}) in >>>{} ...<<< {:?}ms",
+        "{}\t{}\tAsserted >>>{}<<< (found >>>{}<<< length {}) in >>>{} ...<<< {:?}ms",
         &result,
         fname,
         &expstr[0..maxelen],
+        //&longest[0..llen],
+        longest,
         longest.len(),
         &instr[0..maxilen],
         dur
     );
+    //assert!(success);
     success
 }
 
@@ -84,11 +88,13 @@ fn big_test(funcpair: PalFuncPair) {
 }
 
 #[test]
+#[ignore]
 pub fn sanity_test_naive() {
     sanity_test(("pals_naive".to_string(), Box::new(palindromes::pals_naive)));
 }
 
 #[test]
+#[ignore]
 pub fn big_test_naive() {
     big_test(("pals_naive".to_string(), Box::new(palindromes::pals_naive)));
 }
@@ -99,6 +105,7 @@ pub fn sanity_test_fast() {
 }
 
 #[test]
+#[ignore]
 pub fn big_test_fast() {
     big_test(("pals_fast".to_string(), Box::new(palindromes::pals_fast)));
 }
