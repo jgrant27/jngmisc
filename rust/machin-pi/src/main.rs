@@ -1,6 +1,7 @@
 use ramp::Int;
 
-#[macro_use] extern crate partial_application;
+#[macro_use]
+extern crate partial_application;
 
 fn machinpi(dcnt: usize) -> Int {
     fn arccot(x: &Int, unity: &Int) -> Int {
@@ -10,7 +11,12 @@ fn machinpi(dcnt: usize) -> Int {
                 term.to_owned()
             } else {
                 let one = Int::from(1);
-                let a = partial!(_arccot(x, &(n + 2), &(xpow / x), &(xpow / n), _));
+                let a = partial!(_arccot =>
+                                 x,
+                                 &(n + 2),
+                                 &(xpow / x),
+                                 &(xpow / n),
+                                 _);
                 let b = xpow / n;
                 if one == *l {
                     a(&zero) + b
@@ -19,7 +25,13 @@ fn machinpi(dcnt: usize) -> Int {
                 }
             }
         }
-        _arccot(&(x * x), &Int::from(1), &(unity / x), &(unity / x), &Int::from(1))
+        _arccot(
+            &(x * x),
+            &Int::from(1),
+            &(unity / x),
+            &(unity / x),
+            &Int::from(1),
+        )
     }
 
     let guard = 10 + 10_f32.log10().ceil() as usize;
