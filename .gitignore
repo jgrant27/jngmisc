@@ -4,3 +4,8 @@
 **/.inc
 **/*.lock
 **/a.out
+**/*.ali
+**/*.o
+**/*.stderr
+**/*.stdout
+**/*.bexch
