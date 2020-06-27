@@ -1,0 +1,797 @@
+desc: (none)
+cmd: target/release/quicksort 1000000
+time_unit: i
+#-----------
+snapshot=0
+#-----------
+time=0
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=1
+#-----------
+time=431850
+mem_heap_B=472
+mem_heap_extra_B=16
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=2
+#-----------
+time=432421
+mem_heap_B=592
+mem_heap_extra_B=32
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=3
+#-----------
+time=432593
+mem_heap_B=1616
+mem_heap_extra_B=40
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=4
+#-----------
+time=432839
+mem_heap_B=1736
+mem_heap_extra_B=32
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=5
+#-----------
+time=569845
+mem_heap_B=1736
+mem_heap_extra_B=32
+mem_stacks_B=0
+heap_tree=detailed
+n4: 1736 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 1024 0x491CFC3: _IO_file_doallocate (in /usr/lib64/libc-2.31.so)
+  n1: 1024 0x492BD1F: _IO_doallocbuf (in /usr/lib64/libc-2.31.so)
+   n1: 1024 0x492AC5B: _IO_file_underflow@@GLIBC_2.2.5 (in /usr/lib64/libc-2.31.so)
+    n1: 1024 0x491E847: getdelim (in /usr/lib64/libc-2.31.so)
+     n1: 1024 0x4875323: pthread_getattr_np (in /usr/lib64/libpthread-2.31.so)
+      n1: 1024 0x11EA93: get_stack_start (thread.rs:300)
+       n1: 1024 0x11EA93: get_stack_start_aligned (thread.rs:314)
+        n1: 1024 0x11EA93: init (thread.rs:333)
+         n1: 1024 0x11EA93: std::rt::lang_start_internal (rt.rs:37)
+          n0: 1024 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n1: 472 0x491DA4E: __fopen_internal (in /usr/lib64/libc-2.31.so)
+  n1: 472 0x487522A: pthread_getattr_np (in /usr/lib64/libpthread-2.31.so)
+   n1: 472 0x11EA93: get_stack_start (thread.rs:300)
+    n1: 472 0x11EA93: get_stack_start_aligned (thread.rs:314)
+     n1: 472 0x11EA93: init (thread.rs:333)
+      n1: 472 0x11EA93: std::rt::lang_start_internal (rt.rs:37)
+       n0: 472 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n1: 240 0x491E6CD: getdelim (in /usr/lib64/libc-2.31.so)
+  n1: 240 0x4875323: pthread_getattr_np (in /usr/lib64/libpthread-2.31.so)
+   n1: 240 0x11EA93: get_stack_start (thread.rs:300)
+    n1: 240 0x11EA93: get_stack_start_aligned (thread.rs:314)
+     n1: 240 0x11EA93: init (thread.rs:333)
+      n1: 240 0x11EA93: std::rt::lang_start_internal (rt.rs:37)
+       n0: 240 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n0: 0 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=6
+#-----------
+time=569845
+mem_heap_B=1496
+mem_heap_extra_B=24
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=7
+#-----------
+time=570074
+mem_heap_B=472
+mem_heap_extra_B=16
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=8
+#-----------
+time=570205
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=9
+#-----------
+time=570982
+mem_heap_B=32
+mem_heap_extra_B=8
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=10
+#-----------
+time=571116
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=11
+#-----------
+time=571692
+mem_heap_B=4
+mem_heap_extra_B=20
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=12
+#-----------
+time=571869
+mem_heap_B=5
+mem_heap_extra_B=19
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=13
+#-----------
+time=572025
+mem_heap_B=45
+mem_heap_extra_B=35
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=14
+#-----------
+time=572160
+mem_heap_B=93
+mem_heap_extra_B=43
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=15
+#-----------
+time=572279
+mem_heap_B=173
+mem_heap_extra_B=51
+mem_stacks_B=0
+heap_tree=detailed
+n5: 173 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 80 0x11689F: alloc (alloc.rs:80)
+  n1: 80 0x11689F: alloc (alloc.rs:174)
+   n1: 80 0x11689F: exchange_malloc (alloc.rs:268)
+    n1: 80 0x11689F: new<std::thread::Inner> (sync.rs:323)
+     n1: 80 0x11689F: std::thread::Thread::new (mod.rs:1141)
+      n1: 80 0x11EC63: std::rt::lang_start_internal (rt.rs:44)
+       n0: 80 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n1: 48 0x116851: alloc (alloc.rs:80)
+  n1: 48 0x116851: alloc (alloc.rs:174)
+   n1: 48 0x116851: exchange_malloc (alloc.rs:268)
+    n1: 48 0x116851: new (condvar.rs:130)
+     n1: 48 0x116851: std::thread::Thread::new (mod.rs:1146)
+      n1: 48 0x11EC63: std::rt::lang_start_internal (rt.rs:44)
+       n0: 48 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n1: 40 0x1167DE: alloc (alloc.rs:80)
+  n1: 40 0x1167DE: alloc (alloc.rs:174)
+   n1: 40 0x1167DE: exchange_malloc (alloc.rs:268)
+    n1: 40 0x1167DE: new<()> (mutex.rs:168)
+     n1: 40 0x1167DE: std::thread::Thread::new (mod.rs:1145)
+      n1: 40 0x11EC63: std::rt::lang_start_internal (rt.rs:44)
+       n0: 40 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n1: 5 0x11771C: realloc (alloc.rs:124)
+  n1: 5 0x11771C: grow (alloc.rs:218)
+   n1: 5 0x11771C: grow<u8,alloc::alloc::Global> (raw_vec.rs:527)
+    n1: 5 0x11771C: try_reserve_exact<u8,alloc::alloc::Global> (raw_vec.rs:426)
+     n1: 5 0x11771C: reserve_exact<u8,alloc::alloc::Global> (raw_vec.rs:412)
+      n1: 5 0x11771C: reserve_exact<u8> (vec.rs:525)
+       n1: 5 0x11771C: std::ffi::c_str::CString::from_vec_unchecked (c_str.rs:382)
+        n1: 5 0x116773: _new (c_str.rs:357)
+         n1: 5 0x116773: new<alloc::string::String> (c_str.rs:351)
+          n1: 5 0x116773: {{closure}} (mod.rs:1139)
+           n1: 5 0x116773: map<alloc::string::String,std::ffi::c_str::CString,closure-0> (option.rs:456)
+            n1: 5 0x116773: std::thread::Thread::new (mod.rs:1139)
+             n1: 5 0x11EC63: std::rt::lang_start_internal (rt.rs:44)
+              n0: 5 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n0: 0 in 6 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=16
+#-----------
+time=572399
+mem_heap_B=205
+mem_heap_extra_B=59
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=17
+#-----------
+time=572776
+mem_heap_B=253
+mem_heap_extra_B=67
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=18
+#-----------
+time=572873
+mem_heap_B=277
+mem_heap_extra_B=83
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=19
+#-----------
+time=572970
+mem_heap_B=284
+mem_heap_extra_B=100
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=20
+#-----------
+time=573270
+mem_heap_B=332
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=21
+#-----------
+time=573485
+mem_heap_B=284
+mem_heap_extra_B=100
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=22
+#-----------
+time=644330
+mem_heap_B=292
+mem_heap_extra_B=116
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=23
+#-----------
+time=644485
+mem_heap_B=300
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=24
+#-----------
+time=644642
+mem_heap_B=316
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=25
+#-----------
+time=644854
+mem_heap_B=348
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=detailed
+n9: 348 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 80 0x11689F: alloc (alloc.rs:80)
+  n1: 80 0x11689F: alloc (alloc.rs:174)
+   n1: 80 0x11689F: exchange_malloc (alloc.rs:268)
+    n1: 80 0x11689F: new<std::thread::Inner> (sync.rs:323)
+     n1: 80 0x11689F: std::thread::Thread::new (mod.rs:1141)
+      n1: 80 0x11EC63: std::rt::lang_start_internal (rt.rs:44)
+       n0: 80 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n1: 64 0x10F2F4: alloc::raw_vec::RawVec<T,A>::reserve (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+  n1: 64 0x10EF0F: quicksort::main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+   n1: 64 0x10F422: std::rt::lang_start::{{closure}} (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+    n1: 64 0x11EC97: {{closure}} (rt.rs:52)
+     n1: 64 0x11EC97: do_call<closure-0,i32> (panicking.rs:331)
+      n1: 64 0x11EC97: try<i32,closure-0> (panicking.rs:274)
+       n1: 64 0x11EC97: catch_unwind<closure-0,i32> (panic.rs:394)
+        n1: 64 0x11EC97: std::rt::lang_start_internal (rt.rs:51)
+         n0: 64 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n1: 48 0x10EB3B: <alloc::vec::Vec<T> as alloc::vec::SpecExtend<T,I>>::from_iter (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+  n1: 48 0x10EE6A: quicksort::main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+   n1: 48 0x10F422: std::rt::lang_start::{{closure}} (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+    n1: 48 0x11EC97: {{closure}} (rt.rs:52)
+     n1: 48 0x11EC97: do_call<closure-0,i32> (panicking.rs:331)
+      n1: 48 0x11EC97: try<i32,closure-0> (panicking.rs:274)
+       n1: 48 0x11EC97: catch_unwind<closure-0,i32> (panic.rs:394)
+        n1: 48 0x11EC97: std::rt::lang_start_internal (rt.rs:51)
+         n0: 48 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n1: 48 0x116851: alloc (alloc.rs:80)
+  n1: 48 0x116851: alloc (alloc.rs:174)
+   n1: 48 0x116851: exchange_malloc (alloc.rs:268)
+    n1: 48 0x116851: new (condvar.rs:130)
+     n1: 48 0x116851: std::thread::Thread::new (mod.rs:1146)
+      n1: 48 0x11EC63: std::rt::lang_start_internal (rt.rs:44)
+       n0: 48 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n1: 40 0x1167DE: alloc (alloc.rs:80)
+  n1: 40 0x1167DE: alloc (alloc.rs:174)
+   n1: 40 0x1167DE: exchange_malloc (alloc.rs:268)
+    n1: 40 0x1167DE: new<()> (mutex.rs:168)
+     n1: 40 0x1167DE: std::thread::Thread::new (mod.rs:1145)
+      n1: 40 0x11EC63: std::rt::lang_start_internal (rt.rs:44)
+       n0: 40 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n1: 32 0x48E6BB2: __cxa_thread_atexit_impl (in /usr/lib64/libc-2.31.so)
+  n1: 32 0x11609E: register_dtor (fast_thread_local.rs:33)
+   n1: 32 0x11609E: try_register_dtor<core::cell::RefCell<core::option::Option<std::sys_common::thread_info::ThreadInfo>>> (local.rs:438)
+    n1: 32 0x11609E: std::thread::local::fast::Key<T>::try_initialize (local.rs:424)
+     n1: 32 0x11CC79: get<core::cell::RefCell<core::option::Option<std::sys_common::thread_info::ThreadInfo>>,fn() -> core::cell::RefCell<core::option::Option<std::sys_common::thread_info::ThreadInfo>>> (local.rs:410)
+      n1: 32 0x11CC79: __getit (local.rs:175)
+       n1: 32 0x11CC79: try_with<core::cell::RefCell<core::option::Option<std::sys_common::thread_info::ThreadInfo>>,closure-0,()> (local.rs:262)
+        n1: 32 0x11CC79: with<core::cell::RefCell<core::option::Option<std::sys_common::thread_info::ThreadInfo>>,closure-0,()> (local.rs:239)
+         n1: 32 0x11CC79: std::sys_common::thread_info::set (thread_info.rs:40)
+          n1: 32 0x11EC8C: std::rt::lang_start_internal (rt.rs:45)
+           n0: 32 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n1: 31 0x11724D: alloc (alloc.rs:80)
+  n1: 31 0x11724D: alloc (alloc.rs:174)
+   n1: 31 0x11724D: allocate_in<u8,alloc::alloc::Global> (raw_vec.rs:152)
+    n1: 31 0x11724D: with_capacity_in<u8,alloc::alloc::Global> (raw_vec.rs:135)
+     n1: 31 0x11724D: with_capacity<u8> (raw_vec.rs:92)
+      n1: 31 0x11724D: with_capacity<u8> (vec.rs:358)
+       n1: 31 0x11724D: to_vec<u8> (slice.rs:159)
+        n1: 31 0x11724D: to_vec<u8> (slice.rs:395)
+         n1: 31 0x11724D: {{closure}} (args.rs:143)
+          n1: 31 0x11724D: {{closure}}<isize,std::ffi::os_str::OsString,(),closure-0,closure-0> (mod.rs:786)
+           n1: 31 0x11724D: {{closure}}<(),isize,closure-0> (iterator.rs:2002)
+            n1: 31 0x11724D: try_fold<core::ops::range::Range<isize>,(),closure-0,core::result::Result<(), !>> (iterator.rs:1878)
+             n1: 31 0x11724D: fold<core::ops::range::Range<isize>,(),closure-0> (iterator.rs:2005)
+              n1: 31 0x11724D: fold<std::ffi::os_str::OsString,core::ops::range::Range<isize>,closure-0,(),closure-0> (mod.rs:826)
+               n1: 31 0x11724D: for_each<core::iter::adapters::Map<core::ops::range::Range<isize>, closure-0>,closure-0> (iterator.rs:658)
+                n1: 31 0x11724D: spec_extend<std::ffi::os_str::OsString,core::iter::adapters::Map<core::ops::range::Range<isize>, closure-0>> (vec.rs:2116)
+                 n1: 31 0x11724D: from_iter<std::ffi::os_str::OsString,core::iter::adapters::Map<core::ops::range::Range<isize>, closure-0>> (vec.rs:2096)
+                  n1: 31 0x11724D: from_iter<std::ffi::os_str::OsString,core::iter::adapters::Map<core::ops::range::Range<isize>, closure-0>> (vec.rs:1981)
+                   n1: 31 0x11724D: collect<core::iter::adapters::Map<core::ops::range::Range<isize>, closure-0>,alloc::vec::Vec<std::ffi::os_str::OsString>> (iterator.rs:1660)
+                    n1: 31 0x11724D: clone (args.rs:140)
+                     n1: 31 0x11724D: args (args.rs:134)
+                      n1: 31 0x11724D: args (args.rs:24)
+                       n1: 31 0x11724D: std::env::args_os (env.rs:778)
+                        n1: 31 0x1170D0: std::env::args (env.rs:751)
+                         n1: 31 0x10EE4A: quicksort::main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+                          n1: 31 0x10F422: std::rt::lang_start::{{closure}} (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+                           n1: 31 0x11EC97: {{closure}} (rt.rs:52)
+                            n1: 31 0x11EC97: do_call<closure-0,i32> (panicking.rs:331)
+                             n1: 31 0x11EC97: try<i32,closure-0> (panicking.rs:274)
+                              n1: 31 0x11EC97: catch_unwind<closure-0,i32> (panic.rs:394)
+                               n1: 31 0x11EC97: std::rt::lang_start_internal (rt.rs:51)
+                                n0: 31 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n1: 5 0x11771C: realloc (alloc.rs:124)
+  n1: 5 0x11771C: grow (alloc.rs:218)
+   n1: 5 0x11771C: grow<u8,alloc::alloc::Global> (raw_vec.rs:527)
+    n1: 5 0x11771C: try_reserve_exact<u8,alloc::alloc::Global> (raw_vec.rs:426)
+     n1: 5 0x11771C: reserve_exact<u8,alloc::alloc::Global> (raw_vec.rs:412)
+      n1: 5 0x11771C: reserve_exact<u8> (vec.rs:525)
+       n1: 5 0x11771C: std::ffi::c_str::CString::from_vec_unchecked (c_str.rs:382)
+        n1: 5 0x116773: _new (c_str.rs:357)
+         n1: 5 0x116773: new<alloc::string::String> (c_str.rs:351)
+          n1: 5 0x116773: {{closure}} (mod.rs:1139)
+           n1: 5 0x116773: map<alloc::string::String,std::ffi::c_str::CString,closure-0> (option.rs:456)
+            n1: 5 0x116773: std::thread::Thread::new (mod.rs:1139)
+             n1: 5 0x11EC63: std::rt::lang_start_internal (rt.rs:44)
+              n0: 5 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n0: 0 in 8 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=26
+#-----------
+time=645499
+mem_heap_B=412
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=27
+#-----------
+time=646375
+mem_heap_B=540
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=28
+#-----------
+time=648003
+mem_heap_B=796
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=29
+#-----------
+time=651190
+mem_heap_B=1308
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=30
+#-----------
+time=657418
+mem_heap_B=2332
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=31
+#-----------
+time=670148
+mem_heap_B=4380
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=32
+#-----------
+time=695436
+mem_heap_B=8476
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=33
+#-----------
+time=745960
+mem_heap_B=16668
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=34
+#-----------
+time=846117
+mem_heap_B=33052
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=35
+#-----------
+time=1046395
+mem_heap_B=65820
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=detailed
+n2: 65820 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 65536 0x10F2F4: alloc::raw_vec::RawVec<T,A>::reserve (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+  n1: 65536 0x10EF0F: quicksort::main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+   n1: 65536 0x10F422: std::rt::lang_start::{{closure}} (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+    n1: 65536 0x11EC97: {{closure}} (rt.rs:52)
+     n1: 65536 0x11EC97: do_call<closure-0,i32> (panicking.rs:331)
+      n1: 65536 0x11EC97: try<i32,closure-0> (panicking.rs:274)
+       n1: 65536 0x11EC97: catch_unwind<closure-0,i32> (panic.rs:394)
+        n1: 65536 0x11EC97: std::rt::lang_start_internal (rt.rs:51)
+         n0: 65536 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n0: 284 in 15 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=36
+#-----------
+time=1448328
+mem_heap_B=131356
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=37
+#-----------
+time=2247723
+mem_heap_B=262428
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=38
+#-----------
+time=3849231
+mem_heap_B=524572
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=39
+#-----------
+time=7054248
+mem_heap_B=1048860
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=40
+#-----------
+time=13467833
+mem_heap_B=2097436
+mem_heap_extra_B=108
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=41
+#-----------
+time=26289121
+mem_heap_B=4194588
+mem_heap_extra_B=4140
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=42
+#-----------
+time=51921393
+mem_heap_B=8388892
+mem_heap_extra_B=4140
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=43
+#-----------
+time=401538546
+mem_heap_B=8388924
+mem_heap_extra_B=4164
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=44
+#-----------
+time=401538862
+mem_heap_B=8388932
+mem_heap_extra_B=4180
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=45
+#-----------
+time=401538958
+mem_heap_B=8388956
+mem_heap_extra_B=4196
+mem_stacks_B=0
+heap_tree=detailed
+n2: 8388956 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 8388608 0x10F2F4: alloc::raw_vec::RawVec<T,A>::reserve (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+  n1: 8388608 0x10EF0F: quicksort::main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+   n1: 8388608 0x10F422: std::rt::lang_start::{{closure}} (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+    n1: 8388608 0x11EC97: {{closure}} (rt.rs:52)
+     n1: 8388608 0x11EC97: do_call<closure-0,i32> (panicking.rs:331)
+      n1: 8388608 0x11EC97: try<i32,closure-0> (panicking.rs:274)
+       n1: 8388608 0x11EC97: catch_unwind<closure-0,i32> (panic.rs:394)
+        n1: 8388608 0x11EC97: std::rt::lang_start_internal (rt.rs:51)
+         n0: 8388608 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n0: 348 in 17 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=46
+#-----------
+time=401539028
+mem_heap_B=8388972
+mem_heap_extra_B=4204
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=47
+#-----------
+time=401539119
+mem_heap_B=8389996
+mem_heap_extra_B=4212
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=48
+#-----------
+time=401539177
+mem_heap_B=8390100
+mem_heap_extra_B=4228
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=49
+#-----------
+time=401539331
+mem_heap_B=8390108
+mem_heap_extra_B=4244
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=50
+#-----------
+time=1026255748
+mem_heap_B=8390108
+mem_heap_extra_B=4244
+mem_stacks_B=0
+heap_tree=peak
+n2: 8390108 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 8388608 0x10F2F4: alloc::raw_vec::RawVec<T,A>::reserve (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+  n1: 8388608 0x10EF0F: quicksort::main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+   n1: 8388608 0x10F422: std::rt::lang_start::{{closure}} (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+    n1: 8388608 0x11EC97: {{closure}} (rt.rs:52)
+     n1: 8388608 0x11EC97: do_call<closure-0,i32> (panicking.rs:331)
+      n1: 8388608 0x11EC97: try<i32,closure-0> (panicking.rs:274)
+       n1: 8388608 0x11EC97: catch_unwind<closure-0,i32> (panic.rs:394)
+        n1: 8388608 0x11EC97: std::rt::lang_start_internal (rt.rs:51)
+         n0: 8388608 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n0: 1500 in 21 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=51
+#-----------
+time=1026255748
+mem_heap_B=1500
+mem_heap_extra_B=204
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=52
+#-----------
+time=1026255795
+mem_heap_B=1476
+mem_heap_extra_B=188
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=53
+#-----------
+time=1026255833
+mem_heap_B=1469
+mem_heap_extra_B=171
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=54
+#-----------
+time=1026255875
+mem_heap_B=1421
+mem_heap_extra_B=163
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=55
+#-----------
+time=1026256403
+mem_heap_B=397
+mem_heap_extra_B=155
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=56
+#-----------
+time=1026256442
+mem_heap_B=293
+mem_heap_extra_B=139
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=57
+#-----------
+time=1026256478
+mem_heap_B=285
+mem_heap_extra_B=123
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=58
+#-----------
+time=1026256513
+mem_heap_B=277
+mem_heap_extra_B=107
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=59
+#-----------
+time=1026256570
+mem_heap_B=261
+mem_heap_extra_B=99
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=60
+#-----------
+time=1026256611
+mem_heap_B=237
+mem_heap_extra_B=83
+mem_stacks_B=0
+heap_tree=detailed
+n6: 237 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 80 0x11689F: alloc (alloc.rs:80)
+  n1: 80 0x11689F: alloc (alloc.rs:174)
+   n1: 80 0x11689F: exchange_malloc (alloc.rs:268)
+    n1: 80 0x11689F: new<std::thread::Inner> (sync.rs:323)
+     n1: 80 0x11689F: std::thread::Thread::new (mod.rs:1141)
+      n1: 80 0x11EC63: std::rt::lang_start_internal (rt.rs:44)
+       n0: 80 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n2: 64 0x48E6BB2: __cxa_thread_atexit_impl (in /usr/lib64/libc-2.31.so)
+  n1: 32 0x115F9E: register_dtor (fast_thread_local.rs:33)
+   n1: 32 0x115F9E: try_register_dtor<core::cell::RefCell<core::option::Option<alloc::boxed::Box<Write>>>> (local.rs:438)
+    n1: 32 0x115F9E: std::thread::local::fast::Key<T>::try_initialize (local.rs:424)
+     n1: 32 0x119426: get<core::cell::RefCell<core::option::Option<alloc::boxed::Box<Write>>>,fn() -> core::cell::RefCell<core::option::Option<alloc::boxed::Box<Write>>>> (local.rs:410)
+      n1: 32 0x119426: __getit (local.rs:175)
+       n1: 32 0x119426: try_with<core::cell::RefCell<core::option::Option<alloc::boxed::Box<Write>>>,closure-0,core::result::Result<(), std::io::error::Error>> (local.rs:262)
+        n1: 32 0x119426: print_to<std::io::stdio::Stdout> (stdio.rs:806)
+         n1: 32 0x119426: std::io::stdio::_print (stdio.rs:834)
+          n1: 32 0x10EF9F: quicksort::main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+           n1: 32 0x10F422: std::rt::lang_start::{{closure}} (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+            n1: 32 0x11EC97: {{closure}} (rt.rs:52)
+             n1: 32 0x11EC97: do_call<closure-0,i32> (panicking.rs:331)
+              n1: 32 0x11EC97: try<i32,closure-0> (panicking.rs:274)
+               n1: 32 0x11EC97: catch_unwind<closure-0,i32> (panic.rs:394)
+                n1: 32 0x11EC97: std::rt::lang_start_internal (rt.rs:51)
+                 n0: 32 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+  n1: 32 0x11609E: register_dtor (fast_thread_local.rs:33)
+   n1: 32 0x11609E: try_register_dtor<core::cell::RefCell<core::option::Option<std::sys_common::thread_info::ThreadInfo>>> (local.rs:438)
+    n1: 32 0x11609E: std::thread::local::fast::Key<T>::try_initialize (local.rs:424)
+     n1: 32 0x11CC79: get<core::cell::RefCell<core::option::Option<std::sys_common::thread_info::ThreadInfo>>,fn() -> core::cell::RefCell<core::option::Option<std::sys_common::thread_info::ThreadInfo>>> (local.rs:410)
+      n1: 32 0x11CC79: __getit (local.rs:175)
+       n1: 32 0x11CC79: try_with<core::cell::RefCell<core::option::Option<std::sys_common::thread_info::ThreadInfo>>,closure-0,()> (local.rs:262)
+        n1: 32 0x11CC79: with<core::cell::RefCell<core::option::Option<std::sys_common::thread_info::ThreadInfo>>,closure-0,()> (local.rs:239)
+         n1: 32 0x11CC79: std::sys_common::thread_info::set (thread_info.rs:40)
+          n1: 32 0x11EC8C: std::rt::lang_start_internal (rt.rs:45)
+           n0: 32 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n1: 48 0x116851: alloc (alloc.rs:80)
+  n1: 48 0x116851: alloc (alloc.rs:174)
+   n1: 48 0x116851: exchange_malloc (alloc.rs:268)
+    n1: 48 0x116851: new (condvar.rs:130)
+     n1: 48 0x116851: std::thread::Thread::new (mod.rs:1146)
+      n1: 48 0x11EC63: std::rt::lang_start_internal (rt.rs:44)
+       n0: 48 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n1: 40 0x1167DE: alloc (alloc.rs:80)
+  n1: 40 0x1167DE: alloc (alloc.rs:174)
+   n1: 40 0x1167DE: exchange_malloc (alloc.rs:268)
+    n1: 40 0x1167DE: new<()> (mutex.rs:168)
+     n1: 40 0x1167DE: std::thread::Thread::new (mod.rs:1145)
+      n1: 40 0x11EC63: std::rt::lang_start_internal (rt.rs:44)
+       n0: 40 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n1: 5 0x11771C: realloc (alloc.rs:124)
+  n1: 5 0x11771C: grow (alloc.rs:218)
+   n1: 5 0x11771C: grow<u8,alloc::alloc::Global> (raw_vec.rs:527)
+    n1: 5 0x11771C: try_reserve_exact<u8,alloc::alloc::Global> (raw_vec.rs:426)
+     n1: 5 0x11771C: reserve_exact<u8,alloc::alloc::Global> (raw_vec.rs:412)
+      n1: 5 0x11771C: reserve_exact<u8> (vec.rs:525)
+       n1: 5 0x11771C: std::ffi::c_str::CString::from_vec_unchecked (c_str.rs:382)
+        n1: 5 0x116773: _new (c_str.rs:357)
+         n1: 5 0x116773: new<alloc::string::String> (c_str.rs:351)
+          n1: 5 0x116773: {{closure}} (mod.rs:1139)
+           n1: 5 0x116773: map<alloc::string::String,std::ffi::c_str::CString,closure-0> (option.rs:456)
+            n1: 5 0x116773: std::thread::Thread::new (mod.rs:1139)
+             n1: 5 0x11EC63: std::rt::lang_start_internal (rt.rs:44)
+              n0: 5 0x10F0C1: main (in /home/jgrant/stuff/jngmisc/rust/quicksort/target/release/quicksort)
+ n0: 0 in 17 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=61
+#-----------
+time=1026257413
+mem_heap_B=205
+mem_heap_extra_B=59
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=62
+#-----------
+time=1026257492
+mem_heap_B=200
+mem_heap_extra_B=40
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=63
+#-----------
+time=1026257540
+mem_heap_B=160
+mem_heap_extra_B=24
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=64
+#-----------
+time=1026257598
+mem_heap_B=112
+mem_heap_extra_B=16
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=65
+#-----------
+time=1026257637
+mem_heap_B=32
+mem_heap_extra_B=8
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=66
+#-----------
+time=1026257672
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
