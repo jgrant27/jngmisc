@@ -6,6 +6,7 @@ use std::sync::{Arc, Mutex};
 const STORIES_URL: &str = "https://hacker-news.firebaseio.com/v0/topstories.json";
 const ITEM_URL_BASE: &str = "https://hacker-news.firebaseio.com/v0/item";
 const THREAD_CNT: usize = 64;
+const DEFAULT_STORY_CNT: usize = 100;
 
 #[derive(Deserialize)]
 struct Story {
@@ -13,8 +14,16 @@ struct Story {
 }
 
 fn main() {
-    let story_ids: Arc<Vec<u64>> =
-        Arc::new(reqwest::get(STORIES_URL).unwrap().json().unwrap());
+    let args: Vec<String> = std::env::args().collect();
+    let story_cnt = match args.len() {
+        1 => DEFAULT_STORY_CNT,
+        _ => match args[1].parse() {
+            Ok(n) => n,
+            _ => DEFAULT_STORY_CNT,
+        },
+    };
+    let story_ids: Arc<Vec<u64>> = Arc::new(reqwest::get(STORIES_URL).unwrap().json().unwrap());
+    let story_ids = story_ids[0..story_cnt].to_vec();
     println!("{} stories to get - {:?}", story_ids.len(), story_ids);
     let cursor = Arc::new(Mutex::new(0));
     let mut handles = Vec::new();
