@@ -9,6 +9,7 @@ const THREAD_CNT: usize = 64;
 const DEFAULT_STORY_CNT: usize = 100;
 
 #[derive(Deserialize)]
+#[allow(dead_code)]
 struct Story {
     by: String,
     score: usize,
@@ -28,12 +29,18 @@ fn main() {
     };
     let story_ids: Arc<Vec<u64>> = Arc::new(reqwest::get(STORIES_URL).unwrap().json().unwrap());
     let story_ids = story_ids[0..story_cnt].to_vec();
+    //story_ids.sort();
+    //story_ids.reverse();
     println!("{} stories to get - {:?}", story_ids.len(), story_ids);
     let cursor = Arc::new(Mutex::new(0));
+    let mut stories_vec: Vec<String> = Vec::new();
+    stories_vec.resize(story_cnt, String::new());
+    let stories = Arc::new(Mutex::new(stories_vec));
     let mut handles = Vec::new();
     for _ in 0..THREAD_CNT {
         let cursor = cursor.clone();
         let story_ids = story_ids.clone();
+        let stories = stories.clone();
         handles.push(std::thread::spawn(move || loop {
             let index = {
                 let mut cursor_guard = cursor.lock().unwrap();
@@ -43,11 +50,11 @@ fn main() {
                 *cursor_guard += 1;
                 *cursor_guard - 1
             };
-            let story_url = format!("{}/{}.json", ITEM_URL_BASE, story_ids[index]);
+            let story_url = format!("{}/{}.json", ITEM_URL_BASE, &story_ids[index]);
             let story: Story = reqwest::get(&story_url).unwrap().json().unwrap();
-            println!(
+            stories.lock().unwrap()[index] = format!(
                 "{} - {} - {}",
-                story_ids[index],
+                &story_ids[index],
                 story.title.trim(),
                 story.url.trim()
             );
@@ -55,5 +62,8 @@ fn main() {
     }
     for handle in handles {
         handle.join().unwrap();
+    }
+    for story in stories.lock().unwrap().iter() {
+        print!("{}\n", story);
     }
 }
