@@ -31,7 +31,7 @@ fn main() {
     let story_ids = story_ids[0..story_cnt].to_vec();
     //story_ids.sort();
     //story_ids.reverse();
-    println!("{} stories to get - {:?}", story_ids.len(), story_ids);
+    println!("{} stories to get - {:?}\n", story_ids.len(), story_ids);
     let cursor = Arc::new(Mutex::new(0));
     let mut stories_vec: Vec<String> = Vec::new();
     stories_vec.resize(story_cnt, String::new());
@@ -51,17 +51,27 @@ fn main() {
                 *cursor_guard - 1
             };
             let story_url = format!("{}/{}.json", ITEM_URL_BASE, &story_ids[index]);
-            let story: Story = reqwest::get(&story_url).unwrap().json().unwrap();
-            stories.lock().unwrap()[index] = format!(
-                "{} - {} - {}",
-                &story_ids[index],
-                story.title.trim(),
-                story.url.trim()
-            );
+            let story_res = reqwest::get(&story_url).unwrap().json();
+            if story_res.is_ok() {
+                let story: Story = story_res.unwrap();
+                stories.lock().unwrap()[index] = format!(
+                    "{} - {} - {}",
+                    &story_ids[index],
+                    story.title.trim(),
+                    story.url.trim()
+                );
+            } else {
+                stories.lock().unwrap()[index] = format!(
+                    "{} - Could not deserialize story.",
+                    &story_ids[index]);
+            }
         }));
     }
     for handle in handles {
-        handle.join().unwrap();
+        let res = handle.join();
+        if res.is_ok() {
+            res.unwrap();
+        }
     }
     for story in stories.lock().unwrap().iter() {
         print!("{}\n", story);
