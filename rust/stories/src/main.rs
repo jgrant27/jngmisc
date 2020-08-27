@@ -10,7 +10,11 @@ const DEFAULT_STORY_CNT: usize = 100;
 
 #[derive(Deserialize)]
 struct Story {
+    by: String,
+    score: usize,
+    time: usize,
     title: String,
+    url: String,
 }
 
 fn main() {
@@ -41,7 +45,12 @@ fn main() {
             };
             let story_url = format!("{}/{}.json", ITEM_URL_BASE, story_ids[index]);
             let story: Story = reqwest::get(&story_url).unwrap().json().unwrap();
-            println!("{} - {}", story_ids[index], story.title.trim());
+            println!(
+                "{} - {} - {}",
+                story_ids[index],
+                story.title.trim(),
+                story.url.trim()
+            );
         }));
     }
     for handle in handles {
