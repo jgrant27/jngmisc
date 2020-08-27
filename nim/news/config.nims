@@ -1,0 +1,8 @@
+switch("define", "release")
+switch("define", "ssl")
+switch("checks", "on")
+switch("assertions", "on")
+switch("cc", "clang")
+switch("gc", "arc")
+switch("threads", "on")
+switch("threadAnalysis", "on")
