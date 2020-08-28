@@ -61,9 +61,8 @@ fn main() {
                     story.url.trim()
                 );
             } else {
-                stories.lock().unwrap()[index] = format!(
-                    "{} - Could not deserialize story.",
-                    &story_ids[index]);
+                stories.lock().unwrap()[index] =
+                    format!("{} - Could not deserialize story.", &story_ids[index]);
             }
         }));
     }
