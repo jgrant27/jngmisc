@@ -1,9 +1,11 @@
-import org.scalatest._
-
 import jngmisc.heaps._
 
+import collection.mutable.Stack
+import org.scalatest._
+import flatspec._
+import matchers._
 
-class HeapSpec extends FlatSpec with Matchers {
+class HeapSpec extends AnyFlatSpec with should.Matchers {
 
   "A Heap" should "be correctly structured" in {
     // Insert

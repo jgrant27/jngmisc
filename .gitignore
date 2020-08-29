@@ -9,3 +9,4 @@
 **/*.stderr
 **/*.stdout
 **/*.bexch
+/scala/heaps/project/
