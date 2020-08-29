@@ -9,5 +9,5 @@
 **/*.stderr
 **/*.stdout
 **/*.bexch
-/scala/heaps/project/
-/scala/trees/project/
+/scala/*/project/
+/scala/*/*.hnir
