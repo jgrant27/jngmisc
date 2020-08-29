@@ -1,9 +1,11 @@
-import org.scalatest._
-
 import jngmisc.trees._
 
+import collection.mutable.Stack
+import org.scalatest._
+import flatspec._
+import matchers._
 
-class TreeSpec extends FlatSpec with Matchers {
+class TreeSpec extends AnyFlatSpec with should.Matchers {
 
   "A Binary Tree" should "be correctly structured" in {
     val left = new BinaryNode(666)
@@ -29,7 +31,6 @@ class TreeSpec extends FlatSpec with Matchers {
 
   "A Binary Tree" should "be travesable in order" in {
     var res:Vector[Int] = Vector()
-    val fun =
 
     BinaryNode.traverseBinaryTreeInOrder(tree,
       node => res = res :+ node.data)

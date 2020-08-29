@@ -10,3 +10,4 @@
 **/*.stdout
 **/*.bexch
 /scala/heaps/project/
+/scala/trees/project/
