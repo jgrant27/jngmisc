@@ -9,5 +9,5 @@
 **/*.stderr
 **/*.stdout
 **/*.bexch
-/scala/*/project/
+/scala/*/project/target
 /scala/*/*.hnir
