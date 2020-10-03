@@ -1,7 +1,8 @@
 (ns news.core
   (:gen-class)
   (:require [clojure.core.async :as async :refer [>! >!! <! <!!]]
-            [clj-http [client :as client] [conn-mgr :as conn-mgr]]))
+            [clj-http [client :as client] [conn-mgr :as conn-mgr]]
+            [criterium.core :as criterium]))
 
 (def ^:const HN_BASE_URL "https://hacker-news.firebaseio.com/v0")
 (def ^:const HN_TOP_STORIES_URL (format "%s/topstories.json" HN_BASE_URL))
@@ -31,3 +32,6 @@
               story_cnt)
           stories (sort (for [_ story_ids] (<!! ch)))]
       (doseq [[i story] stories] (println story) (flush)))))
+
+(defn -bench []
+  (criterium/quick-bench (-main)))
