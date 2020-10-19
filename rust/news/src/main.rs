@@ -50,6 +50,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for story in stories {
         print!("{}\n", story);
     }
+    println!();
 
     Ok(())
 }
