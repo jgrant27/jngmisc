@@ -31,7 +31,8 @@
                 (async/go (-get-story (inc i) story_id)))
               story_cnt)
           stories (sort (for [_ story_ids] (<!! ch)))]
-      (doseq [[i story] stories] (println story) (flush)))))
+      (doseq [[i story] stories] (println story) (flush)))
+    (println)))
 
 (defn -bench []
   (criterium/quick-bench (-main)))
