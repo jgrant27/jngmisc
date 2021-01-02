@@ -13,12 +13,14 @@ func jsonFromResponse(_ response: HTTPClient.Response) -> Any {
 let client = HTTPClient(eventLoopGroupProvider: .createNew)
 
 let ids = jsonFromResponse(try! client.get(url: TOP_STORIES_URL).wait()) as! [UInt]
-print("Loading \(ids.count) news articles ... \n\(ids)")
+print("Loading \(ids.count) news articles ... \n\(ids)\n")
 
-ids.enumerated().map { (ind, id) in
+let allStoriesStr: [String] = ids.enumerated().map { (ind, id) in
     return (ind + 1, client.get(url: "\(STORIES_BASE_URL)/item/\(id).json"))
-}.forEach { (ind, response) in
+}.map { (ind, response) in
     let response = try! response.wait()
     let story = jsonFromResponse(response) as! [String: Any]
-    print("\(ind) - \(story["id"]!) - \(story["title"] ?? "NO TITLE") - \(story["url"] ?? "NO URL")")
+    return "\(ind) - \(story["id"]!) - \(story["title"] ?? "NO TITLE") - \(story["url"] ?? "NO URL")"
 }
+
+print(allStoriesStr.joined(separator:"\n"))

@@ -17,12 +17,6 @@ let package = Package(
       name: "news",
       dependencies: [
         .product(name: "AsyncHTTPClient", package: "async-http-client")
-      ],
-      swiftSettings: [
-        .unsafeFlags([
-                       "-Xfrontend",
-                       "-enable-experimental-concurrency"
-                     ]),
       ]),
     .testTarget(
       name: "newsTests",
