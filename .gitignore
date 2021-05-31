@@ -11,3 +11,4 @@
 **/*.bexch
 /scala/*/project/target
 /scala/*/*.hnir
+Manifest.toml
