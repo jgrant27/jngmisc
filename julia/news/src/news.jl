@@ -19,12 +19,12 @@ function channels()
     input = Channel(1000)
     output = Channel(1000)
 
-    get_story(i, url) = begin
+    function get_story(i, url)
         json = JSON.parse(String(HTTP.request("GET", url, readtimeout=5, retry=true).body))
         @async put!(output, (i, json))
     end
 
-    do_work(story_ids) = begin
+    function do_work(story_ids)
         for (i, id) in enumerate(story_ids)
             @async put!(input, get_story(i, "$(STORIES_BASE_URL)/item/$(id).json"))
         end
