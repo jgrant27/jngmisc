@@ -1,12 +1,12 @@
 module news
 
-import HTTP, JSON
+import HTTP, JSON3
 
 const STORIES_BASE_URL = "https://hacker-news.firebaseio.com/v0"
 
 function tasks()
     create_task(i, id) = @async (i, get_json("$(STORIES_BASE_URL)/item/$(id).json"))
-    get_json(url) = JSON.parse(String(HTTP.request("GET", url, readtimeout=5, retry=true).body))
+    get_json(url) = JSON3.read(String(HTTP.request("GET", url, readtimeout=5, retry=true).body))
 
     story_ids = get_json("$(STORIES_BASE_URL)/topstories.json")
     println("Retrieving $(length(story_ids)) stories with ids $(story_ids) ...")
