@@ -8,6 +8,6 @@ targets:
   permutations:
     main: src/permutations.cr
 
-crystal: 0.26.1
+crystal: 1.0
 
 license: MIT

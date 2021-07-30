@@ -15,26 +15,44 @@ function tasks()
     print_stories(stories)
 end
 
-function channels()
-    input = Channel(1000)
-    output = Channel(1000)
+function channels_tasks()
+    ich = Channel(1000)
+    och = Channel(1000)
 
     function get_story(i, url)
-        json = JSON.parse(String(HTTP.request("GET", url, readtimeout=5, retry=true).body))
-        @async put!(output, (i, json))
+        json = JSON3.read(String(HTTP.request("GET", url, readtimeout=5, retry=true).body))
+        put!(och, (i, json))
     end
 
-    function do_work(story_ids)
-        for (i, id) in enumerate(story_ids)
-            @async put!(input, get_story(i, "$(STORIES_BASE_URL)/item/$(id).json"))
+    function put_work(story_ids)
+        @async for (i, id) in enumerate(story_ids)
+            put!(ich, (i, "$(STORIES_BASE_URL)/item/$(id).json"))
         end
     end
 
+    function do_work()
+        @async for (i, url) in ich
+            @async get_story(i, url)
+        end
+    end
+
+    function get_results()
+        res = []
+        for _ in story_ids
+            push!(res, take!(och))
+        end
+        sort(res, by=first)
+    end
+
     all_stories_url = "$(STORIES_BASE_URL)/topstories.json"
-    story_ids = JSON.parse(String(HTTP.request("GET", all_stories_url, readtimeout=5, retry=true).body))
-    @async do_work(story_ids)
+    story_ids = JSON3.read(String(HTTP.request("GET", all_stories_url, readtimeout=5, retry=true).body))
+    println("Putting work for $(length(story_ids)) stories into input channel ...")
+    put_work(story_ids)
+    println("Doing the work in the input channel and putting results into the output channel ...")
+    do_work()
     println("Retrieving $(length(story_ids)) stories with ids $(story_ids) ...")
-    stories = sort([take!(output) for _ in story_ids], by=first)
+    stories = get_results()
+    #stories = sort([take!(och) for _ in story_ids], by=first)
     print_stories(stories)
 end
 

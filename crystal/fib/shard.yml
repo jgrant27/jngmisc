@@ -8,6 +8,6 @@ targets:
   fib:
     main: src/fib.cr
 
-crystal: 0.26.1
+crystal: 1.0
 
 license: MIT
