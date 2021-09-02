@@ -32,25 +32,16 @@ import (
 	"imagine27.com/palindromes/pkg"
 	"fmt"
 	"os"
-	"strconv"
 )
 
-const DEFAULT_WORD_CNT int = 1e3
-
 func main() {
-	wordcnt := DEFAULT_WORD_CNT
-	msg := "Using default word count. Alternatively pass this in as first parameter.\n"
 	if len(os.Args) > 1 {
-		var err error
-		wordcnt, err = strconv.Atoi(os.Args[1])
-		if err != nil {
-			fmt.Printf(msg)
-		}
+		textFile := os.Args[1]
+		fmt.Printf("Finding longest palindrome in file %s ...\n", textFile)
+		text := pkg.LoadTextFromFile(textFile)
+		si, ei := pkg.PalindromesFast(text)
+		fmt.Printf("%s", text[si : ei])
 	} else {
-		fmt.Printf(msg)
+		fmt.Printf("Must specify text file path to find longest palindrome")
 	}
-
-	fmt.Printf("Running tests to find longest palindromes (%d words) ...\n", wordcnt)
-	pkg.SanityTests()
-	pkg.BigTest(wordcnt)
 }

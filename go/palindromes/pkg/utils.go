@@ -32,78 +32,101 @@ import (
 	"reflect"
 	"runtime"
 	"strings"
+	"log"
+	"bufio"
+	"os"
 )
 
 // Util functions
 
 // Given two integers returns the smallest
 func MinInt(i1 int, i2 int) (mi int) {
-  if i1 < i2 {
-	return i1
-  } else {
-	return i2
-  }
+	if i1 < i2 {
+		return i1
+	} else {
+		return i2
+	}
 }
 
 // Given two integers returns the largest
 func MaxInt(i1 int, i2 int) (mi int) {
-  if i1 > i2 {
-	return i1
-  } else {
-	return i2
-  }
+	if i1 > i2 {
+		return i1
+	} else {
+		return i2
+	}
 }
 
 // Returns the smallest value in a slice of integers
 func Min(sl []int) (mv int) {
-  vi := -1
-  for i := 0; i < len(sl); i++ {
-	if i == 0 || sl[i] < vi {
-	  vi = sl[i]
+	vi := -1
+	for i := 0; i < len(sl); i++ {
+		if i == 0 || sl[i] < vi {
+			vi = sl[i]
+		}
 	}
-  }
-  return vi
+	return vi
 }
 
 // Returns the largest value in a slice of integers
 func Max(sl []int) (mv int) {
-  vi := -1
-  for i := 0; i < len(sl); i++ {
-	if sl[i] > vi {
-	  vi = sl[i]
+	vi := -1
+	for i := 0; i < len(sl); i++ {
+		if sl[i] > vi {
+			vi = sl[i]
+		}
 	}
-  }
-  return vi
+	return vi
 }
 
 // Given a slice of integers and an integer, returns the index
 // of the integer in the slice.
 func IndexOf(sl []int, si int) (rind int) {
-  for i := 0; i < len(sl); i++ {
-	if sl[i] == si {
-	  return i
+	for i := 0; i < len(sl); i++ {
+		if sl[i] == si {
+			return i
+		}
 	}
-  }
-  return -1
+	return -1
 }
 
 func Abs(num int) (rnum int) {
-  if num < 0 {
-	return (-1 * num)
-  }
-  return num
+	if num < 0 {
+		return (-1 * num)
+	}
+	return num
 }
 
 func FindLongestPal(f func(string) (int, int), strn string) string {
-  i1, i2 := f(strn)
-  longest := ""
-  if i1 < i2 {
-	longest = strn[i1:i2]
-  }
-  return longest
+	i1, i2 := f(strn)
+	longest := ""
+	if i1 < i2 {
+		longest = strn[i1:i2]
+	}
+	return longest
 }
 
 func GetFunctionName(i interface{}) string {
-  fullName := runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
+	fullName := runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
 	return strings.Split(fullName, "/")[strings.Count(fullName, "/")]
+}
+
+func LoadTextFromFile(textFile string) string {
+	file, err := os.Open(textFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func() {
+		if err = file.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	scanner := bufio.NewScanner(file)
+	text := ""
+	for scanner.Scan() {
+		text += scanner.Text()
+	}
+
+	return text
 }

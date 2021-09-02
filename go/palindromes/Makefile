@@ -12,7 +12,7 @@ MAIN_FILE_PREFIX=main
 MAIN_FILE=$(MAIN_FILE_PREFIX).go
 BINARY=palindromes
 
-all: build run
+all: build
 
 clean:
 	rm $(MAIN_BINARY) || true
@@ -23,5 +23,5 @@ build: clean
 fmt:
 	$(GOFMT)
 
-run:
-	./$(BINARY)
+test:
+	go test ./pkg
