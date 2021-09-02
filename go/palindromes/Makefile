@@ -1,5 +1,3 @@
-
-
 # Go parameters
 GOCMD=go
 GOBUILD=$(GOCMD) build
@@ -20,7 +18,7 @@ clean:
 	rm $(MAIN_BINARY) || true
 
 build: clean
-	$(GOCMD) build $(MAIN_FILE)
+	GO111MODULE=auto $(GOCMD) build $(MAIN_FILE)
 	mv $(MAIN_FILE_PREFIX) $(MAIN_BINARY)
 
 fmt:
@@ -28,4 +26,3 @@ fmt:
 
 run:
 	./$(MAIN_BINARY)
-
