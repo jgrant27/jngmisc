@@ -26,11 +26,9 @@
 // EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-package palindromes
+package pkg
 
 import (
-	. "../utils"
-	//"fmt"
 )
 
 func LargestStartEnd(lengths []int) (int, int) {

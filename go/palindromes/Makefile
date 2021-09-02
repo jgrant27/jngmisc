@@ -10,7 +10,7 @@ GOFMT=gofmt -w -tabs=false -tabwidth=2 .
 ARCH=`uname -s`-`uname -r`-`uname -m`
 MAIN_FILE_PREFIX=main
 MAIN_FILE=$(MAIN_FILE_PREFIX).go
-MAIN_BINARY=$(MAIN_FILE_PREFIX)-$(ARCH)
+BINARY=palindromes
 
 all: build run
 
@@ -18,11 +18,10 @@ clean:
 	rm $(MAIN_BINARY) || true
 
 build: clean
-	GO111MODULE=auto $(GOCMD) build $(MAIN_FILE)
-	mv $(MAIN_FILE_PREFIX) $(MAIN_BINARY)
+	$(GOCMD) build -o $(BINARY) $(MAIN_FILE)
 
 fmt:
 	$(GOFMT)
 
 run:
-	./$(MAIN_BINARY)
+	./$(BINARY)

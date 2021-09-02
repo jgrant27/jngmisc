@@ -26,11 +26,9 @@
 // EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-package tests
+package pkg
 
 import (
-	. "../palindromes"
-	. "../utils"
 	"fmt"
 	"strings"
 	"time"

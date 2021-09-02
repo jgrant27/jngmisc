@@ -26,7 +26,7 @@
 // EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-package utils
+package pkg
 
 import (
 	"reflect"
@@ -39,18 +39,18 @@ import (
 // Given two integers returns the smallest
 func MinInt(i1 int, i2 int) (mi int) {
   if i1 < i2 {
-    return i1
+	return i1
   } else {
-    return i2
+	return i2
   }
 }
 
 // Given two integers returns the largest
 func MaxInt(i1 int, i2 int) (mi int) {
   if i1 > i2 {
-    return i1
+	return i1
   } else {
-    return i2
+	return i2
   }
 }
 
@@ -58,9 +58,9 @@ func MaxInt(i1 int, i2 int) (mi int) {
 func Min(sl []int) (mv int) {
   vi := -1
   for i := 0; i < len(sl); i++ {
-    if i == 0 || sl[i] < vi {
-      vi = sl[i]
-    }
+	if i == 0 || sl[i] < vi {
+	  vi = sl[i]
+	}
   }
   return vi
 }
@@ -69,9 +69,9 @@ func Min(sl []int) (mv int) {
 func Max(sl []int) (mv int) {
   vi := -1
   for i := 0; i < len(sl); i++ {
-    if sl[i] > vi {
-      vi = sl[i]
-    }
+	if sl[i] > vi {
+	  vi = sl[i]
+	}
   }
   return vi
 }
@@ -80,16 +80,16 @@ func Max(sl []int) (mv int) {
 // of the integer in the slice.
 func IndexOf(sl []int, si int) (rind int) {
   for i := 0; i < len(sl); i++ {
-    if sl[i] == si {
-      return i
-    }
+	if sl[i] == si {
+	  return i
+	}
   }
   return -1
 }
 
 func Abs(num int) (rnum int) {
   if num < 0 {
-    return (-1 * num)
+	return (-1 * num)
   }
   return num
 }
@@ -98,7 +98,7 @@ func FindLongestPal(f func(string) (int, int), strn string) string {
   i1, i2 := f(strn)
   longest := ""
   if i1 < i2 {
-    longest = strn[i1:i2]
+	longest = strn[i1:i2]
   }
   return longest
 }

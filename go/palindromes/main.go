@@ -29,7 +29,7 @@
 package main
 
 import (
-	. "./tests"
+	"imagine27.com/palindromes/pkg"
 	"fmt"
 	"os"
 	"strconv"
@@ -51,6 +51,6 @@ func main() {
 	}
 
 	fmt.Printf("Running tests to find longest palindromes (%d words) ...\n", wordcnt)
-	SanityTests()
-	BigTest(wordcnt)
+	pkg.SanityTests()
+	pkg.BigTest(wordcnt)
 }
