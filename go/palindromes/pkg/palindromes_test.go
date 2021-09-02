@@ -29,9 +29,9 @@
 package pkg
 
 import (
-	"testing"
 	"fmt"
 	"strings"
+	"testing"
 	"time"
 )
 
@@ -64,7 +64,7 @@ func AssertFind(funcs [](func(string) (int, int)), instr string, expstr string) 
 }
 
 func TestSanity(t *testing.T) {
-	funcs := [](func(string) (int, int)) {PalindromesNaive, PalindromesFast}
+	funcs := [](func(string) (int, int)){PalindromesNaive, PalindromesFast}
 	fmt.Printf("\nSanity tests ...\n")
 	AssertFind(funcs, "eat a banana bob !", "anana")
 	AssertFind(funcs, "lol", "lol")
@@ -78,7 +78,7 @@ func TestSanity(t *testing.T) {
 
 func TestBig(t *testing.T) {
 	wordcnt := 1000
-	funcs := [](func(string) (int, int)) {PalindromesNaive, PalindromesFast}
+	funcs := [](func(string) (int, int)){PalindromesNaive, PalindromesFast}
 	paltxt := strings.Repeat(" amanaplanacanalpanama ", wordcnt)
 	fmt.Printf("\nBig tests (%d) ...\n", wordcnt)
 	AssertFind(funcs, paltxt, paltxt)

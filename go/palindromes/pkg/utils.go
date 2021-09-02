@@ -29,12 +29,12 @@
 package pkg
 
 import (
+	"bufio"
+	"log"
+	"os"
 	"reflect"
 	"runtime"
 	"strings"
-	"log"
-	"bufio"
-	"os"
 )
 
 // Util functions

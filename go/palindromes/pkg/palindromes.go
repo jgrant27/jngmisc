@@ -28,9 +28,6 @@
 
 package pkg
 
-import (
-)
-
 func LargestStartEnd(lengths []int) (int, int) {
 	// Given a slice of palindrome lengths,
 	// returns the start and end indexes of the longest

@@ -29,9 +29,10 @@
 package main
 
 import (
-	"imagine27.com/palindromes/pkg"
 	"fmt"
 	"os"
+
+	"imagine27.com/palindromes/pkg"
 )
 
 func main() {
@@ -40,7 +41,7 @@ func main() {
 		fmt.Printf("Finding longest palindrome in file %s ...\n", textFile)
 		text := pkg.LoadTextFromFile(textFile)
 		si, ei := pkg.PalindromesFast(text)
-		fmt.Printf("%s", text[si : ei])
+		fmt.Printf("%s", text[si:ei])
 	} else {
 		fmt.Printf("Must specify text file path to find longest palindrome")
 	}
