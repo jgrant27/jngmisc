@@ -5,39 +5,13 @@ import (
 	"net/http"
 	"encoding/json"
 	"io/ioutil"
-	"sort"
-	"sync"
 )
 
 const STORIES_BASE_URL = "https://hacker-news.firebaseio.com/v0"
 
-var mutex sync.Mutex = sync.Mutex{}
-var stories = make([]Story, 0)
-var wg sync.WaitGroup
+var ch = make(chan Story)
+var stories []Story
 
-
-func main() {
-	resp, _ := http.Get(STORIES_BASE_URL + "/topstories.json")
-	body, _ := ioutil.ReadAll(resp.Body)
-	var storyIds []int ; json.Unmarshal([]byte(body), &storyIds)
-
-	fmt.Printf("Retrieving %d stories with ids %d ...", len(storyIds), storyIds)
-
-	for i,id := range storyIds {
-		wg.Add(1)
-		go getStory(&wg, i+1, id)
-	}
-
-	wg.Wait()
-
-	sort.Slice(stories, func(i, j int) bool {
-		return stories[i].Index < stories[j].Index
-	})
-
-	for _,story := range stories {
-		fmt.Printf("%d - %d %s %s\n", story.Index, story.ID, story.Title, story.URL)
-	}
-}
 
 type Story struct {
 	Index int
@@ -46,14 +20,43 @@ type Story struct {
 	URL string `json:"url"`
 }
 
-func getStory(wg *sync.WaitGroup, n, id int) {
-	defer wg.Done()
+func handleError(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
 
-	resp, _ := http.Get(STORIES_BASE_URL + fmt.Sprintf("/item/%d.json", id))
-	body, _ := ioutil.ReadAll(resp.Body)
-	var story Story ; json.Unmarshal([]byte(body), &story)
+func getURL(url string) []byte {
+	resp, err := http.Get(url)
+	handleError(err)
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	handleError(err)
+	return body
+}
+
+func getStory(n, id int) {
+	body := getURL(STORIES_BASE_URL + fmt.Sprintf("/item/%d.json", id))
+	var story Story ; json.Unmarshal(body, &story)
 	story.Index = n
-	mutex.Lock()
-	stories = append(stories, story)
-	mutex.Unlock()
+	ch <- story
+}
+
+func main() {
+	body := getURL(STORIES_BASE_URL + "/topstories.json")
+	var storyIds []int ; json.Unmarshal(body, &storyIds)
+	fmt.Printf("Retrieving %d stories with ids %d ...\n\n", len(storyIds), storyIds)
+	stories = make([]Story, len(storyIds))
+	for i,id := range storyIds {
+		go getStory(i+1, id)
+	}
+	for i:=0; i<len(storyIds); i++ {
+		select {
+		case story := <-ch:
+			stories[story.Index-1] = story
+		}
+	}
+	for _,story := range stories {
+		fmt.Printf("%d - %d %s %s\n", story.Index, story.ID, story.Title, story.URL)
+	}
 }
