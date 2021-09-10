@@ -12,3 +12,5 @@
 /scala/*/project/target
 /scala/*/*.hnir
 Manifest.toml
+/go/news/news
+/go/palindromes/palindromes
