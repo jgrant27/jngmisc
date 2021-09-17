@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"net/http"
 )
 
 const STORIES_BASE_URL = "https://hacker-news.firebaseio.com/v0"
@@ -12,12 +12,11 @@ const STORIES_BASE_URL = "https://hacker-news.firebaseio.com/v0"
 var ch = make(chan Story)
 var stories []Story
 
-
 type Story struct {
 	Index int
-	ID int `json:"id"`
+	ID    int    `json:"id"`
 	Title string `json:"title"`
-	URL string `json:"url"`
+	URL   string `json:"url"`
 }
 
 func handleError(err error) {
@@ -37,26 +36,26 @@ func getURL(url string) []byte {
 
 func getStory(n, id int) {
 	body := getURL(STORIES_BASE_URL + fmt.Sprintf("/item/%d.json", id))
-	var story Story ; json.Unmarshal(body, &story)
+	var story Story
+	json.Unmarshal(body, &story)
 	story.Index = n
 	ch <- story
 }
 
 func main() {
 	body := getURL(STORIES_BASE_URL + "/topstories.json")
-	var storyIds []int ; json.Unmarshal(body, &storyIds)
+	var storyIds []int
+	json.Unmarshal(body, &storyIds)
 	fmt.Printf("Retrieving %d stories with ids %d ...\n\n", len(storyIds), storyIds)
 	stories = make([]Story, len(storyIds))
-	for i,id := range storyIds {
+	for i, id := range storyIds {
 		go getStory(i+1, id)
 	}
-	for i:=0; i<len(storyIds); i++ {
-		select {
-		case story := <-ch:
-			stories[story.Index-1] = story
-		}
+	for i := 0; i < len(storyIds); i++ {
+		story := <-ch
+		stories[story.Index-1] = story
 	}
-	for _,story := range stories {
+	for _, story := range stories {
 		fmt.Printf("%d - %d %s %s\n", story.Index, story.ID, story.Title, story.URL)
 	}
 }
