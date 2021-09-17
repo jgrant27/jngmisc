@@ -6,12 +6,15 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"sync"
 )
 
 const STORIES_BASE_URL = "https://hacker-news.firebaseio.com/v0"
+const BUFFER_SIZE = 1000
 
-var ch = make(chan Story)
-var storiesText []string
+var ch chan Story = make(chan Story, BUFFER_SIZE)
+var storiesText []string = make([]string, BUFFER_SIZE)
+var wg sync.WaitGroup
 
 type Story struct {
 	Index int
@@ -20,19 +23,14 @@ type Story struct {
 	URL   string `json:"url"`
 }
 
-func handleError(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 func getURL(url string) []byte {
-	resp, err := http.Get(url)
-	handleError(err)
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	handleError(err)
-	return body
+	if resp, err := http.Get(url); err != nil {
+		panic(err)
+	} else {
+		defer resp.Body.Close()
+		body, _ := ioutil.ReadAll(resp.Body)
+		return body
+	}
 }
 
 func getStory(n, id int) {
@@ -43,18 +41,22 @@ func getStory(n, id int) {
 	ch <- story
 }
 
+func putStory() {
+	defer wg.Done()
+	story := <-ch
+	storiesText[story.Index-1] = fmt.Sprintf("%v - %v  %v  %v\n", story.Index, story.ID, story.Title, story.URL)
+}
+
 func main() {
 	body := getURL(STORIES_BASE_URL + "/topstories.json")
 	var storyIds []int
 	json.Unmarshal(body, &storyIds)
 	fmt.Printf("Retrieving %d stories with ids %d ...\n\n", len(storyIds), storyIds)
-	storiesText = make([]string, len(storyIds))
 	for i, id := range storyIds {
+		wg.Add(1)
 		go getStory(i+1, id)
+		go putStory()
 	}
-	for i := 0; i < len(storyIds); i++ {
-		story := <-ch
-		storiesText[story.Index-1] = fmt.Sprintf("%d - %d %s %s", story.Index, story.ID, story.Title, story.URL)
-	}
-	fmt.Println(strings.Join(storiesText[:], "\n"))
+	wg.Wait()
+	fmt.Println(strings.Join(storiesText[:], ""))
 }
