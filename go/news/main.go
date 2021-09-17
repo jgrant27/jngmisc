@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 const STORIES_BASE_URL = "https://hacker-news.firebaseio.com/v0"
 
 var ch = make(chan Story)
-var stories []Story
+var storiesText []string
 
 type Story struct {
 	Index int
@@ -47,15 +48,13 @@ func main() {
 	var storyIds []int
 	json.Unmarshal(body, &storyIds)
 	fmt.Printf("Retrieving %d stories with ids %d ...\n\n", len(storyIds), storyIds)
-	stories = make([]Story, len(storyIds))
+	storiesText = make([]string, len(storyIds))
 	for i, id := range storyIds {
 		go getStory(i+1, id)
 	}
 	for i := 0; i < len(storyIds); i++ {
 		story := <-ch
-		stories[story.Index-1] = story
+		storiesText[story.Index-1] = fmt.Sprintf("%d - %d %s %s", story.Index, story.ID, story.Title, story.URL)
 	}
-	for _, story := range stories {
-		fmt.Printf("%d - %d %s %s\n", story.Index, story.ID, story.Title, story.URL)
-	}
+	fmt.Println(strings.Join(storiesText[:], "\n"))
 }
