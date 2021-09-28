@@ -1,3 +1,3 @@
-module i27.com/news
+module imagine27.com/news
 
-go 1.16
+go 1.17

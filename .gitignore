@@ -17,5 +17,7 @@ Manifest.toml
 *.adb
 *.ads
 /ada/pi/pi
-/go/news/news_linux_arm64
 /go/palindromes/palindromes-arm-linux
+/go/multiply/main
+/go/news/news_darwin_amd64
+/go/news/news_linux_arm64
