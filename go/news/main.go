@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"strings"
 	"sync"
+	"time"
 )
 
 const STORIES_BASE_URL = "https://hacker-news.firebaseio.com/v0"
@@ -24,7 +26,17 @@ type Story struct {
 }
 
 func getURL(url string) []byte {
-	if resp, err := http.Get(url); err != nil {
+	t := &http.Transport{
+		Dial: (&net.Dialer{
+			Timeout:   60 * time.Second,
+			KeepAlive: 30 * time.Second,
+		}).Dial,
+		TLSHandshakeTimeout: 60 * time.Second,
+	}
+	c := &http.Client{
+		Transport: t,
+	}
+	if resp, err := c.Get(url); err != nil {
 		panic(err)
 	} else {
 		defer resp.Body.Close()
