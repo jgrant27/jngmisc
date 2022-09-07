@@ -1,4 +1,4 @@
-const warn = @import("std").debug.warn;
+const printf = @import("std").debug.print;
 
 //@Type(comptime info: @import("builtin").TypeInfo) type
 
@@ -12,9 +12,9 @@ pub fn main() void {
     // var heap_allocator = @import("std").heap.c_allocator;
     // var a = try builtin.BigInt.init(heap_allocator);
     // defer a.deinit();
-    warn("{}\n", .{factorial(1)}); // 1
-    warn("{}\n", .{factorial(5)}); // 120
-    warn("{}\n", .{factorial(7)}); // 5040
-    warn("{}\n", .{factorial(34)}); // 295232799039604140847618609643520000000
-    //warn("{}\n", .{factorial(35)}); //
+    printf("{}\n", .{factorial(1)}); // 1
+    printf("{}\n", .{factorial(5)}); // 120
+    printf("{}\n", .{factorial(7)}); // 5040
+    printf("{}\n", .{factorial(34)}); // 295232799039604140847618609643520000000
+    //printf("{}\n", .{factorial(35)}); //
 }

@@ -21,3 +21,8 @@ Manifest.toml
 /go/multiply/main
 /go/news/news_darwin_amd64
 /go/news/news_linux_arm64
+/go/news/main
+/zig/factorial
+/zig/hello
+/zig/tree
+/zig/zig-cache/
