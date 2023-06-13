@@ -1,10 +1,11 @@
 module news
 
 import HTTP, JSON3
+using PrecompileMacro
 
 const STORIES_BASE_URL = "https://hacker-news.firebaseio.com/v0"
 
-function tasks()
+@precompile function tasks()
     create_task(i, id) = @async (i, get_json("$(STORIES_BASE_URL)/item/$(id).json"))
     get_json(url) = JSON3.read(String(HTTP.request("GET", url, readtimeout=5, retry=true).body))
 
@@ -15,7 +16,7 @@ function tasks()
     print_stories(stories)
 end
 
-function channels_tasks()
+@precompile function channels_tasks()
     ich = Channel(1000)
     och = Channel(1000)
 
@@ -24,19 +25,19 @@ function channels_tasks()
         put!(och, (i, json))
     end
 
-    function put_work(story_ids)
+    @precompile function put_work(story_ids)
         @async for (i, id) in enumerate(story_ids)
             put!(ich, (i, "$(STORIES_BASE_URL)/item/$(id).json"))
         end
     end
 
-    function do_work()
+    @precompile function do_work()
         @async for (i, url) in ich
             @async get_story(i, url)
         end
     end
 
-    function get_results()
+    @precompile function get_results()
         res = []
         for _ in story_ids
             push!(res, take!(och))
@@ -56,7 +57,7 @@ function channels_tasks()
     print_stories(stories)
 end
 
-function print_stories(stories)
+@precompile function print_stories(stories)
     res = ""
     for (i, s) in stories
         res = res *  "$(i) - $(s["id"]) $(s["title"]) $(get(s, "url", "NONE"))\n"
