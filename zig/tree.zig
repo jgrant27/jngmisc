@@ -2,8 +2,8 @@ const printf = @import("std").debug.print;
 
 const Node = struct {
     val: u128,
-    left: ?*Node = null,
-    right: ?*Node = null,
+    left: ?*const Node = null,
+    right: ?*const Node = null,
 };
 
 fn new_node(v: u128) Node {
