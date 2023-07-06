@@ -120,7 +120,7 @@ defmodule RingProbs do
   is_integer(n) and n > 0 and
   is_integer(s) and s >= 0 do
 
-    # Probs at S = 0. 
+    # Probs at S = 0.
     #   Certain that we are positioned at only start location.
     #     e.g. P(Start Node) = 1
     # Duplicate last value before first node and first value after last node
@@ -136,11 +136,11 @@ defmodule RingProbs do
       [_, final_probs, _] =
         # ... through all the states ...
         reduce(1..s, initial_probs_padded,
-                  fn (_, [last, new_probs, first]) ->
-                       new_probs_padded_flat = [last] ++ new_probs ++ [first]
-                       # ... for each state at a time.
-                       calc_state_probs(p, [], new_probs_padded_flat)
-                  end)
+          fn (_, [last, new_probs, first]) ->
+            new_probs_padded_flat = [last] ++ new_probs ++ [first]
+            # ... for each state at a time.
+            calc_state_probs(p, [], new_probs_padded_flat)
+          end)
     end
 
     final_probs
@@ -172,26 +172,26 @@ defmodule RingProbs do
       [p, n, s] = [0.5, 10000, 2]
     end
 
-    {time, probs} = :timer.tc(fn -> RingProbs.calc_ring_probs(p, n, s) end, [])
+  {time, probs} = :timer.tc(fn -> RingProbs.calc_ring_probs(p, n, s) end, [])
 
-    nc = 100
-    truncated = true
-    if n <= nc do
-      nc = n
-      truncated = false
-    end
+  nc = 100
+  truncated = true
+  if n <= nc do
+    nc = n
+    truncated = false
+  end
 
-    if truncated do
-      IO.inspect take(probs, div(nc,2)), limit: :infinity
-      IO.puts "... #{n - div(nc, 2)} node probabilities ..."
-      IO.inspect drop(probs, n - div(nc,2)), limit: :infinity
-    else
-      IO.inspect probs, limit: :infinity
-    end
+  if truncated do
+    IO.inspect take(probs, div(nc,2)), limit: :infinity
+    IO.puts "... #{n - div(nc, 2)} node probabilities ..."
+    IO.inspect drop(probs, n - div(nc,2)), limit: :infinity
+  else
+    IO.inspect probs, limit: :infinity
+  end
 
-    IO.puts "\ncalc time: #{time/1000} msecs\n"
+  IO.puts "\ncalc time: #{time/1000} msecs\n"
 
-    res
+  res
   end
 
   def main(_) do
