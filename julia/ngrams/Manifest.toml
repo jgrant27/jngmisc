@@ -100,9 +100,9 @@ version = "1.0.1"
 
 [[HTTP]]
 deps = ["Base64", "CodecZlib", "ConcurrentUtilities", "Dates", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
-git-tree-sha1 = "ba9eca9f8bdb787c6f3cf52cb4a404c0e349a0d1"
+git-tree-sha1 = "877b7bc42729aa2c90bbbf5cb0d4294bd6d42e5a"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "1.9.5"
+version = "1.9.1"
 
 [[InteractiveUtils]]
 deps = ["Markdown"]
@@ -243,9 +243,9 @@ version = "1.6.0"
 
 [[Parsers]]
 deps = ["Dates", "PrecompileTools", "UUIDs"]
-git-tree-sha1 = "a5aef8d4a6e8d81f171b2bd4be5265b01384c74c"
+git-tree-sha1 = "7302075e5e06da7d000d9bfa055013e3e85578ca"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "2.5.10"
+version = "2.5.9"
 
 [[Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "FileWatching", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]

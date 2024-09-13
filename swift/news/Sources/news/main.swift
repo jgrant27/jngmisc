@@ -5,12 +5,14 @@ let STORIES_BASE_URL = "https://hacker-news.firebaseio.com/v0"
 let TOP_STORIES_URL = "\(STORIES_BASE_URL)/topstories.json"
 
 func jsonFromResponse(_ response: HTTPClient.Response) -> Any {
-    let bytes = response.body.flatMap { $0.getData(at: 0, length: $0.readableBytes) }
-    let jsonString = String(bytes: bytes!, encoding: .utf8)!
-    return try! JSONSerialization.jsonObject(with: jsonString.data(using: .utf8)!)
+    let jsonString = response.body.flatMap {
+        $0.getString(at: 0, length: $0.readableBytes)
+    }
+    //let jsonString = String(bytes: bytes!, encoding: .utf8)!
+    return try! JSONSerialization.jsonObject(with: jsonString!.data(using: .utf8)!)
 }
 
-let client = HTTPClient(eventLoopGroupProvider: .createNew)
+let client = HTTPClient()
 
 let ids = jsonFromResponse(try! client.get(url: TOP_STORIES_URL).wait()) as! [UInt]
 print("Loading \(ids.count) news articles ... \n")
