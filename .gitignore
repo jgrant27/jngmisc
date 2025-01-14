@@ -27,3 +27,6 @@ Manifest.toml
 /zig/tree
 /zig/zig-cache/
 /freepascal/threads/threads
+/c/sig/*.gch
+/c/sig/runfft
+/go/multiply/multiply

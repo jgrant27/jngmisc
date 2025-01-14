@@ -1,4 +1,3 @@
-
 #
 # Copyright (c) 2010, Justin Grant <justin at imagine27 dot com>
 # All rights reserved.
@@ -37,13 +36,16 @@ BIN_DIR = .
 all: clean bin
 
 bin_dbg:
-	$(GCC) -fprofile-arcs -ftest-coverage -g $(SRC_FILES) -o $(BIN_DIR)/runfft-dbg
+	$(GCC) -fprofile-arcs -ftest-coverage -g $(SRC_FILES) #-o $(BIN_DIR)/runfft-dbg
+	mv a.out $(BIN_DIR)/runfft-dbg
 
 bin:
-	$(GCC) $(STD_FLAGS) $(SRC_FILES) -o $(BIN_DIR)/runfft
+	$(GCC) $(STD_FLAGS) $(SRC_FILES) #-o $(BIN_DIR)/runfft
+	mv a.out $(BIN_DIR)/runfft
 
 bin_x8664:
-	$(GCC) $(STD_FLAGS) -m64 $(SRC_FILES) -o $(BIN_DIR)/runfft-x8664
+	$(GCC) $(STD_FLAGS) -m64 $(SRC_FILES) # -o $(BIN_DIR)/runfft-x8664
+	mv a.out $(BIN_DIR)/runfft-x8664
 
-clean: 
+clean:
 	-rm -fr *.o *~ *.dSYM *.gcno *.gch $(BIN_DIR)/runfft $(BIN_DIR)/runfft-dbg $(BIN_DIR)/runfft-x8664
