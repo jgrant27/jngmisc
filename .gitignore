@@ -30,3 +30,4 @@ Manifest.toml
 /c/sig/*.gch
 /c/sig/runfft
 /go/multiply/multiply
+/.DS_Store
