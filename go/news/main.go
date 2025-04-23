@@ -56,7 +56,11 @@ func getStory(n, id int) {
 func putStory() {
 	defer wg.Done()
 	story := <-ch
-	storiesText[story.Index-1] = fmt.Sprintf("%v - %v  %v  %v\n", story.Index, story.ID, story.Title, story.URL)
+	var url = "NO URL PROVIDED"
+	if story.URL != "" {
+		url = story.URL
+	}
+	storiesText[story.Index-1] = fmt.Sprintf("%v - %v - %v - %v\n", story.Index, story.ID, story.Title, url)
 }
 
 func main() {
