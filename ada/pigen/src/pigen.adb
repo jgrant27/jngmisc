@@ -3,8 +3,10 @@ with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 
 procedure Pi is
 
+  Pi_Digits : constant Integer := 10000;
+
   a, b, c, d, e, g: Integer;
-  f: array (0 .. 10000) of Integer;
+  f: array (0 .. Pi_Digits) of Integer;
 
 procedure Dec(n : in out Integer) is
 begin
@@ -23,7 +25,7 @@ begin
 end Print_Digits;
 
 begin
-  a := 10000; b := 0; c := 10000; e := 0;
+  a := Pi_Digits; b := 0; c := Pi_Digits; e := 0;
   for b in 0 .. c loop f(b) := a / 5; end loop;
   while c > 0 loop
     d := 0; g := c*2; b := c;
