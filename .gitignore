@@ -14,7 +14,6 @@
 Manifest.toml
 /go/news/news
 /go/palindromes/palindromes
-*.adb
 *.ads
 /ada/pi/pi
 /go/palindromes/palindromes-arm-linux
@@ -31,3 +30,4 @@ Manifest.toml
 /c/sig/runfft
 /go/multiply/multiply
 /.DS_Store
+/clojure/pong/src/i27/.DS_Store

@@ -1,0 +1,9 @@
+name = "pigen"
+description = ""
+version = "0.1.0-dev"
+
+authors = ["Justin Grant"]
+maintainers = ["Justin Grant <jgrant27@gmail.com>"]
+licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
+website = ""
+tags = []
